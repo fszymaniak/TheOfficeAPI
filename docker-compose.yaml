@@ -1,0 +1,28 @@
+﻿version: '3.8'
+
+services:
+  theofficeapi-level0:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: theoffice-api-level0
+    ports:
+      - "5000:8080"
+      - "5001:8081"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - MATURITY_LEVEL=Level0
+      - ASPNETCORE_URLS=http://+:8080
+    networks:
+      - theoffice-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  theoffice-network:
+    driver: bridge

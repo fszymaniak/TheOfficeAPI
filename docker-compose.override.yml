@@ -1,0 +1,11 @@
+﻿version: '3.8'
+
+services:
+  theofficeapi-level0:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - MATURITY_LEVEL=Level0
+    ports:
+      - "5000:8080"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
