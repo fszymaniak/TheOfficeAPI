@@ -12,8 +12,8 @@ on:
 env:
   DOTNET_VERSION: '9.0.x'
   BUILD_CONFIGURATION: 'Release'
-  RAILWAY_SERVICE_NAME: 'theoffice-api'
-  RAILWAY_URL: 'https://theoffice-api.up.railway.app'
+  RAILWAY_SERVICE_NAME: 'the-office-api'
+  RAILWAY_URL: 'https://the-office-api.up.railway.app'
 
 jobs:
   # Job 1: Check CI Status
