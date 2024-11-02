@@ -148,4 +148,7 @@ jobs:
           echo "CI Pipeline Failed!"
           echo "========================================"
           echo ""
-          [ "${{ n
+          [ "${{ needs.build-and-unit-tests.result }}" == "failure" ] && echo "FAILED: Build or Unit Tests"
+          [ "${{ needs.mocked-integration-tests.result }}" == "failure" ] && echo "FAILED: Mocked Integration Tests"
+          echo ""
+          exit 1
