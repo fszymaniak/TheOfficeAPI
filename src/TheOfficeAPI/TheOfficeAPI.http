@@ -1,0 +1,15 @@
+
+
+# Level 0
+
+   @TheOfficeAPI_HostAddress = http://localhost:5003
+   
+   POST {{TheOfficeAPI_HostAddress}}/api/theOffice
+    Accept: application/json
+    Content-Type: application/json
+
+   {
+     "action": "getAllSeasons",
+     "season": "1",
+     "episode": "1"
+   }
