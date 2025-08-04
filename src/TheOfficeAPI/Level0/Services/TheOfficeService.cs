@@ -3,12 +3,12 @@ using TheOfficeAPI.Common.Models;
 
 namespace TheOfficeAPI.Level0.Services
 {
-    public class OfficeService
+    public class TheOfficeService
     {
         private readonly List<Episode> _episodes;
         private readonly List<Season> _seasons;
 
-        public OfficeService()
+        public TheOfficeService()
         {
             _episodes = OfficeEpisodesData.Episodes;
             _seasons = InitializeSeasons();

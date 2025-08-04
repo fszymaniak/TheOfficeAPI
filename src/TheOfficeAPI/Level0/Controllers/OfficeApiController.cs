@@ -8,11 +8,11 @@ namespace TheOfficeAPI.Level0.Controllers;
 [Route("api")]
 public class Level0Controller : ControllerBase
 {
-    private readonly OfficeService _officeService;
+    private readonly TheOfficeService _theOfficeService;
 
-    public Level0Controller(OfficeService officeService)
+    public Level0Controller(TheOfficeService theOfficeService)
     {
-        _officeService = officeService;
+        _theOfficeService = theOfficeService;
     }
 
     /// <summary>
@@ -124,7 +124,7 @@ public class Level0Controller : ControllerBase
             switch (request.Action.ToLower())
             {
                 case "getallseasons":
-                    var seasons = _officeService.GetAllSeasons();
+                    var seasons = _theOfficeService.GetAllSeasons();
                     return Ok(new ApiResponse<List<Season>>
                     {
                         Success = true,
@@ -133,54 +133,11 @@ public class Level0Controller : ControllerBase
                     });
 
                 case "getseasonepisodes":
-                    if (request.Season == null)
-                        return Ok(new ApiResponse<object>
-                        {
-                            Success = false,
-                            Error = "Season parameter is required",
-                            Message = "Invalid request"
-                        });
-
-                    var episodes = _officeService.GetSeasonEpisodes(request.Season);
-                    var seasonsCount = _officeService.GetAllSeasons().Count;
-
-                    if (request.Season > seasonsCount)
-                    {
-                        
-                    }
-                    
-                    return Ok(new ApiResponse<List<Episode>>
-                    {
-                        Success = true,
-                        Data = episodes,
-                        Message = $"Episodes for season {request.Season} retrieved successfully"
-                    });
+                    return HandleGetSeasonEpisodes(request);
 
                 case "getepisode":
-                    if (request.Season == null || request.Episode == null)
-                        return Ok(new ApiResponse<object>
-                        {
-                            Success = false,
-                            Error = "Both season and episode parameters are required",
-                            Message = "Invalid request"
-                        });
-
-                    var episode = _officeService.GetEpisode(request.Season, request.Episode);
-                    if (episode == null)
-                        return Ok(new ApiResponse<object>
-                        {
-                            Success = false,
-                            Error = $"Episode S{request.Season}E{request.Episode} not found",
-                            Message = "Episode not found"
-                        });
-
-                    return Ok(new ApiResponse<Episode>
-                    {
-                        Success = true,
-                        Data = episode,
-                        Message = "Episode retrieved successfully"
-                    });
-
+                    return HandleGetEpisode(request);
+                    
                 default:
                     return Ok(new ApiResponse<object>
                     {
@@ -199,5 +156,98 @@ public class Level0Controller : ControllerBase
                 Message = "An error occurred while processing the request"
             });
         }
+    }
+
+    private IActionResult? ValidateIfSeasonIsNull(int? season)
+    {
+        if (season == null)
+            return Ok(new ApiResponse<object>
+            {
+                Success = false,
+                Error = "Season parameter is required",
+                Message = "Invalid request"
+            });
+        
+        return null;
+    }
+    
+    private IActionResult? ValidateIfSeasonOrEpisodeIsNull(int? season, int? episode)
+    {
+        if (season == null || episode == null)
+            return Ok(new ApiResponse<object>
+            {
+                Success = false,
+                Error = "Both season and episode parameters are required",
+                Message = "Invalid request"
+            });
+        
+        return null;
+    }
+    
+    private IActionResult? ValidateSeasonRange(int? season)
+    {
+        var seasonsCount = _theOfficeService.GetAllSeasons().Count;
+        if (season < 1 || season > seasonsCount)
+        {
+            return Ok(new ApiResponse<List<Episode>>
+            {
+                Success = false,
+                Error = $"Season parameter is outside of the scope. Please select the season number between 1 and {seasonsCount} (inclusive).",
+                Message = "Invalid request"
+            });
+        }
+        return null;
+    }
+    
+    private IActionResult? ValidateEpisodeRangeFromSpecificSeason(int? season, int? episode)
+    {
+        var episodesCountFromSpecificSeason = _theOfficeService.GetSeasonEpisodes(season).Count;
+        if (episode < 1 || episode > episodesCountFromSpecificSeason)
+        {
+            return Ok(new ApiResponse<List<Episode>>
+            {
+                Success = false,
+                Error = $"Episode parameter is outside of the scope. Please select the episode number between 1 and {episodesCountFromSpecificSeason} (inclusive).",
+                Message = "Invalid request"
+            });
+        }
+        return null;
+    }
+    
+    private IActionResult HandleGetSeasonEpisodes(ApiRequest request)
+    {
+        var seasonValidation = ValidateIfSeasonIsNull(request.Season);
+        if (seasonValidation != null) return seasonValidation;
+    
+        var rangeValidation = ValidateSeasonRange(request.Season);
+        if (rangeValidation != null) return rangeValidation;
+
+        var episodes = _theOfficeService.GetSeasonEpisodes(request.Season);
+        return Ok(new ApiResponse<List<Episode>>
+        {
+            Success = true,
+            Data = episodes,
+            Message = $"Episodes for season {request.Season} retrieved successfully"
+        });
+    }
+    
+    private IActionResult HandleGetEpisode(ApiRequest request)
+    {
+        var seasonOrEpisodeIsNullValidation = ValidateIfSeasonOrEpisodeIsNull(request.Season, request.Episode);
+        if (seasonOrEpisodeIsNullValidation != null) return seasonOrEpisodeIsNullValidation;
+    
+        var seasonRangeValidation = ValidateSeasonRange(request.Season);
+        if (seasonRangeValidation != null) return seasonRangeValidation;
+        
+        var episodeRangeValidation = ValidateEpisodeRangeFromSpecificSeason(request.Season, request.Episode);
+        if (episodeRangeValidation != null) return episodeRangeValidation;
+
+        var episode = _theOfficeService.GetEpisode(request.Season, request.Episode);
+        return Ok(new ApiResponse<Episode>
+        {
+            Success = true,
+            Data = episode,
+            Message = "Episode retrieved successfully"
+        });
     }
 }

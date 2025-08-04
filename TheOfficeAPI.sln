@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 #
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheOfficeAPI", "src\TheOfficeAPI\TheOfficeAPI.csproj", "{B1D1A596-0809-4313-8A9F-AFBC87A87458}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheOfficeAPI.Level0.Tests.Unit", "tests\TheOfficeAPI.Level0.Tests.Unit\TheOfficeAPI.Level0.Tests.Unit.csproj", "{A5E7B66A-B577-446F-A18B-A140EC26EC8A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -13,5 +15,9 @@ Global
 		{B1D1A596-0809-4313-8A9F-AFBC87A87458}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B1D1A596-0809-4313-8A9F-AFBC87A87458}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B1D1A596-0809-4313-8A9F-AFBC87A87458}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A5E7B66A-B577-446F-A18B-A140EC26EC8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5E7B66A-B577-446F-A18B-A140EC26EC8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5E7B66A-B577-446F-A18B-A140EC26EC8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5E7B66A-B577-446F-A18B-A140EC26EC8A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

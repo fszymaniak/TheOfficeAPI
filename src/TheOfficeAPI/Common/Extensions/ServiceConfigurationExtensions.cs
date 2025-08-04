@@ -19,7 +19,7 @@ namespace TheOfficeAPI.Common.Extensions
             }
 
             // Register our custom services
-            services.AddSingleton<OfficeService>();
+            services.AddSingleton<TheOfficeService>();
         }
 
         public static void ConfigurePipeline(this WebApplication app, MaturityLevel? maturityLevel)
