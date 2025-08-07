@@ -9,9 +9,9 @@ using TheOfficeAPI.Level0.Extensions;
 
 namespace TheOfficeAPI.Level0.Tests.Integration;
 
-public class TheOfficeApiIntegrationTests : IClassFixture<WebApplicationFactory<Program>>, IDisposable
+public class TheOfficeApiIntegrationTests : IClassFixture<WebApplicationFactory<TheOfficeAPI.Program>>, IDisposable
 {
-    private readonly WebApplicationFactory<Program> _factory;
+    private readonly WebApplicationFactory<TheOfficeAPI.Program> _factory;
     private readonly HttpClient _client;
     private readonly JsonSerializerOptions _jsonOptions;
     private const string ApiEndpoint = "/api/theOffice";
@@ -48,12 +48,12 @@ public class TheOfficeApiIntegrationTests : IClassFixture<WebApplicationFactory<
     {
         var json = JsonSerializer.Serialize(request);
         var content = new StringContent(json, Encoding.UTF8, MediaType);
-        return await _client.PostAsync(ApiEndpoint, content).ConfigureAwait(false);
+        return await _client.PostAsync(ApiEndpoint, content);
     }
 
     private async Task<T?> DeserializeResponseAsync<T>(HttpResponseMessage response)
     {
-        var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+        var responseContent = await response.Content.ReadAsStringAsync();
 
         // Add debugging information for non-JSON responses
         if (!IsValidJson(responseContent))
@@ -82,17 +82,17 @@ public class TheOfficeApiIntegrationTests : IClassFixture<WebApplicationFactory<
         var request = new ApiRequest { Action = "getAllSeasons" };
 
         // Act
-        var response = await SendApiRequestAsync(request).ConfigureAwait(false);
+        var response = await SendApiRequestAsync(request);
 
         // Debug response if not OK
         if (response.StatusCode != HttpStatusCode.OK)
         {
-            var errorContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            var errorContent = await response.Content.ReadAsStringAsync();
             throw new InvalidOperationException(
                 $"API call failed. Status: {response.StatusCode}, Content: {errorContent}");
         }
 
-        var apiResponse = await DeserializeResponseAsync<ApiResponse<List<Season>>>(response).ConfigureAwait(false);
+        var apiResponse = await DeserializeResponseAsync<ApiResponse<List<Season>>>(response);
 
         // Assert
         Assert.NotNull(apiResponse);
@@ -114,10 +114,10 @@ public class TheOfficeApiIntegrationTests : IClassFixture<WebApplicationFactory<
         var request = new ApiRequest { Action = "getSeasonEpisodes", Season = 1 };
 
         // Act
-        var response = await SendApiRequestAsync(request).ConfigureAwait(false);
+        var response = await SendApiRequestAsync(request);
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
-        var apiResponse = await DeserializeResponseAsync<ApiResponse<List<Episode>>>(response).ConfigureAwait(false);
+        var apiResponse = await DeserializeResponseAsync<ApiResponse<List<Episode>>>(response);
 
         // Assert
         Assert.NotNull(apiResponse);
@@ -140,10 +140,10 @@ public class TheOfficeApiIntegrationTests : IClassFixture<WebApplicationFactory<
         var request = new ApiRequest { Action = "getSeasonEpisodes", Season = null };
 
         // Act
-        var response = await SendApiRequestAsync(request).ConfigureAwait(false);
+        var response = await SendApiRequestAsync(request);
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
-        var apiResponse = await DeserializeResponseAsync<ApiResponse<object>>(response).ConfigureAwait(false);
+        var apiResponse = await DeserializeResponseAsync<ApiResponse<object>>(response);
 
         // Assert
         Assert.NotNull(apiResponse);
@@ -159,10 +159,10 @@ public class TheOfficeApiIntegrationTests : IClassFixture<WebApplicationFactory<
         var request = new ApiRequest { Action = "getSeasonEpisodes", Season = 999 };
 
         // Act
-        var response = await SendApiRequestAsync(request).ConfigureAwait(false);
+        var response = await SendApiRequestAsync(request);
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
-        var apiResponse = await DeserializeResponseAsync<ApiResponse<object>>(response).ConfigureAwait(false);
+        var apiResponse = await DeserializeResponseAsync<ApiResponse<object>>(response);
 
         // Assert
         Assert.NotNull(apiResponse);
@@ -178,10 +178,10 @@ public class TheOfficeApiIntegrationTests : IClassFixture<WebApplicationFactory<
         var request = new ApiRequest { Action = "getEpisode", Season = 1, Episode = 1 };
 
         // Act
-        var response = await SendApiRequestAsync(request).ConfigureAwait(false);
+        var response = await SendApiRequestAsync(request);
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
-        var apiResponse = await DeserializeResponseAsync<ApiResponse<Episode>>(response).ConfigureAwait(false);
+        var apiResponse = await DeserializeResponseAsync<ApiResponse<Episode>>(response);
 
         // Assert
         Assert.NotNull(apiResponse);
@@ -202,10 +202,10 @@ public class TheOfficeApiIntegrationTests : IClassFixture<WebApplicationFactory<
         var request = new ApiRequest { Action = "getEpisode", Season = season, Episode = episode };
 
         // Act
-        var response = await SendApiRequestAsync(request).ConfigureAwait(false);
+        var response = await SendApiRequestAsync(request);
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
-        var apiResponse = await DeserializeResponseAsync<ApiResponse<object>>(response).ConfigureAwait(false);
+        var apiResponse = await DeserializeResponseAsync<ApiResponse<object>>(response);
 
         // Assert
         Assert.NotNull(apiResponse);
@@ -221,10 +221,10 @@ public class TheOfficeApiIntegrationTests : IClassFixture<WebApplicationFactory<
         var request = new ApiRequest { Action = "getEpisode", Season = 999, Episode = 1 };
 
         // Act
-        var response = await SendApiRequestAsync(request).ConfigureAwait(false);
+        var response = await SendApiRequestAsync(request);
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
-        var apiResponse = await DeserializeResponseAsync<ApiResponse<object>>(response).ConfigureAwait(false);
+        var apiResponse = await DeserializeResponseAsync<ApiResponse<object>>(response);
 
         // Assert
         Assert.NotNull(apiResponse);
@@ -240,10 +240,10 @@ public class TheOfficeApiIntegrationTests : IClassFixture<WebApplicationFactory<
         var request = new ApiRequest { Action = "getEpisode", Season = 1, Episode = 999 };
 
         // Act
-        var response = await SendApiRequestAsync(request).ConfigureAwait(false);
+        var response = await SendApiRequestAsync(request);
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
-        var apiResponse = await DeserializeResponseAsync<ApiResponse<object>>(response).ConfigureAwait(false);
+        var apiResponse = await DeserializeResponseAsync<ApiResponse<object>>(response);
 
         // Assert
         Assert.NotNull(apiResponse);
@@ -259,10 +259,10 @@ public class TheOfficeApiIntegrationTests : IClassFixture<WebApplicationFactory<
         var request = new ApiRequest { Action = "unknownAction" };
 
         // Act
-        var response = await SendApiRequestAsync(request).ConfigureAwait(false);
+        var response = await SendApiRequestAsync(request);
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
-        var apiResponse = await DeserializeResponseAsync<ApiResponse<object>>(response).ConfigureAwait(false);
+        var apiResponse = await DeserializeResponseAsync<ApiResponse<object>>(response);
 
         // Assert
         Assert.NotNull(apiResponse);
@@ -281,17 +281,17 @@ public class TheOfficeApiIntegrationTests : IClassFixture<WebApplicationFactory<
         var request = new ApiRequest { Action = action };
 
         // Act
-        var response = await SendApiRequestAsync(request).ConfigureAwait(false);
+        var response = await SendApiRequestAsync(request);
 
         // Debug the response if it's not successful
         if (response.StatusCode != HttpStatusCode.OK)
         {
-            var errorContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            var errorContent = await response.Content.ReadAsStringAsync();
             throw new InvalidOperationException(
                 $"API call failed. Status: {response.StatusCode}, Content: {errorContent}");
         }
 
-        var apiResponse = await DeserializeResponseAsync<ApiResponse<List<Season>>>(response).ConfigureAwait(false);
+        var apiResponse = await DeserializeResponseAsync<ApiResponse<List<Season>>>(response);
 
         // Assert
         Assert.NotNull(apiResponse);

@@ -39,14 +39,23 @@ public class SeasonTests
     [InlineData("1")]
     [InlineData("9")]
     [InlineData("10")]
-    [InlineData(null)]
     public void Season_SeasonNumberProperty_AcceptsStringValues(string seasonNumber)
     {
         // Act
-        var season = new Season { SeasonNumber = seasonNumber ?? string.Empty };
+        var season = new Season { SeasonNumber = seasonNumber };
 
         // Assert
-        Assert.Equal(seasonNumber ?? string.Empty, season.SeasonNumber);
+        Assert.Equal(seasonNumber, season.SeasonNumber);
+    }
+
+    [Fact]
+    public void Season_SeasonNumberProperty_AcceptsNullValue()
+    {
+        // Act
+        var season = new Season { SeasonNumber = null! };
+
+        // Assert
+        Assert.Null(season.SeasonNumber);
     }
 
     [Theory]

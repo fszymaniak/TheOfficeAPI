@@ -43,7 +43,6 @@ public class EpisodeTests
     }
 
     [Theory]
-    [InlineData(null)]
     [InlineData(1)]
     [InlineData(9)]
     [InlineData(-1)]
@@ -56,8 +55,17 @@ public class EpisodeTests
         Assert.Equal(season, episode.Season);
     }
 
+    [Fact]
+    public void Episode_SeasonProperty_AcceptsNullValue()
+    {
+        // Act
+        var episode = new Episode { Season = null };
+
+        // Assert
+        Assert.Null(episode.Season);
+    }
+
     [Theory]
-    [InlineData(null)]
     [InlineData(1)]
     [InlineData(22)]
     [InlineData(0)]
@@ -70,31 +78,59 @@ public class EpisodeTests
         Assert.Equal(episodeNumber, episode.EpisodeNumber);
     }
 
+    [Fact]
+    public void Episode_EpisodeNumberProperty_AcceptsNullValue()
+    {
+        // Act
+        var episode = new Episode { EpisodeNumber = null };
+
+        // Assert
+        Assert.Null(episode.EpisodeNumber);
+    }
+
     [Theory]
     [InlineData("")]
     [InlineData("Pilot")]
     [InlineData("The Dundies")]
-    [InlineData(null)]
     public void Episode_TitleProperty_AcceptsStringValues(string title)
     {
         // Act
-        var episode = new Episode { Title = title ?? string.Empty };
+        var episode = new Episode { Title = title };
 
         // Assert
-        Assert.Equal(title ?? string.Empty, episode.Title);
+        Assert.Equal(title, episode.Title);
+    }
+
+    [Fact]
+    public void Episode_TitleProperty_AcceptsNullValue()
+    {
+        // Act
+        var episode = new Episode { Title = null! };
+
+        // Assert
+        Assert.Null(episode.Title);
     }
 
     [Theory]
     [InlineData("")]
     [InlineData("2005-03-24")]
     [InlineData("March 24, 2005")]
-    [InlineData(null)]
     public void Episode_ReleasedDateProperty_AcceptsStringValues(string releasedDate)
     {
         // Act
-        var episode = new Episode { ReleasedDate = releasedDate ?? string.Empty };
+        var episode = new Episode { ReleasedDate = releasedDate };
 
         // Assert
-        Assert.Equal(releasedDate ?? string.Empty, episode.ReleasedDate);
+        Assert.Equal(releasedDate, episode.ReleasedDate);
+    }
+
+    [Fact]
+    public void Episode_ReleasedDateProperty_AcceptsNullValue()
+    {
+        // Act
+        var episode = new Episode { ReleasedDate = null! };
+
+        // Assert
+        Assert.Null(episode.ReleasedDate);
     }
 }

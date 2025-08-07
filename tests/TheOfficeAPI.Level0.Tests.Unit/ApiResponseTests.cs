@@ -92,27 +92,45 @@ public class ApiResponseTests
     [InlineData("")]
     [InlineData("Success")]
     [InlineData("Error occurred")]
-    [InlineData(null)]
     public void ApiResponse_MessageProperty_AcceptsStringValues(string message)
     {
         // Act
-        var response = new ApiResponse<object> { Message = message ?? string.Empty };
+        var response = new ApiResponse<object> { Message = message };
 
         // Assert
-        Assert.Equal(message ?? string.Empty, response.Message);
+        Assert.Equal(message, response.Message);
+    }
+
+    [Fact]
+    public void ApiResponse_MessageProperty_AcceptsNullValue()
+    {
+        // Act
+        var response = new ApiResponse<object> { Message = null! };
+
+        // Assert
+        Assert.Null(response.Message);
     }
 
     [Theory]
-    [InlineData(null)]
     [InlineData("")]
     [InlineData("Validation error")]
     [InlineData("Server error")]
-    public void ApiResponse_ErrorProperty_AcceptsNullableStringValues(string error)
+    public void ApiResponse_ErrorProperty_AcceptsStringValues(string error)
     {
         // Act
         var response = new ApiResponse<object> { Error = error };
 
         // Assert
         Assert.Equal(error, response.Error);
+    }
+
+    [Fact]
+    public void ApiResponse_ErrorProperty_AcceptsNullValue()
+    {
+        // Act
+        var response = new ApiResponse<object> { Error = null };
+
+        // Assert
+        Assert.Null(response.Error);
     }
 }

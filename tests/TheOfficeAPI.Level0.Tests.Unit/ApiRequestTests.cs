@@ -43,18 +43,26 @@ public class ApiRequestTests
     [InlineData("getSeasonEpisodes")]
     [InlineData("getEpisode")]
     [InlineData("")]
-    [InlineData(null)]
     public void ApiRequest_ActionProperty_AcceptsVariousValues(string action)
     {
         // Act
-        var request = new ApiRequest { Action = action ?? string.Empty };
+        var request = new ApiRequest { Action = action };
 
         // Assert
-        Assert.Equal(action ?? string.Empty, request.Action);
+        Assert.Equal(action, request.Action);
+    }
+
+    [Fact]
+    public void ApiRequest_ActionProperty_AcceptsNullValue()
+    {
+        // Act
+        var request = new ApiRequest { Action = null! };
+
+        // Assert
+        Assert.Null(request.Action);
     }
 
     [Theory]
-    [InlineData(null)]
     [InlineData(1)]
     [InlineData(9)]
     [InlineData(-1)]
@@ -68,8 +76,17 @@ public class ApiRequestTests
         Assert.Equal(season, request.Season);
     }
 
+    [Fact]
+    public void ApiRequest_SeasonProperty_AcceptsNullValue()
+    {
+        // Act
+        var request = new ApiRequest { Season = null };
+
+        // Assert
+        Assert.Null(request.Season);
+    }
+
     [Theory]
-    [InlineData(null)]
     [InlineData(1)]
     [InlineData(22)]
     [InlineData(-1)]
@@ -81,5 +98,15 @@ public class ApiRequestTests
 
         // Assert
         Assert.Equal(episode, request.Episode);
+    }
+
+    [Fact]
+    public void ApiRequest_EpisodeProperty_AcceptsNullValue()
+    {
+        // Act
+        var request = new ApiRequest { Episode = null };
+
+        // Assert
+        Assert.Null(request.Episode);
     }
 }
