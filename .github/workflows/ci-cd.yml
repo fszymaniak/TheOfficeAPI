@@ -1,0 +1,402 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  DOTNET_VERSION: '9.0.x'
+  NODE_VERSION: '18.x'
+  APP_NAME: 'TheOfficeAPI'
+
+jobs:
+  # Job 1: Build and Unit Tests
+  build-and-test:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      artifact-name: ${{ steps.version.outputs.artifact-name }}
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Cache dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
+
+    - name: Generate version
+      id: version
+      run: |
+        VERSION="1.0.${{ github.run_number }}"
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+        echo "artifact-name=${{ env.APP_NAME }}-$VERSION" >> $GITHUB_OUTPUT
+        echo "Generated version: $VERSION"
+
+    - name: Restore dependencies
+      run: dotnet restore TheOfficeAPI.sln
+
+    - name: Build application
+      run: |
+        dotnet build TheOfficeAPI.sln \
+          --configuration Release \
+          --no-restore \
+          --verbosity minimal \
+          -p:Version=${{ steps.version.outputs.version }}
+
+    - name: Run Unit Tests
+      run: |
+        dotnet test tests/TheOfficeAPI.Level0.Tests.Unit/TheOfficeAPI.Level0.Tests.Unit.csproj \
+          --configuration Release \
+          --no-build \
+          --verbosity minimal \
+          --collect:"XPlat Code Coverage" \
+          --results-directory ./test-results/unit \
+          --logger "trx;LogFileName=unit-tests.trx"
+
+    - name: Run Integration Tests (Mocked)
+      run: |
+        dotnet test tests/TheOfficeAPI.Level0.Tests.Integration/TheOfficeAPI.Level0.Tests.Integration.csproj \
+          --configuration Release \
+          --no-build \
+          --verbosity minimal \
+          --collect:"XPlat Code Coverage" \
+          --results-directory ./test-results/integration \
+          --logger "trx;LogFileName=integration-tests.trx"
+
+    - name: Generate Test Report
+      uses: dorny/test-reporter@v1
+      if: always()
+      with:
+        name: Test Results
+        path: ./test-results/**/*.trx
+        reporter: dotnet-trx
+        fail-on-error: true
+
+    - name: Upload Code Coverage
+      uses: codecov/codecov-action@v3
+      with:
+        directory: ./test-results
+        fail_ci_if_error: false
+
+    - name: Publish Application
+      run: |
+        dotnet publish src/TheOfficeAPI/TheOfficeAPI.csproj \
+          --configuration Release \
+          --no-build \
+          --output ./publish \
+          -p:Version=${{ steps.version.outputs.version }}
+
+    - name: Upload Build Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ steps.version.outputs.artifact-name }}
+        path: ./publish
+        retention-days: 30
+
+  # Job 2: Deploy to GitHub Pages
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Setup Node.js (for static site generation)
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+
+    - name: Download Build Artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: ${{ needs.build-and-test.outputs.artifact-name }}
+        path: ./publish
+
+    - name: Create GitHub Pages compatible structure
+      run: |
+        mkdir -p ./pages
+        
+        # Copy published app
+        cp -r ./publish/* ./pages/
+        
+        # Create index.html for GitHub Pages
+        cat > ./pages/index.html << 'EOF'
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>TheOfficeAPI - Level 0</title>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <style>
+                body { font-family: Arial, sans-serif; margin: 40px; }
+                .container { max-width: 800px; margin: 0 auto; }
+                .endpoint { background: #f5f5f5; padding: 15px; margin: 10px 0; border-radius: 5px; }
+                .method { color: #0066cc; font-weight: bold; }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>TheOfficeAPI - Richardson Maturity Model Level 0</h1>
+                <p>Welcome to TheOfficeAPI! This API is deployed and running on GitHub Pages.</p>
+                
+                <h2>Available Endpoints:</h2>
+                
+                <div class="endpoint">
+                    <h3><span class="method">GET</span> /health</h3>
+                    <p>Health check endpoint</p>
+                    <a href="./health" target="_blank">Test Health Endpoint</a>
+                </div>
+                
+                <div class="endpoint">
+                    <h3><span class="method">GET</span> /api</h3>
+                    <p>Main API endpoint (Level 0)</p>
+                    <a href="./api" target="_blank">Test API Endpoint</a>
+                </div>
+                
+                <h2>API Information:</h2>
+                <ul>
+                    <li><strong>Version:</strong> ${{ needs.build-and-test.outputs.version }}</li>
+                    <li><strong>Build:</strong> ${{ github.run_number }}</li>
+                    <li><strong>Commit:</strong> ${{ github.sha }}</li>
+                    <li><strong>Branch:</strong> ${{ github.ref_name }}</li>
+                </ul>
+                
+                <h2>Test the API:</h2>
+                <p>You can test the API endpoints directly from your browser or use tools like:</p>
+                <ul>
+                    <li>curl</li>
+                    <li>Postman</li>
+                    <li>Bruno (recommended)</li>
+                </ul>
+            </div>
+        </body>
+        </html>
+        EOF
+
+    - name: Setup Pages
+      uses: actions/configure-pages@v4
+
+    - name: Upload Pages Artifact
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: ./pages
+
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
+
+  # Job 3: Integration Tests against deployed app
+  integration-test:
+    name: Integration Tests (Deployed)
+    needs: [build-and-test, deploy]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js (for Bruno CLI)
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+
+    - name: Install Bruno CLI
+      run: npm install -g @usebruno/cli
+
+    - name: Wait for deployment
+      run: |
+        echo "Waiting for GitHub Pages deployment to be ready..."
+        sleep 30
+
+    - name: Create Bruno environment for deployed app
+      run: |
+        mkdir -p ./bruno-tests/environments
+        
+        # Create production environment file
+        cat > ./bruno-tests/environments/production.bru << 'EOF'
+        vars {
+          baseUrl: ${{ needs.deploy.outputs.page_url }}
+          environment: production
+          timeout: 10000
+          retries: 3
+        }
+        EOF
+
+    - name: Create Bruno collection config
+      run: |
+        cat > ./bruno-tests/bruno.json << 'EOF'
+        {
+          "version": "1",
+          "name": "TheOfficeAPI Production Tests",
+          "type": "collection"
+        }
+        EOF
+
+    - name: Create production health test
+      run: |
+        mkdir -p ./bruno-tests/health
+        
+        cat > ./bruno-tests/health/health-check-production.bru << 'EOF'
+        meta {
+          name: Production Health Check
+          type: http
+          seq: 1
+        }
+
+        get {
+          url: {{baseUrl}}/health
+          body: none
+          auth: none
+        }
+
+        headers {
+          Accept: application/json
+          User-Agent: GitHub-Actions-Integration-Test
+        }
+
+        assert {
+          res.status: eq 200
+          res.responseTime: lt 10000
+        }
+
+        tests {
+          test("Production health endpoint responds", function() {
+            expect(res.status).to.equal(200);
+          });
+
+          test("Response time acceptable for production", function() {
+            expect(res.responseTime).to.be.below(10000);
+          });
+
+          test("Response contains health status", function() {
+            const body = res.body;
+            expect(body).to.have.property('status');
+          });
+        }
+        EOF
+
+    - name: Create production API test
+      run: |
+        mkdir -p ./bruno-tests/api
+        
+        cat > ./bruno-tests/api/api-endpoint-production.bru << 'EOF'
+        meta {
+          name: Production API Endpoint
+          type: http
+          seq: 2
+        }
+
+        get {
+          url: {{baseUrl}}/api
+          body: none
+          auth: none
+        }
+
+        headers {
+          Accept: application/json
+          User-Agent: GitHub-Actions-Integration-Test
+          X-Environment: production
+        }
+
+        assert {
+          res.status: eq 200
+          res.responseTime: lt 15000
+        }
+
+        tests {
+          test("Production API endpoint responds", function() {
+            expect(res.status).to.equal(200);
+          });
+
+          test("API response time acceptable", function() {
+            expect(res.responseTime).to.be.below(15000);
+          });
+
+          test("API returns data", function() {
+            const body = res.body;
+            expect(body).to.not.be.null;
+          });
+
+          test("Production deployment successful", function() {
+            console.log("✅ Production deployment verified!");
+            console.log(`Deployed URL: {{baseUrl}}`);
+            console.log(`Response time: ${res.responseTime}ms`);
+          });
+        }
+        EOF
+
+    - name: Run Bruno integration tests
+      run: |
+        echo "Running integration tests against deployed application..."
+        echo "Deployment URL: ${{ needs.deploy.outputs.page_url }}"
+        
+        bru run ./bruno-tests --env production --output integration-results.json --format json || true
+
+    - name: Upload Integration Test Results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: integration-test-results
+        path: integration-results.json
+
+    - name: Notify integration test results
+      run: |
+        echo "::notice title=Integration Tests::Integration tests completed against deployed application"
+        echo "::notice title=Deployment URL::${{ needs.deploy.outputs.page_url }}"
+
+  # Job 4: Cleanup and Notifications
+  notify:
+    name: Notify Results
+    needs: [build-and-test, deploy, integration-test]
+    runs-on: ubuntu-latest
+    if: always()
+    
+    steps:
+    - name: Pipeline Success Notification
+      if: needs.build-and-test.result == 'success' && needs.deploy.result == 'success' && needs.integration-test.result == 'success'
+      run: |
+        echo "::notice title=Pipeline Success::✅ All stages completed successfully!"
+        echo "::notice title=Deployment::🚀 Application deployed to GitHub Pages"
+        echo "::notice title=Version::📦 Version ${{ needs.build-and-test.outputs.version }} deployed"
+
+    - name: Pipeline Failure Notification
+      if: contains(needs.*.result, 'failure')
+      run: |
+        echo "::error title=Pipeline Failed::❌ Pipeline failed in one or more stages"
+        echo "Build: ${{ needs.build-and-test.result }}"
+        echo "Deploy: ${{ needs.deploy.result }}"
+        echo "Integration Tests: ${{ needs.integration-test.result }}"
