@@ -119,13 +119,15 @@ jobs:
       
     - name: Install Documentation Tools
       run: |
-        npm install -g @apidevtools/swagger-parser
-        npm install -g @redocly/cli
         sudo apt-get update && sudo apt-get install -y jq
         
     - name: Generate OpenAPI specification
       run: |
         cd src/TheOfficeAPI
+        
+        # Set the MATURITY_LEVEL explicitly to ensure Swagger is enabled
+        export MATURITY_LEVEL=Level0
+        
         dotnet run --configuration ${{ env.BUILD_CONFIGURATION }} --no-build &
         API_PID=$!
         
@@ -161,6 +163,7 @@ jobs:
       env:
         ASPNETCORE_ENVIRONMENT: Production
         ASPNETCORE_URLS: http://localhost:5000
+        MATURITY_LEVEL: Level0
         
     - name: Generate static documentation
       run: |
@@ -181,44 +184,59 @@ jobs:
           exit 1
         fi
 
-        # Generate ReDoc documentation using the new recommended tool
-        npx @redocly/cli build-docs swagger.json -o ../../docs/index.html --title "The Office API Documentation"
-        
-        # Copy the swagger.json for direct access
-        cp swagger.json ../../docs/swagger.json
-        
-        # Create a simple index page if ReDoc fails
-        if [ ! -f ../../docs/index.html ]; then
-          cat > ../../docs/index.html << 'EOF'
+        # Directly create Swagger UI HTML without using @redocly/cli
+        cat > ../../docs/index.html << 'EOF'
         <!DOCTYPE html>
         <html lang="en">
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>The Office API Documentation</title>
+            <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist@4.15.5/swagger-ui.css" />
+            <style>
+                body {
+                    margin: 0;
+                    padding: 0;
+                }
+                #swagger-ui {
+                    max-width: 1460px;
+                    margin: 0 auto;
+                }
+                .swagger-ui .topbar {
+                    background-color: #333;
+                }
+                .swagger-ui .info .title {
+                    color: #333;
+                }
+            </style>
         </head>
         <body>
             <div id="swagger-ui"></div>
             <script src="https://unpkg.com/swagger-ui-dist@4.15.5/swagger-ui-bundle.js"></script>
             <script src="https://unpkg.com/swagger-ui-dist@4.15.5/swagger-ui-standalone-preset.js"></script>
-            <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist@4.15.5/swagger-ui.css" />
             <script>
               window.onload = function() {
                 SwaggerUIBundle({
                   url: './swagger.json',
                   dom_id: '#swagger-ui',
+                  deepLinking: true,
                   presets: [
                     SwaggerUIBundle.presets.apis,
                     SwaggerUIStandalonePreset
                   ],
+                  plugins: [
+                    SwaggerUIBundle.plugins.DownloadUrl
+                  ],
                   layout: "StandaloneLayout"
-                })
+                });
               }
             </script>
         </body>
         </html>
         EOF
-        fi
+        
+        # Copy the swagger.json for direct access
+        cp swagger.json ../../docs/swagger.json
         
         # List generated files
         ls -la ../../docs/
