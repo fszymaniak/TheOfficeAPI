@@ -35,11 +35,17 @@ public class Program
         {
             Console.WriteLine("Starting with Richardson Maturity Level 0 configuration...");
             builder.Services.ConfigureServices(maturityLevel);
+            // Add Swagger services
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen();
         }
         else
         {
             Console.WriteLine("Starting with basic configuration...");
             builder.Services.AddControllers();
+            // Add Swagger services for basic configuration too
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen();
         }
 
         var app = builder.Build();

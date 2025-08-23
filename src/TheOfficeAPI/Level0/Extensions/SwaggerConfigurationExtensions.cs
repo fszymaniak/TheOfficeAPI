@@ -32,7 +32,7 @@ namespace TheOfficeAPI.Level0.Extensions
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "The Office API V1");
-                c.RoutePrefix = string.Empty; // Set Swagger UI at app's root
+                c.RoutePrefix = "swagger"; // Set Swagger UI at /swagger
             });
         }
     }
