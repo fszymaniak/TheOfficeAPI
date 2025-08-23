@@ -7,10 +7,10 @@ using Microsoft.Extensions.DependencyInjection;
 using TheOfficeAPI.Common.Models;
 using TheOfficeAPI.Level0.Extensions;
 using Xunit;
-using TheOfficeAPI;
 
 namespace TheOfficeAPI.Level0.Tests.Integration;
 
+[Trait("Category", "Mocked")]
 public class TheOfficeApiIntegrationTests : IClassFixture<WebApplicationFactory<TheOfficeAPI.Program>>, IDisposable
 {
     private readonly WebApplicationFactory<TheOfficeAPI.Program> _factory;
