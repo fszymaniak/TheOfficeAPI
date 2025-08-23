@@ -7,6 +7,11 @@ public class Program
 {
     public static void Main(string[] args)
     {
+        CreateWebApplication(args).Run();
+    }
+
+    public static WebApplication CreateWebApplication(string[] args)
+    {
         var builder = WebApplication.CreateBuilder(args);
 
         // Check if Level0 profile is active using environment variable
@@ -50,6 +55,6 @@ public class Program
             app.MapGet("/", () => "API is running. Use Level0 profile for Richardson Level 0 implementation.");
         }
 
-        app.Run();
+        return app;
     }
 }
