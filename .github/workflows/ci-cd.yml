@@ -109,7 +109,7 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '18'
+        node-version: '20'
         
     - name: Restore dependencies
       run: dotnet restore TheOfficeAPI.sln
@@ -117,10 +117,11 @@ jobs:
     - name: Build solution
       run: dotnet build TheOfficeAPI.sln --configuration ${{ env.BUILD_CONFIGURATION }} --no-restore
       
-    - name: Install Swagger Codegen CLI
+    - name: Install Documentation Tools
       run: |
         npm install -g @apidevtools/swagger-parser
-        npm install -g redoc-cli
+        npm install -g @redocly/cli
+        sudo apt-get update && sudo apt-get install -y jq
         
     - name: Generate OpenAPI specification
       run: |
@@ -130,23 +131,33 @@ jobs:
         
         # Wait for the API to start
         echo "Waiting for API to start..."
-        for i in {1..30}; do
-          if curl -s http://localhost:5000/swagger/v1/swagger.json > /dev/null; then
-            echo "API is running"
-            break
+        success=false
+        for i in {1..60}; do
+          if curl -s http://localhost:5000/swagger/v1/swagger.json -o swagger.json; then
+            if jq . swagger.json > /dev/null 2>&1; then
+              echo "API is running and swagger.json is valid"
+              success=true
+              break
+            else
+              echo "Retrieved swagger.json is not valid JSON"
+            fi
           fi
+          echo "Attempt $i: waiting for API to start..."
           sleep 2
         done
-        
-        # Download the OpenAPI spec
-        curl -o swagger.json http://localhost:5000/swagger/v1/swagger.json
-        
+
         # Stop the API
-        kill $API_PID
-        
-        # Verify the spec was downloaded
-        ls -la swagger.json
-        cat swagger.json | head -20
+        kill $API_PID || true
+
+        # Verify the spec was downloaded successfully
+        if [ "$success" = true ]; then
+          echo "Successfully downloaded swagger.json:"
+          ls -la swagger.json
+          cat swagger.json | head -20
+        else
+          echo "Failed to download valid swagger.json after multiple attempts"
+          exit 1
+        fi
       env:
         ASPNETCORE_ENVIRONMENT: Production
         ASPNETCORE_URLS: http://localhost:5000

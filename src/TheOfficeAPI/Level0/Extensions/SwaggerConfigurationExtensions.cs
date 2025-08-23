@@ -27,15 +27,13 @@ namespace TheOfficeAPI.Level0.Extensions
 
         public static void UseSwaggerMiddleware(this WebApplication app)
         {
-            if (app.Environment.IsDevelopment())
+            // Enable Swagger in all environments for documentation generation
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
             {
-                app.UseSwagger();
-                app.UseSwaggerUI(c =>
-                {
-                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "The Office API V1");
-                    c.RoutePrefix = string.Empty; // Set Swagger UI at app's root
-                });
-            }
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "The Office API V1");
+                c.RoutePrefix = string.Empty; // Set Swagger UI at app's root
+            });
         }
     }
 }
