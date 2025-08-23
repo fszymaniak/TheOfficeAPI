@@ -158,8 +158,20 @@ jobs:
         # Create docs directory
         mkdir -p ../../docs
         
-        # Generate ReDoc documentation
-        npx redoc-cli build swagger.json --output ../../docs/index.html --title "The Office API Documentation"
+        # Check if swagger.json exists and is valid
+        if [ ! -f swagger.json ]; then
+          echo "Error: swagger.json file not found"
+          exit 1
+        fi
+
+        # Validate JSON format
+        if ! jq . swagger.json > /dev/null 2>&1; then
+          echo "Error: swagger.json is not valid JSON"
+          exit 1
+        fi
+
+        # Generate ReDoc documentation using the new recommended tool
+        npx @redocly/cli build-docs swagger.json -o ../../docs/index.html --title "The Office API Documentation"
         
         # Copy the swagger.json for direct access
         cp swagger.json ../../docs/swagger.json
