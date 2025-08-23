@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using TheOfficeAPI.Common.Models;
 using TheOfficeAPI.Level0.Extensions;
+using Xunit;
+using TheOfficeAPI;
 
 namespace TheOfficeAPI.Level0.Tests.Integration;
 
