@@ -89,13 +89,6 @@ public class Program
     {
         Console.WriteLine("=== CONFIGURING BASIC PIPELINE ===");
     
-        // Health check endpoint (simple, fast)
-        app.MapGet("/health", () => Results.Ok(new { 
-            status = "healthy", 
-            timestamp = DateTime.UtcNow,
-            version = "1.0.0"
-        })).ExcludeFromDescription();;
-    
         // Root endpoint
         app.MapGet("/", () => Results.Ok(new {
             message = "The Office API is running",
