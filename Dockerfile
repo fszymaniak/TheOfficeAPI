@@ -2,37 +2,36 @@
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /app
 
-# Copy solution and all .csproj files for better caching
+# Copy solution and all .csproj files
 COPY *.sln ./
 COPY src/TheOfficeAPI/*.csproj ./src/TheOfficeAPI/
 COPY tests/TheOfficeAPI.Level0.Tests.Unit/*.csproj ./tests/TheOfficeAPI.Level0.Tests.Unit/
 COPY tests/TheOfficeAPI.Level0.Tests.Integration/*.csproj ./tests/TheOfficeAPI.Level0.Tests.Integration/
 
-# Restore dependencies (cached if .csproj files don't change)
+# Restore dependencies
 RUN dotnet restore TheOfficeAPI.sln
 
 # Copy rest of the code
 COPY . ./
 
-# Publish main project only (faster than entire solution)
+# Publish main project
 RUN dotnet publish src/TheOfficeAPI/TheOfficeAPI.csproj \
     -c Release \
     -o /app/out \
     --no-restore
 
-# Runtime stage (smaller image)
+# Runtime stage
 FROM mcr.microsoft.com/dotnet/aspnet:9.0
 WORKDIR /app
 
-# Copy only compiled files
+# Copy compiled files
 COPY --from=build /app/out .
 
-# Railway automatically sets PORT environment variable
-# Using ${PORT} without default value, Railway always sets it
-ENV ASPNETCORE_URLS=http://+:${PORT}
+# Set environment
 ENV ASPNETCORE_ENVIRONMENT=Production
+ENV PORT=8080
 
-# Expose for documentation (Railway ignores this and uses its own PORT)
+# Expose port 8080
 EXPOSE 8080
 
 # Entry point
