@@ -25,14 +25,12 @@ public class Program
         var environmentOptions =
             builder.Configuration.GetSection(EnvironmentOptions.SectionName).Get<EnvironmentOptions>();
 
-        // RAILWAY FIX: ALWAYS use Railway's PORT environment variable and bind to 0.0.0.0
-        // This MUST come AFTER builder creation but BEFORE any other WebHost configuration
+        // RAILWAY: Use Railway's PORT environment variable and bind to 0.0.0.0
         var port = Environment.GetEnvironmentVariable("PORT");
         string url;
         
         if (port != null)
         {
-            // Railway or production environment
             url = $"http://0.0.0.0:{port}";
             Console.WriteLine($"=== RAILWAY/PRODUCTION MODE ===");
             Console.WriteLine($"PORT from environment: {port}");
@@ -41,14 +39,12 @@ public class Program
         }
         else
         {
-            // Local development
             url = serverOptions?.DefaultUrl ?? "http://localhost:5000";
             Console.WriteLine($"=== LOCAL DEVELOPMENT MODE ===");
             Console.WriteLine($"Using config URL: {url}");
             Console.WriteLine($"================================");
         }
 
-        // Clear any existing URLs and set ours
         builder.WebHost.UseUrls(url);
 
         var maturityLevel = DetermineMaturityLevel(environmentOptions?.MaturityLevelVariable ?? "MATURITY_LEVEL");
@@ -91,11 +87,18 @@ public class Program
 
     private static void ConfigureBasicPipeline(WebApplication app)
     {
+        Console.WriteLine("=== CONFIGURING BASIC PIPELINE ===");
+        
         // Enable Swagger in all environments
         app.UseSwagger();
         app.UseSwaggerUI();
         
-        app.UseHttpsRedirection();
+        Console.WriteLine("Swagger enabled at /swagger");
+        Console.WriteLine("==================================");
+        
+        // Railway handles HTTPS, don't redirect
+        // app.UseHttpsRedirection();
+        
         app.UseRouting();
         app.UseAuthorization();
         app.MapControllers();
