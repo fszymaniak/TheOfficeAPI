@@ -12,8 +12,7 @@ on:
 env:
   DOTNET_VERSION: '9.0.x'
   BUILD_CONFIGURATION: 'Release'
-  RAILWAY_SERVICE_NAME: 'the-office-api'
-  RAILWAY_URL: 'theofficeapi-production-5d8f.up.railway.app'
+  RAILWAY_URL: 'https://theofficeapi-production-5d8f.up.railway.app'
 
 jobs:
   # Job 1: Check CI Status
@@ -25,49 +24,32 @@ jobs:
       - name: Check if CI passed
         if: github.event.workflow_run.conclusion != 'success'
         run: |
-          echo "FAILED: CI pipeline failed - skipping deployment"
+          echo "FAILED: CI pipeline failed - skipping deployment verification"
           exit 1
 
       - name: CI passed
         run: |
-          echo "SUCCESS: CI pipeline passed - proceeding with deployment"
+          echo "SUCCESS: CI pipeline passed"
+          echo "Railway will auto-deploy from GitHub integration"
 
-  # Job 2: Deploy to Railway
-  deploy-to-railway:
+  # Job 2: Wait for Railway Auto-Deployment
+  wait-for-deployment:
     runs-on: ubuntu-latest
-    name: Deploy to Railway
+    name: Wait for Railway Deployment
     needs: check-ci-status
-    environment:
-      name: production
-      url: ${{ env.RAILWAY_URL }}/swagger
     
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Install Railway CLI
-        run: npm install -g @railway/cli
-
-      - name: Deploy to Railway
-        shell: bash
+      - name: Wait for Railway to deploy
         run: |
-          echo "Deploying to Railway..."
-          railway up --service="${RAILWAY_SERVICE_NAME}"
-          echo "Deployment triggered successfully"
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-          RAILWAY_SERVICE_NAME: ${{ env.RAILWAY_SERVICE_NAME }}
-
-      - name: Wait for deployment
-        run: |
-          echo "Waiting 45 seconds for Railway deployment to stabilize..."
-          sleep 45
+          echo "Waiting for Railway to auto-deploy from GitHub..."
+          echo "This usually takes 2-3 minutes"
+          sleep 120
 
   # Job 3: Health Check
   health-check:
     runs-on: ubuntu-latest
     name: Health Check
-    needs: deploy-to-railway
+    needs: wait-for-deployment
     
     steps:
       - name: Install dependencies
@@ -78,18 +60,18 @@ jobs:
           echo "Checking Railway deployment health..."
           
           success=false
-          for i in {1..12}; do
+          for i in {1..15}; do
             if curl -f -s "${{ env.RAILWAY_URL }}/swagger/index.html" > /dev/null; then
               echo "SUCCESS: API is responding (attempt $i)"
               success=true
               break
             fi
-            echo "Waiting for API... (attempt $i/12)"
+            echo "Waiting for API... (attempt $i/15)"
             sleep 10
           done
           
           if [ "$success" = false ]; then
-            echo "FAILED: Health check failed - API not responding after 2 minutes"
+            echo "FAILED: Health check failed - API not responding after 2.5 minutes"
             exit 1
           fi
 
@@ -97,7 +79,6 @@ jobs:
         run: |
           echo "Verifying Swagger endpoints..."
           
-          # Check Swagger UI
           if curl -f -s "${{ env.RAILWAY_URL }}/swagger/index.html" > /dev/null; then
             echo "SUCCESS: Swagger UI is accessible"
           else
@@ -105,7 +86,6 @@ jobs:
             exit 1
           fi
           
-          # Check and validate Swagger JSON
           if curl -f -s "${{ env.RAILWAY_URL }}/swagger/v1/swagger.json" | jq . > /dev/null 2>&1; then
             echo "SUCCESS: Swagger JSON is valid"
           else
@@ -159,7 +139,7 @@ jobs:
           path: '**/*.trx'
           reporter: dotnet-trx
 
-  # Job 5: Smoke Tests (basic endpoint tests)
+  # Job 5: Smoke Tests
   smoke-tests:
     runs-on: ubuntu-latest
     name: Smoke Tests
@@ -170,18 +150,12 @@ jobs:
         run: |
           echo "Running smoke tests on Railway API..."
           
-          # Test Swagger endpoints
           echo "Testing /swagger..."
           curl -f -s "${{ env.RAILWAY_URL }}/swagger/index.html" > /dev/null || exit 1
           echo "SUCCESS: Swagger UI works"
           
           curl -f -s "${{ env.RAILWAY_URL }}/swagger/v1/swagger.json" > /dev/null || exit 1
           echo "SUCCESS: Swagger JSON works"
-          
-          # Add tests for your endpoints here
-          # echo "Testing /api/characters..."
-          # curl -f -s "${{ env.RAILWAY_URL }}/api/characters" > /dev/null || exit 1
-          # echo "SUCCESS: /api/characters works"
           
           echo ""
           echo "All smoke tests passed!"
@@ -190,7 +164,7 @@ jobs:
   cd-summary:
     runs-on: ubuntu-latest
     name: CD Summary
-    needs: [check-ci-status, deploy-to-railway, health-check, live-integration-tests, smoke-tests]
+    needs: [check-ci-status, wait-for-deployment, health-check, live-integration-tests, smoke-tests]
     if: always()
     
     steps:
@@ -198,10 +172,10 @@ jobs:
         if: needs.smoke-tests.result == 'success'
         run: |
           echo "=================================================="
-          echo "CD Pipeline - Deployment Successful!"
+          echo "CD Pipeline - Deployment Verification Successful!"
           echo "=================================================="
           echo ""
-          echo "Deployment: SUCCESS"
+          echo "Railway Auto-Deployment: SUCCESS"
           echo "Health Check: PASSED"
           echo "Live Integration Tests: PASSED"
           echo "Smoke Tests: PASSED"
@@ -210,26 +184,23 @@ jobs:
           echo "Swagger UI: ${{ env.RAILWAY_URL }}/swagger"
           echo "OpenAPI Spec: ${{ env.RAILWAY_URL }}/swagger/v1/swagger.json"
           echo ""
-          echo "Environment: production"
           echo "Branch: ${{ github.ref_name }}"
           echo "Commit: ${{ github.sha }}"
 
       - name: Deployment Failure
         if: |
-          needs.deploy-to-railway.result == 'failure' ||
           needs.health-check.result == 'failure' ||
           needs.live-integration-tests.result == 'failure' ||
           needs.smoke-tests.result == 'failure'
         run: |
           echo "=================================================="
-          echo "CD Pipeline - Deployment Failed!"
+          echo "CD Pipeline - Deployment Verification Failed!"
           echo "=================================================="
           echo ""
           echo "Failed stages:"
-          [ "${{ needs.deploy-to-railway.result }}" == "failure" ] && echo "FAILED: Deployment to Railway"
           [ "${{ needs.health-check.result }}" == "failure" ] && echo "FAILED: Health Check"
           [ "${{ needs.live-integration-tests.result }}" == "failure" ] && echo "FAILED: Live Integration Tests"
           [ "${{ needs.smoke-tests.result }}" == "failure" ] && echo "FAILED: Smoke Tests"
           echo ""
-          echo "Check the logs above for details"
+          echo "Check Railway deployment logs for details"
           exit 1
