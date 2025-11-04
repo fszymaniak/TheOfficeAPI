@@ -94,7 +94,7 @@ public class Program
             status = "healthy", 
             timestamp = DateTime.UtcNow,
             version = "1.0.0"
-        }));
+        })).ExcludeFromDescription();;
     
         // Root endpoint
         app.MapGet("/", () => Results.Ok(new {
