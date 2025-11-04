@@ -88,20 +88,40 @@ public class Program
     private static void ConfigureBasicPipeline(WebApplication app)
     {
         Console.WriteLine("=== CONFIGURING BASIC PIPELINE ===");
-        
-        // Enable Swagger in all environments
+    
+        // Health check endpoint (simple, fast)
+        app.MapGet("/health", () => Results.Ok(new { 
+            status = "healthy", 
+            timestamp = DateTime.UtcNow,
+            version = "1.0.0"
+        }));
+    
+        // Root endpoint
+        app.MapGet("/", () => Results.Ok(new {
+            message = "The Office API is running",
+            endpoints = new {
+                swagger = "/swagger",
+                health = "/health",
+                api = "/api"
+            }
+        }));
+    
+        // Enable Swagger
         app.UseSwagger();
-        app.UseSwaggerUI();
-        
-        Console.WriteLine("Swagger enabled at /swagger");
+        app.UseSwaggerUI(c =>
+        {
+            c.SwaggerEndpoint("/swagger/v1/swagger.json", "The Office API v1");
+            c.RoutePrefix = "swagger";
+        });
+    
+        Console.WriteLine("Health endpoint: /health");
+        Console.WriteLine("Swagger UI: /swagger");
+        Console.WriteLine("Root: /");
         Console.WriteLine("==================================");
-        
-        // Railway handles HTTPS, don't redirect
-        // app.UseHttpsRedirection();
-        
+    
+        // Don't use HTTPS redirect on Railway
         app.UseRouting();
         app.UseAuthorization();
         app.MapControllers();
-        app.MapGet("/", () => "API is running. Use Level0 profile for Richardson Level 0 implementation.");
     }
 }
