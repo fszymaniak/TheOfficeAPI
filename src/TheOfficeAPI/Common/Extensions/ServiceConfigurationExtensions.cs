@@ -33,6 +33,8 @@ namespace TheOfficeAPI.Common.Extensions
                 app.UseSwaggerMiddleware();
             }
 
+            app.UseSwagger();
+            app.UseSwaggerUI();
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthorization();
