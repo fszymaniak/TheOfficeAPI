@@ -25,8 +25,31 @@ public class Program
         var environmentOptions =
             builder.Configuration.GetSection(EnvironmentOptions.SectionName).Get<EnvironmentOptions>();
 
-        // Configure URL consistently
-        builder.WebHost.UseUrls(serverOptions?.DefaultUrl ?? "http://localhost:5000");
+        // RAILWAY FIX: ALWAYS use Railway's PORT environment variable and bind to 0.0.0.0
+        // This MUST come AFTER builder creation but BEFORE any other WebHost configuration
+        var port = Environment.GetEnvironmentVariable("PORT");
+        string url;
+        
+        if (port != null)
+        {
+            // Railway or production environment
+            url = $"http://0.0.0.0:{port}";
+            Console.WriteLine($"=== RAILWAY/PRODUCTION MODE ===");
+            Console.WriteLine($"PORT from environment: {port}");
+            Console.WriteLine($"Binding to: {url}");
+            Console.WriteLine($"================================");
+        }
+        else
+        {
+            // Local development
+            url = serverOptions?.DefaultUrl ?? "http://localhost:5000";
+            Console.WriteLine($"=== LOCAL DEVELOPMENT MODE ===");
+            Console.WriteLine($"Using config URL: {url}");
+            Console.WriteLine($"================================");
+        }
+
+        // Clear any existing URLs and set ours
+        builder.WebHost.UseUrls(url);
 
         var maturityLevel = DetermineMaturityLevel(environmentOptions?.MaturityLevelVariable ?? "MATURITY_LEVEL");
         var isLevel0 = maturityLevel == MaturityLevel.Level0;
@@ -35,7 +58,6 @@ public class Program
         {
             Console.WriteLine("Starting with Richardson Maturity Level 0 configuration...");
             builder.Services.ConfigureServices(maturityLevel);
-            // Add Swagger services
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
         }
@@ -43,7 +65,6 @@ public class Program
         {
             Console.WriteLine("Starting with basic configuration...");
             builder.Services.AddControllers();
-            // Add Swagger services for basic configuration too
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
         }
@@ -70,6 +91,10 @@ public class Program
 
     private static void ConfigureBasicPipeline(WebApplication app)
     {
+        // Enable Swagger in all environments
+        app.UseSwagger();
+        app.UseSwaggerUI();
+        
         app.UseHttpsRedirection();
         app.UseRouting();
         app.UseAuthorization();
