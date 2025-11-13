@@ -134,7 +134,19 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          dotnet sonarscanner begin /k:"fszymaniak_TheOfficeAPI" /o:"fszymaniak" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
+          dotnet sonarscanner begin \
+            /k:"fszymaniak_TheOfficeAPI" \
+            /o:"fszymaniak" \
+            /d:sonar.token="${{ secrets.SONAR_TOKEN }}" \
+            /d:sonar.host.url="https://sonarcloud.io" \
+            /d:sonar.projectName="The Office API" \
+            /d:sonar.projectVersion="1.0" \
+            /d:sonar.sources="src" \
+            /d:sonar.tests="tests" \
+            /d:sonar.exclusions="**/bin/**,**/obj/**,**/wwwroot/**,**/*.Designer.cs" \
+            /d:sonar.test.exclusions="**/bin/**,**/obj/**" \
+            /d:sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml" \
+            /d:sonar.cs.vstest.reportsPaths="**/*.trx"
           dotnet build TheOfficeAPI.sln --configuration ${{ env.BUILD_CONFIGURATION }} --no-restore
           dotnet sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
         continue-on-error: true
