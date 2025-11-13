@@ -4,8 +4,14 @@ using TheOfficeAPI.Configuration;
 
 namespace TheOfficeAPI;
 
-public static class Program
+public class Program
 {
+    // Protected constructor to satisfy S1118 (utility class should not have public constructor)
+    // while keeping the class non-static for WebApplicationFactory<Program> compatibility
+    protected Program()
+    {
+    }
+
     public static void Main(string[] args)
     {
         CreateWebApplication(args).Run();
