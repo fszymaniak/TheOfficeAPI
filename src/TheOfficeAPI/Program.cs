@@ -62,7 +62,25 @@ public class Program
             Console.WriteLine("Starting with basic configuration...");
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+                {
+                    Title = "The Office API",
+                    Version = "v1"
+                });
+
+                // Include XML comments if available
+                var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = System.IO.Path.Combine(AppContext.BaseDirectory, xmlFile);
+                if (System.IO.File.Exists(xmlPath))
+                {
+                    c.IncludeXmlComments(xmlPath);
+                }
+            });
+
+            // Register TheOfficeService for Level0 controllers
+            builder.Services.AddSingleton<TheOfficeAPI.Level0.Services.TheOfficeService>();
         }
 
         var app = builder.Build();
