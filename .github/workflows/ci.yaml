@@ -138,41 +138,42 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_HEAD_REF: ${{ github.head_ref }}
+          PR_BASE_REF: ${{ github.base_ref }}
+          BRANCH_NAME: ${{ github.ref_name }}
+          EVENT_NAME: ${{ github.event_name }}
         run: |
           # Build SonarScanner command with PR-specific parameters
           SONAR_PARAMS="/k:\"fszymaniak_TheOfficeAPI\" \
             /o:\"fszymaniak\" \
             /n:\"The Office API\" \
             /v:\"1.0\" \
-            /d:sonar.token=\"${{ secrets.SONAR_TOKEN }}\" \
-            /d:sonar.host.url=\"https://sonarcloud.io\" \
-            /d:sonar.sources=\"src\" \
-            /d:sonar.tests=\"tests\" \
-            /d:sonar.exclusions=\"**/bin/**,**/obj/**,**/wwwroot/**,**/*.Designer.cs\" \
-            /d:sonar.test.exclusions=\"**/bin/**,**/obj/**\" \
-            /d:sonar.cs.opencover.reportsPaths=\"**/coverage.opencover.xml\" \
-            /d:sonar.cs.vstest.reportsPaths=\"**/*.trx\""
+            /d:sonar.token=\"${SONAR_TOKEN}\" \
+            /d:sonar.host.url=\"https://sonarcloud.io\""
 
           # Add PR-specific parameters for pull requests
-          if [ "${{ github.event_name }}" == "pull_request" ]; then
+          if [ "$EVENT_NAME" == "pull_request" ]; then
             SONAR_PARAMS="$SONAR_PARAMS \
-              /d:sonar.pullrequest.key=\"${{ github.event.pull_request.number }}\" \
-              /d:sonar.pullrequest.branch=\"${{ github.head_ref }}\" \
-              /d:sonar.pullrequest.base=\"${{ github.base_ref }}\""
-            echo "Running SonarCloud analysis for PR #${{ github.event.pull_request.number }}"
+              /d:sonar.pullrequest.key=\"${PR_NUMBER}\" \
+              /d:sonar.pullrequest.branch=\"${PR_HEAD_REF}\" \
+              /d:sonar.pullrequest.base=\"${PR_BASE_REF}\""
+            echo "Running SonarCloud analysis for PR #${PR_NUMBER}"
           else
-            SONAR_PARAMS="$SONAR_PARAMS /d:sonar.branch.name=\"${{ github.ref_name }}\""
-            echo "Running SonarCloud analysis for branch ${{ github.ref_name }}"
+            SONAR_PARAMS="$SONAR_PARAMS /d:sonar.branch.name=\"${BRANCH_NAME}\""
+            echo "Running SonarCloud analysis for branch ${BRANCH_NAME}"
           fi
 
           # Run analysis
           eval dotnet sonarscanner begin $SONAR_PARAMS
           dotnet build TheOfficeAPI.sln --configuration ${{ env.BUILD_CONFIGURATION }} --no-restore
-          dotnet sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+          dotnet sonarscanner end /d:sonar.token="${SONAR_TOKEN}"
 
       - name: SonarCloud Quality Gate check
         uses: sonarsource/sonarqube-quality-gate-action@master
         timeout-minutes: 5
+        with:
+          scanMetadataReportFile: .sonarqube/out/.sonar/report-task.txt
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         continue-on-error: true
