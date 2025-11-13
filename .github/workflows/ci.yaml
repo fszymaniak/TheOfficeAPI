@@ -89,10 +89,12 @@ jobs:
     runs-on: ubuntu-latest
     name: Code Quality Checks
     needs: build-and-unit-tests
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for better SonarCloud analysis
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
@@ -115,6 +117,26 @@ jobs:
           else
             echo "SUCCESS: No vulnerable packages found"
           fi
+        continue-on-error: true
+
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+
+      - name: Install SonarCloud scanner
+        run: dotnet tool install --global dotnet-sonarscanner
+
+      - name: Build and analyze with SonarCloud
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          dotnet sonarscanner begin /k:"fszymaniak_TheOfficeAPI" /o:"fszymaniak" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
+          dotnet build TheOfficeAPI.sln --configuration ${{ env.BUILD_CONFIGURATION }} --no-restore
+          dotnet sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
         continue-on-error: true
 
   # Job 4: CI Summary
