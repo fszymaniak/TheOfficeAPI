@@ -35,7 +35,13 @@ namespace TheOfficeAPI.Common.Extensions
 
             app.UseSwagger();
             app.UseSwaggerUI();
-            app.UseHttpsRedirection();
+
+            // Don't use HTTPS redirect on Railway/production
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseHttpsRedirection();
+            }
+
             app.UseRouting();
             app.UseAuthorization();
             app.MapControllers();
