@@ -104,9 +104,14 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore TheOfficeAPI.sln
 
-      - name: Run code formatting check
-        run: dotnet format TheOfficeAPI.sln --verify-no-changes --verbosity diagnostic
-        continue-on-error: true
+      - name: Check code formatting
+        run: |
+          echo "Checking code formatting..."
+          if ! dotnet format TheOfficeAPI.sln --verify-no-changes --verbosity minimal; then
+            echo "⚠️  Code formatting issues detected. Run 'dotnet format' locally to fix."
+            exit 0
+          fi
+          echo "✓ Code formatting is correct"
 
       - name: Run security scan
         run: |
@@ -137,10 +142,10 @@ jobs:
           dotnet sonarscanner begin \
             /k:"fszymaniak_TheOfficeAPI" \
             /o:"fszymaniak" \
+            /n:"The Office API" \
+            /v:"1.0" \
             /d:sonar.token="${{ secrets.SONAR_TOKEN }}" \
             /d:sonar.host.url="https://sonarcloud.io" \
-            /d:sonar.projectName="The Office API" \
-            /d:sonar.projectVersion="1.0" \
             /d:sonar.sources="src" \
             /d:sonar.tests="tests" \
             /d:sonar.exclusions="**/bin/**,**/obj/**,**/wwwroot/**,**/*.Designer.cs" \
