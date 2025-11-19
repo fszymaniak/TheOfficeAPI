@@ -48,7 +48,7 @@ public class Program
         builder.WebHost.UseUrls(url);
 
         var maturityLevel = DetermineMaturityLevel(environmentOptions?.MaturityLevelVariable ?? "MATURITY_LEVEL");
-        var hasMaturityLevel = maturityLevel == MaturityLevel.Level0 || maturityLevel == MaturityLevel.Level1;
+        var hasMaturityLevel = maturityLevel == MaturityLevel.Level0 || maturityLevel == MaturityLevel.Level1 || maturityLevel == MaturityLevel.Level2;
 
         if (hasMaturityLevel)
         {
