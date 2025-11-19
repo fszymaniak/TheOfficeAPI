@@ -7,6 +7,10 @@ COPY *.sln ./
 COPY src/TheOfficeAPI/*.csproj ./src/TheOfficeAPI/
 COPY tests/TheOfficeAPI.Level0.Tests.Unit/*.csproj ./tests/TheOfficeAPI.Level0.Tests.Unit/
 COPY tests/TheOfficeAPI.Level0.Tests.Integration/*.csproj ./tests/TheOfficeAPI.Level0.Tests.Integration/
+COPY tests/TheOfficeAPI.Level1.Tests.Unit/*.csproj ./tests/TheOfficeAPI.Level1.Tests.Unit/
+COPY tests/TheOfficeAPI.Level1.Tests.Integration/*.csproj ./tests/TheOfficeAPI.Level1.Tests.Integration/
+COPY tests/TheOfficeAPI.Level2.Tests.Unit/*.csproj ./tests/TheOfficeAPI.Level2.Tests.Unit/
+COPY tests/TheOfficeAPI.Level2.Tests.Integration/*.csproj ./tests/TheOfficeAPI.Level2.Tests.Integration/
 
 # Restore dependencies
 RUN dotnet restore TheOfficeAPI.sln
