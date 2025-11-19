@@ -15,6 +15,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheOfficeAPI.Level2.Tests.U
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheOfficeAPI.Level2.Tests.Integration", "tests\TheOfficeAPI.Level2.Tests.Integration\TheOfficeAPI.Level2.Tests.Integration.csproj", "{F4GB1A24-4567-8901-2345-E473GF59GF1E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheOfficeAPI.Level3.Tests.Unit", "tests\TheOfficeAPI.Level3.Tests.Unit\TheOfficeAPI.Level3.Tests.Unit.csproj", "{G5HC2B35-5678-9012-3456-F584HG60HG2F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheOfficeAPI.Level3.Tests.Integration", "tests\TheOfficeAPI.Level3.Tests.Integration\TheOfficeAPI.Level3.Tests.Integration.csproj", "{H6ID3C46-6789-0123-4567-G695IH71IH3G}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,5 +53,13 @@ Global
 		{F4GB1A24-4567-8901-2345-E473GF59GF1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F4GB1A24-4567-8901-2345-E473GF59GF1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F4GB1A24-4567-8901-2345-E473GF59GF1E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{G5HC2B35-5678-9012-3456-F584HG60HG2F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{G5HC2B35-5678-9012-3456-F584HG60HG2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{G5HC2B35-5678-9012-3456-F584HG60HG2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{G5HC2B35-5678-9012-3456-F584HG60HG2F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{H6ID3C46-6789-0123-4567-G695IH71IH3G}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{H6ID3C46-6789-0123-4567-G695IH71IH3G}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{H6ID3C46-6789-0123-4567-G695IH71IH3G}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{H6ID3C46-6789-0123-4567-G695IH71IH3G}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
