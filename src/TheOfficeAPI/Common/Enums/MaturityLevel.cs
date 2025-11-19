@@ -2,5 +2,6 @@
 
 public enum MaturityLevel
 {
-    Level0
+    Level0,
+    Level1
 }

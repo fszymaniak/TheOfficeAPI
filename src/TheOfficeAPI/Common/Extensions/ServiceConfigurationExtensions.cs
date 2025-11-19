@@ -1,5 +1,6 @@
 using TheOfficeAPI.Common.Enums;
 using TheOfficeAPI.Level0.Extensions;
+using TheOfficeAPI.Level1.Extensions;
 
 namespace TheOfficeAPI.Common.Extensions
 {
@@ -14,8 +15,13 @@ namespace TheOfficeAPI.Common.Extensions
             // Add Swagger based on maturity level
             if (maturityLevel == MaturityLevel.Level0)
             {
-                services.AddSwaggerServices();
+                TheOfficeAPI.Level0.Extensions.SwaggerConfiguration.AddSwaggerServices(services);
                 services.AddLevel0Services();
+            }
+            else if (maturityLevel == MaturityLevel.Level1)
+            {
+                TheOfficeAPI.Level1.Extensions.SwaggerConfiguration.AddSwaggerServices(services);
+                services.AddLevel1Services();
             }
         }
 
@@ -30,7 +36,11 @@ namespace TheOfficeAPI.Common.Extensions
             // Use Swagger based on maturity level
             if (maturityLevel == MaturityLevel.Level0)
             {
-                app.UseSwaggerMiddleware();
+                TheOfficeAPI.Level0.Extensions.SwaggerConfiguration.UseSwaggerMiddleware(app);
+            }
+            else if (maturityLevel == MaturityLevel.Level1)
+            {
+                TheOfficeAPI.Level1.Extensions.SwaggerConfiguration.UseSwaggerMiddleware(app);
             }
 
             app.UseSwagger();

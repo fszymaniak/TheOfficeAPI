@@ -32,7 +32,9 @@ jobs:
         run: dotnet build TheOfficeAPI.sln --configuration ${{ env.BUILD_CONFIGURATION }} --no-restore
 
       - name: Run unit tests
-        run: dotnet test tests/TheOfficeAPI.Level0.Tests.Unit/TheOfficeAPI.Level0.Tests.Unit.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --verbosity normal --logger trx --collect:"XPlat Code Coverage"
+        run: |
+          dotnet test tests/TheOfficeAPI.Level0.Tests.Unit/TheOfficeAPI.Level0.Tests.Unit.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --verbosity normal --logger trx --collect:"XPlat Code Coverage"
+          dotnet test tests/TheOfficeAPI.Level1.Tests.Unit/TheOfficeAPI.Level1.Tests.Unit.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --verbosity normal --logger trx --collect:"XPlat Code Coverage"
 
       - name: Publish unit test results
         uses: dorny/test-reporter@v1
@@ -72,7 +74,9 @@ jobs:
         run: dotnet build TheOfficeAPI.sln --configuration ${{ env.BUILD_CONFIGURATION }} --no-restore
 
       - name: Run mocked integration tests
-        run: dotnet test tests/TheOfficeAPI.Level0.Tests.Integration/TheOfficeAPI.Level0.Tests.Integration.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --verbosity normal --logger trx --filter "Category=Mocked"
+        run: |
+          dotnet test tests/TheOfficeAPI.Level0.Tests.Integration/TheOfficeAPI.Level0.Tests.Integration.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --verbosity normal --logger trx --filter "Category=Mocked"
+          dotnet test tests/TheOfficeAPI.Level1.Tests.Integration/TheOfficeAPI.Level1.Tests.Integration.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --verbosity normal --logger trx --filter "Category=Mocked"
         env:
           ASPNETCORE_ENVIRONMENT: Testing
 

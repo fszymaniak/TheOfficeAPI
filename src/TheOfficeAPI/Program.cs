@@ -48,11 +48,11 @@ public class Program
         builder.WebHost.UseUrls(url);
 
         var maturityLevel = DetermineMaturityLevel(environmentOptions?.MaturityLevelVariable ?? "MATURITY_LEVEL");
-        var isLevel0 = maturityLevel == MaturityLevel.Level0;
+        var hasMaturityLevel = maturityLevel == MaturityLevel.Level0 || maturityLevel == MaturityLevel.Level1;
 
-        if (isLevel0)
+        if (hasMaturityLevel)
         {
-            Console.WriteLine("Starting with Richardson Maturity Level 0 configuration...");
+            Console.WriteLine($"Starting with Richardson Maturity {maturityLevel} configuration...");
             builder.Services.ConfigureServices(maturityLevel);
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -85,7 +85,7 @@ public class Program
 
         var app = builder.Build();
 
-        if (isLevel0)
+        if (hasMaturityLevel)
         {
             app.ConfigurePipeline(maturityLevel);
         }
