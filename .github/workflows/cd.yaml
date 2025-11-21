@@ -78,21 +78,29 @@ jobs:
       - name: Verify Swagger endpoints
         run: |
           echo "Verifying Swagger endpoints..."
-          
+
           if curl -f -s "${{ env.RAILWAY_URL }}/swagger/index.html" > /dev/null; then
             echo "SUCCESS: Swagger UI is accessible"
           else
             echo "FAILED: Swagger UI is not accessible"
             exit 1
           fi
-          
-          if curl -f -s "${{ env.RAILWAY_URL }}/swagger/v1/swagger.json" | jq . > /dev/null 2>&1; then
-            echo "SUCCESS: Swagger JSON is valid"
-          else
-            echo "FAILED: Swagger JSON is invalid or not accessible"
+
+          # Check for any available Swagger version (v0, v1, or v2)
+          swagger_found=false
+          for version in v0 v1 v2; do
+            if curl -f -s "${{ env.RAILWAY_URL }}/swagger/$version/swagger.json" | jq . > /dev/null 2>&1; then
+              echo "SUCCESS: Swagger JSON $version is valid"
+              swagger_found=true
+              break
+            fi
+          done
+
+          if [ "$swagger_found" = false ]; then
+            echo "FAILED: No valid Swagger JSON found (tried v0, v1, v2)"
             exit 1
           fi
-          
+
           echo ""
           echo "Health check passed!"
 
@@ -149,14 +157,26 @@ jobs:
       - name: Test API endpoints
         run: |
           echo "Running smoke tests on Railway API..."
-          
+
           echo "Testing /swagger..."
           curl -f -s "${{ env.RAILWAY_URL }}/swagger/index.html" > /dev/null || exit 1
           echo "SUCCESS: Swagger UI works"
-          
-          curl -f -s "${{ env.RAILWAY_URL }}/swagger/v1/swagger.json" > /dev/null || exit 1
-          echo "SUCCESS: Swagger JSON works"
-          
+
+          # Check for any available Swagger version (v0, v1, or v2)
+          swagger_found=false
+          for version in v0 v1 v2; do
+            if curl -f -s "${{ env.RAILWAY_URL }}/swagger/$version/swagger.json" > /dev/null 2>&1; then
+              echo "SUCCESS: Swagger JSON $version works"
+              swagger_found=true
+              break
+            fi
+          done
+
+          if [ "$swagger_found" = false ]; then
+            echo "FAILED: No valid Swagger JSON found (tried v0, v1, v2)"
+            exit 1
+          fi
+
           echo ""
           echo "All smoke tests passed!"
 
@@ -182,7 +202,7 @@ jobs:
           echo ""
           echo "Live API: ${{ env.RAILWAY_URL }}/swagger"
           echo "Swagger UI: ${{ env.RAILWAY_URL }}/swagger"
-          echo "OpenAPI Spec: ${{ env.RAILWAY_URL }}/swagger/v1/swagger.json"
+          echo "OpenAPI Spec: ${{ env.RAILWAY_URL }}/swagger/v{0|1|2}/swagger.json (depends on MATURITY_LEVEL)"
           echo ""
           echo "Branch: ${{ github.ref_name }}"
           echo "Commit: ${{ github.sha }}"
