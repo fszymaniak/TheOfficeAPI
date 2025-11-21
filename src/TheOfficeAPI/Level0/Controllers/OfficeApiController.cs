@@ -8,6 +8,7 @@ namespace TheOfficeAPI.Level0.Controllers;
 [Route("api")]
 public class Level0Controller : ControllerBase
 {
+    private const string InvalidRequestMessage = "Invalid request";
     private readonly TheOfficeService _theOfficeService;
 
     public Level0Controller(TheOfficeService theOfficeService)
@@ -116,6 +117,7 @@ public class Level0Controller : ControllerBase
     /// </code>
     /// </example>
     [HttpPost("theOffice")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public IActionResult HandleRequest([FromBody] ApiRequest request)
     {
         // Level 0: Always return 200 OK, put actual status in response body
@@ -165,7 +167,7 @@ public class Level0Controller : ControllerBase
             {
                 Success = false,
                 Error = "Season parameter is required",
-                Message = "Invalid request"
+                Message = InvalidRequestMessage
             });
         
         return null;
@@ -178,7 +180,7 @@ public class Level0Controller : ControllerBase
             {
                 Success = false,
                 Error = "Both season and episode parameters are required",
-                Message = "Invalid request"
+                Message = InvalidRequestMessage
             });
         
         return null;
@@ -193,7 +195,7 @@ public class Level0Controller : ControllerBase
             {
                 Success = false,
                 Error = $"Season parameter is outside of the scope. Please select the season number between 1 and {seasonsCount} (inclusive).",
-                Message = "Invalid request"
+                Message = InvalidRequestMessage
             });
         }
         return null;
@@ -208,7 +210,7 @@ public class Level0Controller : ControllerBase
             {
                 Success = false,
                 Error = $"Episode parameter is outside of the scope. Please select the episode number between 1 and {episodesCountFromSpecificSeason} (inclusive).",
-                Message = "Invalid request"
+                Message = InvalidRequestMessage
             });
         }
         return null;

@@ -1,10 +1,13 @@
+using System.Collections.ObjectModel;
 using TheOfficeAPI.Common.Models;
+
+namespace TheOfficeAPI.Common.Data;
 
 public static class Season3Episodes
 {
     private const int SeasonNumber = 3;
-    
-    public static readonly List<Episode> Episodes = new List<Episode>
+
+    public static readonly ReadOnlyCollection<Episode> Episodes = new(new List<Episode>
     {
         new Episode { Season = SeasonNumber, EpisodeNumber = 1, Title = "Gay Witch Hunt", ReleasedDate = "2006-09-21" },
         new Episode { Season = SeasonNumber, EpisodeNumber = 2, Title = "The Convention", ReleasedDate = "2006-09-28" },
@@ -29,5 +32,5 @@ public static class Season3Episodes
         new Episode { Season = SeasonNumber, EpisodeNumber = 21, Title = "Women's Appreciation", ReleasedDate = "2007-05-03" },
         new Episode { Season = SeasonNumber, EpisodeNumber = 22, Title = "Beach Games", ReleasedDate = "2007-05-10" },
         new Episode { Season = SeasonNumber, EpisodeNumber = 23, Title = "The Job", ReleasedDate = "2007-05-17" }
-    };
+    });
 }
