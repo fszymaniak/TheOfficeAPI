@@ -9,10 +9,10 @@ namespace TheOfficeAPI.Level0.Extensions
         {
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo 
-                { 
-                    Title = "The Office API - Level 0", 
-                    Version = "v1",
+                c.SwaggerDoc("v0", new OpenApiInfo
+                {
+                    Title = "The Office API - Level 0",
+                    Version = "v0",
                     Description = "Richardson Maturity Model Level 0 implementation"
                 });
                 
@@ -31,7 +31,7 @@ namespace TheOfficeAPI.Level0.Extensions
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "The Office API V1");
+                c.SwaggerEndpoint("/swagger/v0/swagger.json", "The Office API V0");
                 c.RoutePrefix = "swagger"; // Set Swagger UI at /swagger
             });
         }
