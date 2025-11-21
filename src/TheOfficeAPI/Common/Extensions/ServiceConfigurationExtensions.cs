@@ -53,9 +53,6 @@ namespace TheOfficeAPI.Common.Extensions
                 TheOfficeAPI.Level2.Extensions.SwaggerConfiguration.UseSwaggerMiddleware(app);
             }
 
-            app.UseSwagger();
-            app.UseSwaggerUI();
-
             // Don't use HTTPS redirect on Railway/production
             if (app.Environment.IsDevelopment())
             {
