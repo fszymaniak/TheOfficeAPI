@@ -34,6 +34,7 @@ COPY --from=build /app/out .
 # Set environment
 ENV ASPNETCORE_ENVIRONMENT=Production
 ENV PORT=8080
+ENV MATURITY_LEVEL=Level0
 
 # Expose port 8080
 EXPOSE 8080
