@@ -18,10 +18,13 @@ namespace TheOfficeAPI.Level2.Extensions
 
                 c.EnableAnnotations(); // This is crucial for SwaggerSchema to work
 
-                // Include XML comments
+                // Include XML comments if available
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                c.IncludeXmlComments(xmlPath);
+                if (File.Exists(xmlPath))
+                {
+                    c.IncludeXmlComments(xmlPath);
+                }
             });
         }
 
