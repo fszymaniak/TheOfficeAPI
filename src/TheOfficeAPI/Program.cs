@@ -55,7 +55,6 @@ public class Program
             Console.WriteLine($"Starting with Richardson Maturity {maturityLevel} configuration...");
             builder.Services.ConfigureServices(maturityLevel);
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
         }
         else
         {
