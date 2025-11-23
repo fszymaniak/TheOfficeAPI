@@ -15,9 +15,19 @@ namespace TheOfficeAPI.Level0.Extensions
                     Version = "v0",
                     Description = "Richardson Maturity Model Level 0 implementation"
                 });
-                
+
                 c.EnableAnnotations(); // This is crucial for SwaggerSchema to work
-                
+
+                // Only include Level 0 controllers in Swagger documentation
+                c.DocInclusionPredicate((docName, apiDesc) =>
+                {
+                    var controllerActionDescriptor = apiDesc.ActionDescriptor as Microsoft.AspNetCore.Mvc.Controllers.ControllerActionDescriptor;
+                    if (controllerActionDescriptor == null) return false;
+
+                    var controllerNamespace = controllerActionDescriptor.ControllerTypeInfo.Namespace ?? string.Empty;
+                    return controllerNamespace.StartsWith("TheOfficeAPI.Level0");
+                });
+
                 // Include XML comments
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);

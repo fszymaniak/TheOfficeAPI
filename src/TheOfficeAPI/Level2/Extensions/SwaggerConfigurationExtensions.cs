@@ -18,6 +18,16 @@ namespace TheOfficeAPI.Level2.Extensions
 
                 c.EnableAnnotations(); // This is crucial for SwaggerSchema to work
 
+                // Only include Level 2 controllers in Swagger documentation
+                c.DocInclusionPredicate((docName, apiDesc) =>
+                {
+                    var controllerActionDescriptor = apiDesc.ActionDescriptor as Microsoft.AspNetCore.Mvc.Controllers.ControllerActionDescriptor;
+                    if (controllerActionDescriptor == null) return false;
+
+                    var controllerNamespace = controllerActionDescriptor.ControllerTypeInfo.Namespace ?? string.Empty;
+                    return controllerNamespace.StartsWith("TheOfficeAPI.Level2");
+                });
+
                 // Include XML comments
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
