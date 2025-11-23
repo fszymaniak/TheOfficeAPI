@@ -3,7 +3,7 @@
 namespace TheOfficeAPI.Level0.Controllers;
 
 [ApiController]
-[Route("health")]
+[Route("api/v0/health")]
 public class HealthController : ControllerBase
 {
     [HttpGet]

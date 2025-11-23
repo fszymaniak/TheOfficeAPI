@@ -5,7 +5,7 @@ using TheOfficeAPI.Level0.Services;
 namespace TheOfficeAPI.Level0.Controllers;
 
 [ApiController]
-[Route("api")]
+[Route("api/v0")]
 public class Level0Controller : ControllerBase
 {
     private readonly TheOfficeService _theOfficeService;
