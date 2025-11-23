@@ -5,7 +5,7 @@ using TheOfficeAPI.Level2.Services;
 namespace TheOfficeAPI.Level2.Controllers;
 
 [ApiController]
-[Route("api/seasons/{seasonNumber}/episodes")]
+[Route("api/v2/seasons/{seasonNumber}/episodes")]
 public class EpisodesController : ControllerBase
 {
     private readonly TheOfficeService _theOfficeService;

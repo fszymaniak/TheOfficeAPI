@@ -13,21 +13,23 @@ namespace TheOfficeAPI.Common.Extensions
             services.AddControllers();
             services.AddEndpointsApiExplorer();
 
-            // Add Swagger based on maturity level
+            // Register services for ALL levels to support all API versions in Swagger
+            services.AddLevel0Services();
+            services.AddLevel1Services();
+            services.AddLevel2Services();
+
+            // Add Swagger based on maturity level (all configurations now register all versions)
             if (maturityLevel == MaturityLevel.Level0)
             {
                 TheOfficeAPI.Level0.Extensions.SwaggerConfiguration.AddSwaggerServices(services);
-                services.AddLevel0Services();
             }
             else if (maturityLevel == MaturityLevel.Level1)
             {
                 TheOfficeAPI.Level1.Extensions.SwaggerConfiguration.AddSwaggerServices(services);
-                services.AddLevel1Services();
             }
             else if (maturityLevel == MaturityLevel.Level2)
             {
                 TheOfficeAPI.Level2.Extensions.SwaggerConfiguration.AddSwaggerServices(services);
-                services.AddLevel2Services();
             }
         }
 
