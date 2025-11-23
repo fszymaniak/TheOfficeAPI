@@ -2,6 +2,7 @@ using TheOfficeAPI.Common.Enums;
 using TheOfficeAPI.Level0.Extensions;
 using TheOfficeAPI.Level1.Extensions;
 using TheOfficeAPI.Level2.Extensions;
+using TheOfficeAPI.Level3.Extensions;
 
 namespace TheOfficeAPI.Common.Extensions
 {
@@ -17,6 +18,7 @@ namespace TheOfficeAPI.Common.Extensions
             services.AddLevel0Services();
             services.AddLevel1Services();
             services.AddLevel2Services();
+            services.AddLevel3Services();
 
             // Add Swagger based on maturity level (all configurations now register all versions)
             if (maturityLevel == MaturityLevel.Level0)
@@ -30,6 +32,10 @@ namespace TheOfficeAPI.Common.Extensions
             else if (maturityLevel == MaturityLevel.Level2)
             {
                 TheOfficeAPI.Level2.Extensions.SwaggerConfiguration.AddSwaggerServices(services);
+            }
+            else if (maturityLevel == MaturityLevel.Level3)
+            {
+                TheOfficeAPI.Level3.Extensions.SwaggerConfiguration.AddSwaggerServices(services);
             }
         }
 
@@ -63,6 +69,10 @@ namespace TheOfficeAPI.Common.Extensions
             else if (maturityLevel == MaturityLevel.Level2)
             {
                 TheOfficeAPI.Level2.Extensions.SwaggerConfiguration.UseSwaggerMiddleware(app);
+            }
+            else if (maturityLevel == MaturityLevel.Level3)
+            {
+                TheOfficeAPI.Level3.Extensions.SwaggerConfiguration.UseSwaggerMiddleware(app);
             }
 
             // Don't use HTTPS redirect on Railway/production
