@@ -9,6 +9,14 @@ namespace TheOfficeAPI.Level1.Extensions
         {
             services.AddSwaggerGen(c =>
             {
+                // Register all API versions
+                c.SwaggerDoc("v0", new OpenApiInfo
+                {
+                    Title = "The Office API - Level 0",
+                    Version = "v0",
+                    Description = "Richardson Maturity Model Level 0 implementation"
+                });
+
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Title = "The Office API - Level 1",
@@ -16,16 +24,30 @@ namespace TheOfficeAPI.Level1.Extensions
                     Description = "Richardson Maturity Model Level 1 implementation - Introduces resource-based URIs"
                 });
 
+                c.SwaggerDoc("v2", new OpenApiInfo
+                {
+                    Title = "The Office API - Level 2",
+                    Version = "v2",
+                    Description = "Richardson Maturity Model Level 2 implementation - Introduces HTTP verbs and proper status codes"
+                });
+
                 c.EnableAnnotations(); // This is crucial for SwaggerSchema to work
 
-                // Only include Level 1 controllers in Swagger documentation
+                // Filter controllers by namespace for each version
                 c.DocInclusionPredicate((docName, apiDesc) =>
                 {
                     var controllerActionDescriptor = apiDesc.ActionDescriptor as Microsoft.AspNetCore.Mvc.Controllers.ControllerActionDescriptor;
                     if (controllerActionDescriptor == null) return false;
 
                     var controllerNamespace = controllerActionDescriptor.ControllerTypeInfo.Namespace ?? string.Empty;
-                    return controllerNamespace.StartsWith("TheOfficeAPI.Level1");
+
+                    return docName switch
+                    {
+                        "v0" => controllerNamespace.StartsWith("TheOfficeAPI.Level0"),
+                        "v1" => controllerNamespace.StartsWith("TheOfficeAPI.Level1"),
+                        "v2" => controllerNamespace.StartsWith("TheOfficeAPI.Level2"),
+                        _ => false
+                    };
                 });
 
                 // Include XML comments
@@ -44,7 +66,10 @@ namespace TheOfficeAPI.Level1.Extensions
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "The Office API V1");
+                // Add all API versions to Swagger UI dropdown
+                c.SwaggerEndpoint("/swagger/v0/swagger.json", "The Office API V0 (Level 0)");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "The Office API V1 (Level 1)");
+                c.SwaggerEndpoint("/swagger/v2/swagger.json", "The Office API V2 (Level 2)");
                 c.RoutePrefix = "swagger"; // Set Swagger UI at /swagger
             });
         }
