@@ -31,6 +31,13 @@ namespace TheOfficeAPI.Level2.Extensions
                     Description = "Richardson Maturity Model Level 2 implementation - Introduces HTTP verbs and proper status codes"
                 });
 
+                c.SwaggerDoc("v3", new OpenApiInfo
+                {
+                    Title = "The Office API - Level 3",
+                    Version = "v3",
+                    Description = "Richardson Maturity Model Level 3 implementation - HATEOAS with hypermedia links"
+                });
+
                 c.EnableAnnotations(); // This is crucial for SwaggerSchema to work
 
                 // Filter controllers by namespace for each version
@@ -46,6 +53,7 @@ namespace TheOfficeAPI.Level2.Extensions
                         "v0" => controllerNamespace.StartsWith("TheOfficeAPI.Level0"),
                         "v1" => controllerNamespace.StartsWith("TheOfficeAPI.Level1"),
                         "v2" => controllerNamespace.StartsWith("TheOfficeAPI.Level2"),
+                        "v3" => controllerNamespace.StartsWith("TheOfficeAPI.Level3"),
                         _ => false
                     };
                 });
@@ -70,6 +78,7 @@ namespace TheOfficeAPI.Level2.Extensions
                 c.SwaggerEndpoint("/swagger/v0/swagger.json", "The Office API V0 (Level 0)");
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "The Office API V1 (Level 1)");
                 c.SwaggerEndpoint("/swagger/v2/swagger.json", "The Office API V2 (Level 2)");
+                c.SwaggerEndpoint("/swagger/v3/swagger.json", "The Office API V3 (Level 3 - HATEOAS)");
                 c.RoutePrefix = "swagger"; // Set Swagger UI at /swagger
 
                 // Ensure the API dropdown selector is visible

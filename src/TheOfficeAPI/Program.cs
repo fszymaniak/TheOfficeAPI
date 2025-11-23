@@ -48,7 +48,7 @@ public class Program
         builder.WebHost.UseUrls(url);
 
         var maturityLevel = DetermineMaturityLevel(environmentOptions?.MaturityLevelVariable ?? "MATURITY_LEVEL");
-        var hasMaturityLevel = maturityLevel == MaturityLevel.Level0 || maturityLevel == MaturityLevel.Level1 || maturityLevel == MaturityLevel.Level2;
+        var hasMaturityLevel = maturityLevel == MaturityLevel.Level0 || maturityLevel == MaturityLevel.Level1 || maturityLevel == MaturityLevel.Level2 || maturityLevel == MaturityLevel.Level3;
 
         if (hasMaturityLevel)
         {
@@ -85,6 +85,13 @@ public class Program
                     Description = "Richardson Maturity Model Level 2 implementation - Introduces HTTP verbs and proper status codes"
                 });
 
+                c.SwaggerDoc("v3", new Microsoft.OpenApi.Models.OpenApiInfo
+                {
+                    Title = "The Office API - Level 3",
+                    Version = "v3",
+                    Description = "Richardson Maturity Model Level 3 implementation - HATEOAS with hypermedia links"
+                });
+
                 // Filter controllers by namespace for each version
                 c.DocInclusionPredicate((docName, apiDesc) =>
                 {
@@ -98,6 +105,7 @@ public class Program
                         "v0" => controllerNamespace.StartsWith("TheOfficeAPI.Level0"),
                         "v1" => controllerNamespace.StartsWith("TheOfficeAPI.Level1"),
                         "v2" => controllerNamespace.StartsWith("TheOfficeAPI.Level2"),
+                        "v3" => controllerNamespace.StartsWith("TheOfficeAPI.Level3"),
                         _ => false
                     };
                 });
@@ -115,6 +123,7 @@ public class Program
             builder.Services.AddSingleton<TheOfficeAPI.Level0.Services.TheOfficeService>();
             builder.Services.AddSingleton<TheOfficeAPI.Level1.Services.TheOfficeService>();
             builder.Services.AddSingleton<TheOfficeAPI.Level2.Services.TheOfficeService>();
+            builder.Services.AddSingleton<TheOfficeAPI.Level3.Services.TheOfficeService>();
         }
 
         var app = builder.Build();
@@ -159,6 +168,7 @@ public class Program
             c.SwaggerEndpoint("/swagger/v0/swagger.json", "The Office API V0 (Level 0)");
             c.SwaggerEndpoint("/swagger/v1/swagger.json", "The Office API V1 (Level 1)");
             c.SwaggerEndpoint("/swagger/v2/swagger.json", "The Office API V2 (Level 2)");
+            c.SwaggerEndpoint("/swagger/v3/swagger.json", "The Office API V3 (Level 3 - HATEOAS)");
             c.RoutePrefix = "swagger";
 
             // Ensure the API dropdown selector is visible
