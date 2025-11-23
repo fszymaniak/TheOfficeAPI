@@ -71,6 +71,11 @@ namespace TheOfficeAPI.Level2.Extensions
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "The Office API V1 (Level 1)");
                 c.SwaggerEndpoint("/swagger/v2/swagger.json", "The Office API V2 (Level 2)");
                 c.RoutePrefix = "swagger"; // Set Swagger UI at /swagger
+
+                // Ensure the API dropdown selector is visible
+                c.DisplayRequestDuration();
+                c.EnableDeepLinking();
+                c.EnableFilter();
             });
         }
     }
