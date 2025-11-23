@@ -16,7 +16,7 @@ public class TheOfficeApiIntegrationTests : IClassFixture<WebApplicationFactory<
     private readonly WebApplicationFactory<TheOfficeAPI.Program> _factory;
     private readonly HttpClient _client;
     private readonly JsonSerializerOptions _jsonOptions;
-    private const string ApiEndpoint = "/api/theOffice";
+    private const string ApiEndpoint = "/api/v0/theOffice";
     private const string MediaType = "application/json";
 
     public TheOfficeApiIntegrationTests(WebApplicationFactory<TheOfficeAPI.Program> factory)
