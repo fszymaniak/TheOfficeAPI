@@ -15,9 +15,9 @@ public class TheOfficeApiIntegrationTests : IClassFixture<WebApplicationFactory<
     private readonly WebApplicationFactory<TheOfficeAPI.Program> _factory;
     private readonly HttpClient _client;
     private readonly JsonSerializerOptions _jsonOptions;
-    private const string SeasonsEndpoint = "/api/seasons";
-    private const string EpisodesEndpoint = "/api/seasons/{0}/episodes";
-    private const string EpisodeEndpoint = "/api/seasons/{0}/episodes/{1}";
+    private const string SeasonsEndpoint = "/api/v1/seasons";
+    private const string EpisodesEndpoint = "/api/v1/seasons/{0}/episodes";
+    private const string EpisodeEndpoint = "/api/v1/seasons/{0}/episodes/{1}";
 
     public TheOfficeApiIntegrationTests(WebApplicationFactory<TheOfficeAPI.Program> factory)
     {
