@@ -39,6 +39,16 @@ namespace TheOfficeAPI.Common.Extensions
                 app.UseDeveloperExceptionPage();
             }
 
+            // Root endpoint
+            app.MapGet("/", () => Results.Ok(new {
+                message = "The Office API is running",
+                maturityLevel = maturityLevel?.ToString() ?? "Unknown",
+                endpoints = new {
+                    swagger = "/swagger",
+                    api = "/api"
+                }
+            }));
+
             // Use Swagger based on maturity level
             if (maturityLevel == MaturityLevel.Level0)
             {
