@@ -104,7 +104,42 @@ jobs:
           echo ""
           echo "Health check passed!"
 
-  # Job 4: Live Integration Tests
+  # Job 4: End-to-End Tests
+  e2e-tests:
+    runs-on: ubuntu-latest
+    name: End-to-End Tests
+    needs: health-check
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Restore dependencies
+        run: dotnet restore TheOfficeAPI.sln
+
+      - name: Build solution
+        run: dotnet build TheOfficeAPI.sln --configuration ${{ env.BUILD_CONFIGURATION }} --no-restore
+
+      - name: Run E2E tests against deployed API
+        run: |
+          dotnet test tests/TheOfficeAPI.Tests.E2E/TheOfficeAPI.Tests.E2E.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --verbosity normal --logger trx --filter "Category=E2E"
+        env:
+          API_BASE_URL: ${{ env.RAILWAY_URL }}
+
+      - name: Publish E2E test results
+        uses: dorny/test-reporter@v1
+        if: success() || failure()
+        with:
+          name: E2E Test Results
+          path: '**/*.trx'
+          reporter: dotnet-trx
+
+  # Job 5: Live Integration Tests
   live-integration-tests:
     runs-on: ubuntu-latest
     name: Live Integration Tests
@@ -147,7 +182,7 @@ jobs:
           path: '**/*.trx'
           reporter: dotnet-trx
 
-  # Job 5: Smoke Tests
+  # Job 6: Smoke Tests
   smoke-tests:
     runs-on: ubuntu-latest
     name: Smoke Tests
@@ -180,16 +215,16 @@ jobs:
           echo ""
           echo "All smoke tests passed!"
 
-  # Job 6: CD Summary
+  # Job 7: CD Summary
   cd-summary:
     runs-on: ubuntu-latest
     name: CD Summary
-    needs: [check-ci-status, wait-for-deployment, health-check, live-integration-tests, smoke-tests]
+    needs: [check-ci-status, wait-for-deployment, health-check, e2e-tests, live-integration-tests, smoke-tests]
     if: always()
     
     steps:
       - name: Deployment Success
-        if: needs.smoke-tests.result == 'success'
+        if: needs.smoke-tests.result == 'success' && needs.e2e-tests.result == 'success'
         run: |
           echo "=================================================="
           echo "CD Pipeline - Deployment Verification Successful!"
@@ -197,6 +232,7 @@ jobs:
           echo ""
           echo "Railway Auto-Deployment: SUCCESS"
           echo "Health Check: PASSED"
+          echo "E2E Tests: PASSED"
           echo "Live Integration Tests: PASSED"
           echo "Smoke Tests: PASSED"
           echo ""
@@ -210,6 +246,7 @@ jobs:
       - name: Deployment Failure
         if: |
           needs.health-check.result == 'failure' ||
+          needs.e2e-tests.result == 'failure' ||
           needs.live-integration-tests.result == 'failure' ||
           needs.smoke-tests.result == 'failure'
         run: |
@@ -219,6 +256,7 @@ jobs:
           echo ""
           echo "Failed stages:"
           [ "${{ needs.health-check.result }}" == "failure" ] && echo "FAILED: Health Check"
+          [ "${{ needs.e2e-tests.result }}" == "failure" ] && echo "FAILED: E2E Tests"
           [ "${{ needs.live-integration-tests.result }}" == "failure" ] && echo "FAILED: Live Integration Tests"
           [ "${{ needs.smoke-tests.result }}" == "failure" ] && echo "FAILED: Smoke Tests"
           echo ""
