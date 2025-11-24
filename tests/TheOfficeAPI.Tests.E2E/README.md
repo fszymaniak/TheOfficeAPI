@@ -49,17 +49,15 @@ export API_BASE_URL=https://your-api-domain.com
 
 ### GitHub Actions Setup
 
-To run E2E tests in GitHub Actions, configure a **repository variable** (not a secret):
+E2E tests run automatically in the **CD (Continuous Deployment) pipeline** after successful deployment to Railway.
 
-1. Go to your GitHub repository
-2. Navigate to **Settings** → **Secrets and variables** → **Actions**
-3. Click the **Variables** tab
-4. Click **New repository variable**
-5. Add the variable:
-   - **Name:** `API_BASE_URL`
-   - **Value:** `https://your-deployed-api.com`
+The `API_BASE_URL` is configured in `.github/workflows/cd.yaml` as:
+```yaml
+env:
+  RAILWAY_URL: 'https://theofficeapi-production-5d8f.up.railway.app'
+```
 
-The CI/CD pipeline will automatically run E2E tests if this variable is configured.
+**No additional configuration needed** - E2E tests run automatically after each deployment to validate the deployed API.
 
 ## Running Tests Locally
 
@@ -104,37 +102,53 @@ dotnet test tests/TheOfficeAPI.Tests.E2E/TheOfficeAPI.Tests.E2E.csproj
 
 ## CI/CD Integration
 
-The E2E tests are integrated into the GitHub Actions CI pipeline:
+The E2E tests are integrated into the **CD (Continuous Deployment) pipeline**, NOT the CI pipeline.
 
-### Workflow Job: `e2e-tests`
+### Workflow Job: `e2e-tests` (in `cd.yaml`)
 
 ```yaml
 e2e-tests:
   runs-on: ubuntu-latest
   name: End-to-End Tests
-  needs: build-and-unit-tests
-  # Only run if API_BASE_URL variable is configured
-  if: vars.API_BASE_URL != ''
+  needs: health-check
+  env:
+    API_BASE_URL: ${{ env.RAILWAY_URL }}
 ```
 
 **Key Points:**
-- Runs after `build-and-unit-tests` job completes
-- Only executes if `API_BASE_URL` repository variable is set
+- Runs in the **CD pipeline** after successful deployment
+- Executes after the `health-check` job confirms API is responding
+- Tests the **newly deployed** Railway instance
 - Filters tests by `Category=E2E`
 - Publishes test results to GitHub Actions
 
 ### When E2E Tests Run
 
-E2E tests run automatically in the following scenarios:
+E2E tests run automatically after deployment in these scenarios:
 
-1. **After successful build** (if `API_BASE_URL` is configured)
-2. **On pull requests** to validate changes don't break deployed API
-3. **On pushes** to main/develop branches
-4. **Manual workflow dispatch** (if enabled)
+1. **After Railway auto-deploys** from main/develop branches
+2. **After health check passes** confirming API is accessible
+3. **Before declaring deployment successful**
 
-### Skipping E2E Tests
+### Pipeline Flow
 
-If `API_BASE_URL` is not configured, the E2E tests job will be **skipped** automatically - this won't fail your CI pipeline.
+```
+CI Pipeline (ci.yaml)
+├── Build & Unit Tests
+├── Mocked Integration Tests
+└── Code Quality
+
+CD Pipeline (cd.yaml) - Only runs on main/develop
+├── Check CI Status
+├── Wait for Railway Deployment
+├── Health Check
+├── E2E Tests ⬅️ Tests run here!
+├── Live Integration Tests
+├── Smoke Tests
+└── CD Summary
+```
+
+**Why CD not CI?** E2E tests validate the deployed environment, so they must run AFTER deployment, not before.
 
 ## Test Architecture
 
@@ -211,17 +225,18 @@ export API_BASE_URL=https://your-api.com
 - Check API version compatibility
 - Ensure deployment completed successfully
 
-### Tests pass locally but fail in CI
+### Tests pass locally but fail in CD
 
 **Possible causes:**
-1. `API_BASE_URL` variable not set in GitHub Actions
-2. Different API instance between local and CI
-3. Network/firewall restrictions
+1. Different API instance between local and Railway deployment
+2. Network/firewall restrictions in GitHub Actions runners
+3. Deployment not fully complete when tests run
 
 **Solutions:**
-- Verify `API_BASE_URL` is configured in GitHub repository variables
-- Ensure CI can access the deployed API (check network policies)
-- Review GitHub Actions logs for detailed error messages
+- Verify the Railway deployment completed successfully
+- Check Railway deployment logs for errors
+- Ensure the `RAILWAY_URL` in `cd.yaml` is correct
+- Review GitHub Actions CD logs for detailed error messages
 
 ## Best Practices
 

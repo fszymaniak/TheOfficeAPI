@@ -90,44 +90,7 @@ jobs:
           path: '**/*.trx'
           reporter: dotnet-trx
 
-  # Job 3: End-to-End Tests (runs against deployed API)
-  e2e-tests:
-    runs-on: ubuntu-latest
-    name: End-to-End Tests
-    needs: build-and-unit-tests
-    # Only run if API_BASE_URL secret is configured
-    if: vars.API_BASE_URL != ''
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: ${{ env.DOTNET_VERSION }}
-
-      - name: Restore dependencies
-        run: dotnet restore TheOfficeAPI.sln
-
-      - name: Build solution
-        run: dotnet build TheOfficeAPI.sln --configuration ${{ env.BUILD_CONFIGURATION }} --no-restore
-
-      - name: Run E2E tests
-        run: |
-          dotnet test tests/TheOfficeAPI.Tests.E2E/TheOfficeAPI.Tests.E2E.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --verbosity normal --logger trx --filter "Category=E2E"
-        env:
-          API_BASE_URL: ${{ vars.API_BASE_URL }}
-
-      - name: Publish E2E test results
-        uses: dorny/test-reporter@v1
-        if: success() || failure()
-        with:
-          name: E2E Test Results
-          path: '**/*.trx'
-          reporter: dotnet-trx
-
-  # Job 4: Code Quality Checks (optional)
+  # Job 3: Code Quality Checks (optional)
   code-quality:
     runs-on: ubuntu-latest
     name: Code Quality Checks
@@ -221,11 +184,11 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         continue-on-error: true
 
-  # Job 5: CI Summary
+  # Job 4: CI Summary
   ci-summary:
     runs-on: ubuntu-latest
     name: CI Summary
-    needs: [build-and-unit-tests, mocked-integration-tests, e2e-tests, code-quality]
+    needs: [build-and-unit-tests, mocked-integration-tests, code-quality]
     if: always()
     
     steps:
@@ -239,11 +202,11 @@ jobs:
           echo "Build: SUCCESS"
           echo "Unit Tests: PASSED"
           echo "Mocked Integration Tests: PASSED"
-          echo "E2E Tests: ${{ needs.e2e-tests.result }}"
           echo "Code Quality: ${{ needs.code-quality.result }}"
           echo ""
           if [ "${{ github.event_name }}" == "push" ] && [ "${{ github.ref }}" == "refs/heads/main" -o "${{ github.ref }}" == "refs/heads/develop" ]; then
             echo "Ready for deployment - CD pipeline will start automatically"
+            echo "E2E tests will run after deployment completes"
           fi
 
       - name: CI Failure
