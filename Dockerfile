@@ -11,6 +11,8 @@ COPY tests/TheOfficeAPI.Level1.Tests.Unit/*.csproj ./tests/TheOfficeAPI.Level1.T
 COPY tests/TheOfficeAPI.Level1.Tests.Integration/*.csproj ./tests/TheOfficeAPI.Level1.Tests.Integration/
 COPY tests/TheOfficeAPI.Level2.Tests.Unit/*.csproj ./tests/TheOfficeAPI.Level2.Tests.Unit/
 COPY tests/TheOfficeAPI.Level2.Tests.Integration/*.csproj ./tests/TheOfficeAPI.Level2.Tests.Integration/
+COPY tests/TheOfficeAPI.Level3.Tests.Unit/*.csproj ./tests/TheOfficeAPI.Level3.Tests.Unit/
+COPY tests/TheOfficeAPI.Level3.Tests.Integration/*.csproj ./tests/TheOfficeAPI.Level3.Tests.Integration/
 COPY tests/TheOfficeAPI.Tests.E2E/*.csproj ./tests/TheOfficeAPI.Tests.E2E/
 
 # Restore dependencies
