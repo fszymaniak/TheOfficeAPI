@@ -1,3 +1,5 @@
+using Serilog;
+using Serilog.Events;
 using TheOfficeAPI.Common.Enums;
 using TheOfficeAPI.Common.Extensions;
 using TheOfficeAPI.Common.Middleware;
@@ -9,12 +11,46 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        CreateWebApplication(args).Run();
+        // Configure Serilog before building the application
+        Log.Logger = new LoggerConfiguration()
+            .MinimumLevel.Information()
+            .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+            .MinimumLevel.Override("Microsoft.Hosting.Lifetime", LogEventLevel.Information)
+            .MinimumLevel.Override("System", LogEventLevel.Warning)
+            .Enrich.FromLogContext()
+            .Enrich.WithEnvironmentName()
+            .Enrich.WithMachineName()
+            .Enrich.WithThreadId()
+            .WriteTo.Console(
+                outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj} {Properties:j}{NewLine}{Exception}")
+            .WriteTo.File(
+                path: "logs/log-.txt",
+                rollingInterval: RollingInterval.Day,
+                outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] [{SourceContext}] {Message:lj} {Properties:j}{NewLine}{Exception}",
+                retainedFileCountLimit: 7)
+            .CreateLogger();
+
+        try
+        {
+            Log.Information("Starting The Office API");
+            CreateWebApplication(args).Run();
+        }
+        catch (Exception ex)
+        {
+            Log.Fatal(ex, "Application terminated unexpectedly");
+        }
+        finally
+        {
+            Log.CloseAndFlush();
+        }
     }
 
     public static WebApplication CreateWebApplication(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
+
+        // Use Serilog for logging
+        builder.Host.UseSerilog();
 
         // Configure strongly-typed options
         builder.Services.Configure<ServerOptions>(builder.Configuration.GetSection(ServerOptions.SectionName));
@@ -151,6 +187,9 @@ public class Program
     private static void ConfigureBasicPipeline(WebApplication app)
     {
         Console.WriteLine("=== CONFIGURING BASIC PIPELINE ===");
+
+        // Add request logging middleware
+        app.UseRequestLogging();
 
         // Add global exception handler
         if (app.Environment.IsDevelopment())

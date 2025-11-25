@@ -46,6 +46,9 @@ namespace TheOfficeAPI.Common.Extensions
 
         public static void ConfigurePipeline(this WebApplication app, MaturityLevel? maturityLevel)
         {
+            // Add request logging middleware (should be early in the pipeline to capture all requests)
+            app.UseRequestLogging();
+
             // Add global exception handler (should be early in the pipeline)
             // In development, use DeveloperExceptionPage for detailed errors
             // In production, use our custom global exception handler
