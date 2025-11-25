@@ -1,4 +1,5 @@
 using TheOfficeAPI.Common.Enums;
+using TheOfficeAPI.Common.Services;
 using TheOfficeAPI.Level0.Extensions;
 using TheOfficeAPI.Level1.Extensions;
 using TheOfficeAPI.Level2.Extensions;
@@ -10,6 +11,9 @@ namespace TheOfficeAPI.Common.Extensions
     {
         public static void ConfigureServices(this IServiceCollection services, MaturityLevel? maturityLevel)
         {
+            // Add common services
+            services.AddSingleton<HealthCheckService>();
+
             // Add controllers
             services.AddControllers();
             services.AddEndpointsApiExplorer();

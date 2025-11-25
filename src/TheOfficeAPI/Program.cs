@@ -59,6 +59,7 @@ public class Program
         else
         {
             Console.WriteLine("Starting with basic configuration...");
+            builder.Services.AddSingleton<TheOfficeAPI.Common.Services.HealthCheckService>();
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(c =>
