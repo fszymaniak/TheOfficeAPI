@@ -1,4 +1,5 @@
 using TheOfficeAPI.Common.Enums;
+using TheOfficeAPI.Common.Middleware;
 using TheOfficeAPI.Common.Services;
 using TheOfficeAPI.Level0.Extensions;
 using TheOfficeAPI.Level1.Extensions;
@@ -45,10 +46,16 @@ namespace TheOfficeAPI.Common.Extensions
 
         public static void ConfigurePipeline(this WebApplication app, MaturityLevel? maturityLevel)
         {
-            // Configure the HTTP request pipeline
+            // Add global exception handler (should be early in the pipeline)
+            // In development, use DeveloperExceptionPage for detailed errors
+            // In production, use our custom global exception handler
             if (app.Environment.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                app.UseGlobalExceptionHandler();
             }
 
             // Root endpoint

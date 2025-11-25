@@ -1,5 +1,6 @@
 using TheOfficeAPI.Common.Enums;
 using TheOfficeAPI.Common.Extensions;
+using TheOfficeAPI.Common.Middleware;
 using TheOfficeAPI.Configuration;
 
 namespace TheOfficeAPI;
@@ -150,7 +151,17 @@ public class Program
     private static void ConfigureBasicPipeline(WebApplication app)
     {
         Console.WriteLine("=== CONFIGURING BASIC PIPELINE ===");
-    
+
+        // Add global exception handler
+        if (app.Environment.IsDevelopment())
+        {
+            app.UseDeveloperExceptionPage();
+        }
+        else
+        {
+            app.UseGlobalExceptionHandler();
+        }
+
         // Root endpoint
         app.MapGet("/", () => Results.Ok(new {
             message = "The Office API is running",
