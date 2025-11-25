@@ -49,8 +49,8 @@ public class GlobalExceptionHandlerMiddleware
         // Determine status code and message based on exception type
         switch (exception)
         {
-            case ArgumentException:
             case ArgumentNullException:
+            case ArgumentException:
                 errorResponse.StatusCode = (int)HttpStatusCode.BadRequest;
                 errorResponse.Message = "Invalid request parameters";
                 break;
