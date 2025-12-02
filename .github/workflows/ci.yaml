@@ -16,8 +16,10 @@ jobs:
     runs-on: ubuntu-latest
     name: Build and Unit Tests
     permissions:
-      contents: write  # Required for GitHub Pages deployment
-      pages: write
+      contents: write       # Required for GitHub Pages deployment
+      pages: write          # Required for GitHub Pages deployment
+      checks: write         # Required for test-reporter action
+      pull-requests: write  # Required for test-reporter action on PRs
 
     steps:
       - name: Checkout code
@@ -75,7 +77,10 @@ jobs:
     runs-on: ubuntu-latest
     name: Mocked Integration Tests
     needs: build-and-unit-tests
-    
+    permissions:
+      checks: write         # Required for test-reporter action
+      pull-requests: write  # Required for test-reporter action on PRs
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
