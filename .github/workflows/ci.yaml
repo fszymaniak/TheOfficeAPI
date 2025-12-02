@@ -15,7 +15,12 @@ jobs:
   build-and-unit-tests:
     runs-on: ubuntu-latest
     name: Build and Unit Tests
-    
+    permissions:
+      contents: write       # Required for GitHub Pages deployment
+      pages: write          # Required for GitHub Pages deployment
+      checks: write         # Required for test-reporter action
+      pull-requests: write  # Required for test-reporter action on PRs
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -46,20 +51,36 @@ jobs:
           path: '**/*.trx'
           reporter: dotnet-trx
 
-      - name: Upload coverage reports
-        uses: codecov/codecov-action@v4
+      - name: Install ReportGenerator
         if: success()
+        run: dotnet tool install -g dotnet-reportgenerator-globaltool
+
+      - name: Generate Coverage HTML Report
+        if: success()
+        run: |
+          reportgenerator \
+            -reports:**/coverage.cobertura.xml \
+            -targetdir:coverage-report \
+            -reporttypes:"Html;Badges" \
+            -title:"The Office API - Coverage Report"
+
+      - name: Deploy Coverage Report to GitHub Pages
+        if: success() && github.ref == 'refs/heads/main'
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          files: '**/coverage.cobertura.xml'
-          fail_ci_if_error: false
-        continue-on-error: true
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./coverage-report
+          commit_message: 'docs: update coverage report'
 
   # Job 2: Mocked Integration Tests
   mocked-integration-tests:
     runs-on: ubuntu-latest
     name: Mocked Integration Tests
     needs: build-and-unit-tests
-    
+    permissions:
+      checks: write         # Required for test-reporter action
+      pull-requests: write  # Required for test-reporter action on PRs
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4

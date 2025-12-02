@@ -1,5 +1,12 @@
 # The Office API
 
+[![CI](https://github.com/fszymaniak/TheOfficeAPI/actions/workflows/ci.yaml/badge.svg)](https://github.com/fszymaniak/TheOfficeAPI/actions/workflows/ci.yaml)
+[![CD](https://github.com/fszymaniak/TheOfficeAPI/actions/workflows/cd.yaml/badge.svg)](https://github.com/fszymaniak/TheOfficeAPI/actions/workflows/cd.yaml)
+[![Coverage Report](https://img.shields.io/badge/Coverage-Report-blue)](https://fszymaniak.github.io/TheOfficeAPI/)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=fszymaniak_TheOfficeAPI&metric=alert_status)](https://sonarcloud.io/dashboard?id=fszymaniak_TheOfficeAPI)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![.NET](https://img.shields.io/badge/.NET-9.0-512BD4)](https://dotnet.microsoft.com/download/dotnet/9.0)
+
 A REST API providing information about episodes and seasons from the TV show "The Office", designed to demonstrate the **Richardson Maturity Model** for RESTful API design.
 
 ## Overview
