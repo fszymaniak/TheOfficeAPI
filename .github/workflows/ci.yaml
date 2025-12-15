@@ -15,7 +15,11 @@ jobs:
   build-and-unit-tests:
     runs-on: ubuntu-latest
     name: Build and Unit Tests
-    
+    permissions:
+      checks: write
+      pull-requests: write
+      contents: read
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -59,7 +63,11 @@ jobs:
     runs-on: ubuntu-latest
     name: Mocked Integration Tests
     needs: build-and-unit-tests
-    
+    permissions:
+      checks: write
+      pull-requests: write
+      contents: read
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
