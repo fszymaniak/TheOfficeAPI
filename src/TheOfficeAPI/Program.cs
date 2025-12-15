@@ -7,6 +7,12 @@ namespace TheOfficeAPI;
 
 public class Program
 {
+    // Protected constructor to satisfy S1118 (utility class should not have public constructor)
+    // while keeping the class non-static for WebApplicationFactory<Program> compatibility
+    protected Program()
+    {
+    }
+
     public static void Main(string[] args)
     {
         CreateWebApplication(args).Run();
@@ -29,10 +35,12 @@ public class Program
         // RAILWAY: Use Railway's PORT environment variable and bind to 0.0.0.0
         var port = Environment.GetEnvironmentVariable("PORT");
         string url;
-        
+
         if (port != null)
         {
+            #pragma warning disable S5332 // HTTP is required for Railway deployment behind reverse proxy
             url = $"http://0.0.0.0:{port}";
+            #pragma warning restore S5332
             Console.WriteLine($"=== RAILWAY/PRODUCTION MODE ===");
             Console.WriteLine($"PORT from environment: {port}");
             Console.WriteLine($"Binding to: {url}");
