@@ -38,7 +38,6 @@ public class HealthControllerTests
         var healthResponse = Assert.IsType<HealthCheckResponse>(result.Value);
         Assert.Equal("Healthy", healthResponse.Status);
         Assert.Equal("OK", healthResponse.Message);
-        Assert.NotNull(healthResponse.Timestamp);
     }
 
     [Fact]
@@ -63,7 +62,6 @@ public class HealthControllerTests
         var healthResponse = Assert.IsType<HealthCheckResponse>(result.Value);
         Assert.Equal("Healthy", healthResponse.Status);
         Assert.Equal("Application is alive", healthResponse.Message);
-        Assert.NotNull(healthResponse.Timestamp);
     }
 
     [Fact]
@@ -88,7 +86,6 @@ public class HealthControllerTests
         var healthResponse = Assert.IsType<DetailedHealthCheckResponse>(result.Value);
         Assert.Equal("Healthy", healthResponse.Status);
         Assert.Equal("Application is ready to serve traffic", healthResponse.Message);
-        Assert.NotNull(healthResponse.Timestamp);
         Assert.NotNull(healthResponse.Version);
         Assert.NotNull(healthResponse.Components);
         Assert.True(healthResponse.Components.Count > 0);
