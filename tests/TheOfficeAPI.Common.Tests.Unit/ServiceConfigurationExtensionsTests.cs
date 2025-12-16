@@ -78,7 +78,7 @@ public class ServiceConfigurationExtensionsTests
         services.ConfigureServices(MaturityLevel.Level0);
 
         // Assert
-        Assert.Contains(services, s => s.ServiceType.Name.Contains("MvcCore"));
+        Assert.Contains(services, s => s.ServiceType.Name == "ApplicationPartManager");
     }
 
     [Fact]
