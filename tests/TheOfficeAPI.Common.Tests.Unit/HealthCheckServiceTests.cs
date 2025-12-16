@@ -17,7 +17,6 @@ public class HealthCheckServiceTests
         Assert.NotNull(result);
         Assert.Equal("Healthy", result.Status);
         Assert.Equal("Application is alive", result.Message);
-        Assert.NotNull(result.Timestamp);
         Assert.True(result.Timestamp <= DateTime.UtcNow);
     }
 
@@ -50,7 +49,6 @@ public class HealthCheckServiceTests
         Assert.NotNull(result);
         Assert.Equal("Healthy", result.Status);
         Assert.Equal("OK", result.Message);
-        Assert.NotNull(result.Timestamp);
         Assert.True(result.Timestamp <= DateTime.UtcNow);
     }
 
@@ -67,7 +65,6 @@ public class HealthCheckServiceTests
         Assert.NotNull(result);
         Assert.Equal("Healthy", result.Status);
         Assert.Equal("Application is ready to serve traffic", result.Message);
-        Assert.NotNull(result.Timestamp);
         Assert.True(result.Timestamp <= DateTime.UtcNow);
     }
 
