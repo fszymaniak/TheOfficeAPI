@@ -37,11 +37,49 @@ jobs:
 
       - name: Run unit tests
         run: |
-          dotnet test tests/TheOfficeAPI.Common.Tests.Unit/TheOfficeAPI.Common.Tests.Unit.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --verbosity normal --logger trx --collect:"XPlat Code Coverage"
-          dotnet test tests/TheOfficeAPI.Level0.Tests.Unit/TheOfficeAPI.Level0.Tests.Unit.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --verbosity normal --logger trx --collect:"XPlat Code Coverage"
-          dotnet test tests/TheOfficeAPI.Level1.Tests.Unit/TheOfficeAPI.Level1.Tests.Unit.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --verbosity normal --logger trx --collect:"XPlat Code Coverage"
-          dotnet test tests/TheOfficeAPI.Level2.Tests.Unit/TheOfficeAPI.Level2.Tests.Unit.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --verbosity normal --logger trx --collect:"XPlat Code Coverage"
-          dotnet test tests/TheOfficeAPI.Level3.Tests.Unit/TheOfficeAPI.Level3.Tests.Unit.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --verbosity normal --logger trx --collect:"XPlat Code Coverage"
+          dotnet test tests/TheOfficeAPI.Common.Tests.Unit/TheOfficeAPI.Common.Tests.Unit.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --verbosity normal --logger trx --collect:"XPlat Code Coverage" -- xUnit.ReporterSwitch=allure
+          dotnet test tests/TheOfficeAPI.Level0.Tests.Unit/TheOfficeAPI.Level0.Tests.Unit.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --verbosity normal --logger trx --collect:"XPlat Code Coverage" -- xUnit.ReporterSwitch=allure
+          dotnet test tests/TheOfficeAPI.Level1.Tests.Unit/TheOfficeAPI.Level1.Tests.Unit.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --verbosity normal --logger trx --collect:"XPlat Code Coverage" -- xUnit.ReporterSwitch=allure
+          dotnet test tests/TheOfficeAPI.Level2.Tests.Unit/TheOfficeAPI.Level2.Tests.Unit.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --verbosity normal --logger trx --collect:"XPlat Code Coverage" -- xUnit.ReporterSwitch=allure
+          dotnet test tests/TheOfficeAPI.Level3.Tests.Unit/TheOfficeAPI.Level3.Tests.Unit.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --verbosity normal --logger trx --collect:"XPlat Code Coverage" -- xUnit.ReporterSwitch=allure
+
+      - name: Collect Allure results
+        if: always()
+        run: |
+          mkdir -p allure-results
+          find . -path "*/bin/*" -name "allure-results" -type d -exec cp -r {}/* allure-results/ \; 2>/dev/null || true
+
+      - name: Download previous Allure history
+        uses: actions/download-artifact@v4
+        if: always()
+        with:
+          name: allure-history
+          path: allure-history
+        continue-on-error: true
+
+      - name: Generate Allure Report
+        uses: simple-elf/allure-report-action@v1.9
+        if: always()
+        with:
+          allure_results: allure-results
+          allure_history: allure-history
+          keep_reports: 20
+
+      - name: Upload Allure Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: allure-report
+          path: allure-report
+          retention-days: 30
+
+      - name: Upload Allure History
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: allure-history
+          path: allure-history
+          retention-days: 30
 
       - name: Publish unit test results
         uses: dorny/test-reporter@v1
@@ -86,12 +124,34 @@ jobs:
 
       - name: Run mocked integration tests
         run: |
-          dotnet test tests/TheOfficeAPI.Level0.Tests.Integration/TheOfficeAPI.Level0.Tests.Integration.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --verbosity normal --logger trx --filter "Category=Mocked"
-          dotnet test tests/TheOfficeAPI.Level1.Tests.Integration/TheOfficeAPI.Level1.Tests.Integration.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --verbosity normal --logger trx --filter "Category=Mocked"
-          dotnet test tests/TheOfficeAPI.Level2.Tests.Integration/TheOfficeAPI.Level2.Tests.Integration.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --verbosity normal --logger trx --filter "Category=Mocked"
-          dotnet test tests/TheOfficeAPI.Level3.Tests.Integration/TheOfficeAPI.Level3.Tests.Integration.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --verbosity normal --logger trx --filter "Category=Mocked"
+          dotnet test tests/TheOfficeAPI.Level0.Tests.Integration/TheOfficeAPI.Level0.Tests.Integration.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --verbosity normal --logger trx --filter "Category=Mocked" -- xUnit.ReporterSwitch=allure
+          dotnet test tests/TheOfficeAPI.Level1.Tests.Integration/TheOfficeAPI.Level1.Tests.Integration.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --verbosity normal --logger trx --filter "Category=Mocked" -- xUnit.ReporterSwitch=allure
+          dotnet test tests/TheOfficeAPI.Level2.Tests.Integration/TheOfficeAPI.Level2.Tests.Integration.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --verbosity normal --logger trx --filter "Category=Mocked" -- xUnit.ReporterSwitch=allure
+          dotnet test tests/TheOfficeAPI.Level3.Tests.Integration/TheOfficeAPI.Level3.Tests.Integration.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --verbosity normal --logger trx --filter "Category=Mocked" -- xUnit.ReporterSwitch=allure
         env:
           ASPNETCORE_ENVIRONMENT: Testing
+
+      - name: Collect Allure results
+        if: always()
+        run: |
+          mkdir -p allure-results
+          find . -path "*/bin/*" -name "allure-results" -type d -exec cp -r {}/* allure-results/ \; 2>/dev/null || true
+
+      - name: Generate Allure Report for Integration Tests
+        uses: simple-elf/allure-report-action@v1.9
+        if: always()
+        with:
+          allure_results: allure-results
+          allure_report: allure-report-integration
+          keep_reports: 20
+
+      - name: Upload Integration Tests Allure Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: allure-report-integration
+          path: allure-report-integration
+          retention-days: 30
 
       - name: Publish mocked integration test results
         uses: dorny/test-reporter@v1

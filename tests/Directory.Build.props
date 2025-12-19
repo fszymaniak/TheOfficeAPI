@@ -1,0 +1,6 @@
+<Project>
+    <!-- Allure configuration - copy to output directory for all test projects -->
+    <ItemGroup>
+        <None Include="$(MSBuildThisFileDirectory)allureConfig.json" CopyToOutputDirectory="PreserveNewest" Link="allureConfig.json" />
+    </ItemGroup>
+</Project>
