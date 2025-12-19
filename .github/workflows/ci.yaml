@@ -37,11 +37,57 @@ jobs:
 
       - name: Run unit tests
         run: |
-          dotnet test tests/TheOfficeAPI.Common.Tests.Unit/TheOfficeAPI.Common.Tests.Unit.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --verbosity normal --logger trx --collect:"XPlat Code Coverage"
-          dotnet test tests/TheOfficeAPI.Level0.Tests.Unit/TheOfficeAPI.Level0.Tests.Unit.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --verbosity normal --logger trx --collect:"XPlat Code Coverage"
-          dotnet test tests/TheOfficeAPI.Level1.Tests.Unit/TheOfficeAPI.Level1.Tests.Unit.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --verbosity normal --logger trx --collect:"XPlat Code Coverage"
-          dotnet test tests/TheOfficeAPI.Level2.Tests.Unit/TheOfficeAPI.Level2.Tests.Unit.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --verbosity normal --logger trx --collect:"XPlat Code Coverage"
-          dotnet test tests/TheOfficeAPI.Level3.Tests.Unit/TheOfficeAPI.Level3.Tests.Unit.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --verbosity normal --logger trx --collect:"XPlat Code Coverage"
+          dotnet test tests/TheOfficeAPI.Common.Tests.Unit/TheOfficeAPI.Common.Tests.Unit.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --verbosity normal --logger trx --collect:"XPlat Code Coverage" -- xUnit.ReporterSwitch=allure
+          dotnet test tests/TheOfficeAPI.Level0.Tests.Unit/TheOfficeAPI.Level0.Tests.Unit.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --verbosity normal --logger trx --collect:"XPlat Code Coverage" -- xUnit.ReporterSwitch=allure
+          dotnet test tests/TheOfficeAPI.Level1.Tests.Unit/TheOfficeAPI.Level1.Tests.Unit.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --verbosity normal --logger trx --collect:"XPlat Code Coverage" -- xUnit.ReporterSwitch=allure
+          dotnet test tests/TheOfficeAPI.Level2.Tests.Unit/TheOfficeAPI.Level2.Tests.Unit.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --verbosity normal --logger trx --collect:"XPlat Code Coverage" -- xUnit.ReporterSwitch=allure
+          dotnet test tests/TheOfficeAPI.Level3.Tests.Unit/TheOfficeAPI.Level3.Tests.Unit.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --verbosity normal --logger trx --collect:"XPlat Code Coverage" -- xUnit.ReporterSwitch=allure
+
+      - name: Collect Allure results
+        if: always()
+        run: |
+          mkdir -p allure-results
+          find . -path "*/bin/*" -name "allure-results" -type d -exec cp -r {}/* allure-results/ \; 2>/dev/null || true
+
+      - name: Download previous Allure history
+        uses: actions/download-artifact@v4
+        if: always()
+        with:
+          name: allure-history
+          path: allure-history
+        continue-on-error: true
+
+      - name: Install Allure CLI
+        if: always()
+        run: |
+          curl -o allure-2.32.0.tgz -Ls https://github.com/allure-framework/allure2/releases/download/2.32.0/allure-2.32.0.tgz
+          tar -zxvf allure-2.32.0.tgz
+          echo "$PWD/allure-2.32.0/bin" >> $GITHUB_PATH
+
+      - name: Generate Allure Report
+        if: always()
+        run: |
+          if [ -d "allure-history" ]; then
+            cp -r allure-history allure-results/history || true
+          fi
+          allure-2.32.0/bin/allure generate allure-results -o allure-report --clean
+          cp -r allure-report/history allure-history || true
+
+      - name: Upload Allure Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: allure-report
+          path: allure-report
+          retention-days: 30
+
+      - name: Upload Allure History
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: allure-history
+          path: allure-history
+          retention-days: 30
 
       - name: Publish unit test results
         uses: dorny/test-reporter@v1
@@ -86,12 +132,37 @@ jobs:
 
       - name: Run mocked integration tests
         run: |
-          dotnet test tests/TheOfficeAPI.Level0.Tests.Integration/TheOfficeAPI.Level0.Tests.Integration.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --verbosity normal --logger trx --filter "Category=Mocked"
-          dotnet test tests/TheOfficeAPI.Level1.Tests.Integration/TheOfficeAPI.Level1.Tests.Integration.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --verbosity normal --logger trx --filter "Category=Mocked"
-          dotnet test tests/TheOfficeAPI.Level2.Tests.Integration/TheOfficeAPI.Level2.Tests.Integration.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --verbosity normal --logger trx --filter "Category=Mocked"
-          dotnet test tests/TheOfficeAPI.Level3.Tests.Integration/TheOfficeAPI.Level3.Tests.Integration.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --verbosity normal --logger trx --filter "Category=Mocked"
+          dotnet test tests/TheOfficeAPI.Level0.Tests.Integration/TheOfficeAPI.Level0.Tests.Integration.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --verbosity normal --logger trx --filter "Category=Mocked" -- xUnit.ReporterSwitch=allure
+          dotnet test tests/TheOfficeAPI.Level1.Tests.Integration/TheOfficeAPI.Level1.Tests.Integration.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --verbosity normal --logger trx --filter "Category=Mocked" -- xUnit.ReporterSwitch=allure
+          dotnet test tests/TheOfficeAPI.Level2.Tests.Integration/TheOfficeAPI.Level2.Tests.Integration.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --verbosity normal --logger trx --filter "Category=Mocked" -- xUnit.ReporterSwitch=allure
+          dotnet test tests/TheOfficeAPI.Level3.Tests.Integration/TheOfficeAPI.Level3.Tests.Integration.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --verbosity normal --logger trx --filter "Category=Mocked" -- xUnit.ReporterSwitch=allure
         env:
           ASPNETCORE_ENVIRONMENT: Testing
+
+      - name: Collect Allure results
+        if: always()
+        run: |
+          mkdir -p allure-results
+          find . -path "*/bin/*" -name "allure-results" -type d -exec cp -r {}/* allure-results/ \; 2>/dev/null || true
+
+      - name: Install Allure CLI
+        if: always()
+        run: |
+          curl -o allure-2.32.0.tgz -Ls https://github.com/allure-framework/allure2/releases/download/2.32.0/allure-2.32.0.tgz
+          tar -zxvf allure-2.32.0.tgz
+
+      - name: Generate Allure Report for Integration Tests
+        if: always()
+        run: |
+          allure-2.32.0/bin/allure generate allure-results -o allure-report-integration --clean
+
+      - name: Upload Integration Tests Allure Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: allure-report-integration
+          path: allure-report-integration
+          retention-days: 30
 
       - name: Publish mocked integration test results
         uses: dorny/test-reporter@v1
@@ -195,11 +266,84 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         continue-on-error: true
 
-  # Job 4: CI Summary
+  # Job 4: Deploy Allure Report to GitHub Pages
+  deploy-allure-report:
+    runs-on: ubuntu-latest
+    name: Deploy Allure Report
+    needs: [build-and-unit-tests, mocked-integration-tests]
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Create deploy directory
+        run: mkdir -p deploy/allure
+
+      - name: Download Unit Test Allure Report
+        uses: actions/download-artifact@v4
+        with:
+          name: allure-report
+          path: deploy/allure/unit
+
+      - name: Download Integration Test Allure Report
+        uses: actions/download-artifact@v4
+        with:
+          name: allure-report-integration
+          path: deploy/allure/integration
+
+      - name: Create index page
+        run: |
+          cat > deploy/allure/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <title>TheOfficeAPI - Allure Test Reports</title>
+            <style>
+              body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 800px; margin: 50px auto; padding: 20px; }
+              h1 { color: #333; }
+              .report-link { display: block; padding: 20px; margin: 10px 0; background: #f5f5f5; border-radius: 8px; text-decoration: none; color: #333; }
+              .report-link:hover { background: #e0e0e0; }
+              .report-link h2 { margin: 0 0 10px 0; color: #0066cc; }
+              .report-link p { margin: 0; color: #666; }
+              .updated { color: #999; font-size: 0.9em; margin-top: 30px; }
+            </style>
+          </head>
+          <body>
+            <h1>TheOfficeAPI - Allure Test Reports</h1>
+            <a class="report-link" href="unit/index.html">
+              <h2>Unit Test Report</h2>
+              <p>Allure report for unit tests across all API levels</p>
+            </a>
+            <a class="report-link" href="integration/index.html">
+              <h2>Integration Test Report</h2>
+              <p>Allure report for mocked integration tests</p>
+            </a>
+            <p class="updated">Last updated: $(date -u '+%Y-%m-%d %H:%M:%S UTC')</p>
+          </body>
+          </html>
+          EOF
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: deploy
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+  # Job 5: CI Summary
   ci-summary:
     runs-on: ubuntu-latest
     name: CI Summary
-    needs: [build-and-unit-tests, mocked-integration-tests, code-quality]
+    needs: [build-and-unit-tests, mocked-integration-tests, code-quality, deploy-allure-report]
     if: always()
     
     steps:
@@ -214,8 +358,11 @@ jobs:
           echo "Unit Tests: PASSED"
           echo "Mocked Integration Tests: PASSED"
           echo "Code Quality: ${{ needs.code-quality.result }}"
+          echo "Allure Report: ${{ needs.deploy-allure-report.result }}"
           echo ""
-          if [ "${{ github.event_name }}" == "push" ] && [ "${{ github.ref }}" == "refs/heads/main" -o "${{ github.ref }}" == "refs/heads/develop" ]; then
+          if [ "${{ github.ref }}" == "refs/heads/main" ] || [ "${{ github.ref }}" == "refs/heads/develop" ]; then
+            echo "Allure Reports: https://fszymaniak.github.io/TheOfficeAPI/allure/"
+            echo ""
             echo "Ready for deployment - CD pipeline will start automatically"
             echo "E2E tests will run after deployment completes"
           fi
