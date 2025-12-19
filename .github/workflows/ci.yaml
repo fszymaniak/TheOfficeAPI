@@ -266,11 +266,85 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         continue-on-error: true
 
-  # Job 4: CI Summary
+  # Job 4: Deploy Allure Report to GitHub Pages
+  deploy-allure-report:
+    runs-on: ubuntu-latest
+    name: Deploy Allure Report
+    needs: [build-and-unit-tests, mocked-integration-tests]
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
+
+    steps:
+      - name: Checkout gh-pages branch
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: gh-pages
+        continue-on-error: true
+
+      - name: Create gh-pages directory if not exists
+        run: mkdir -p gh-pages
+
+      - name: Download Unit Test Allure Report
+        uses: actions/download-artifact@v4
+        with:
+          name: allure-report
+          path: gh-pages/allure-report
+
+      - name: Download Integration Test Allure Report
+        uses: actions/download-artifact@v4
+        with:
+          name: allure-report-integration
+          path: gh-pages/allure-report-integration
+
+      - name: Create index page
+        run: |
+          cat > gh-pages/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <title>TheOfficeAPI - Test Reports</title>
+            <style>
+              body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 800px; margin: 50px auto; padding: 20px; }
+              h1 { color: #333; }
+              .report-link { display: block; padding: 20px; margin: 10px 0; background: #f5f5f5; border-radius: 8px; text-decoration: none; color: #333; }
+              .report-link:hover { background: #e0e0e0; }
+              .report-link h2 { margin: 0 0 10px 0; color: #0066cc; }
+              .report-link p { margin: 0; color: #666; }
+              .updated { color: #999; font-size: 0.9em; margin-top: 30px; }
+            </style>
+          </head>
+          <body>
+            <h1>TheOfficeAPI - Test Reports</h1>
+            <a class="report-link" href="allure-report/index.html">
+              <h2>Unit Test Report</h2>
+              <p>Allure report for unit tests across all API levels</p>
+            </a>
+            <a class="report-link" href="allure-report-integration/index.html">
+              <h2>Integration Test Report</h2>
+              <p>Allure report for mocked integration tests</p>
+            </a>
+            <p class="updated">Last updated: $(date -u '+%Y-%m-%d %H:%M:%S UTC')</p>
+          </body>
+          </html>
+          EOF
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./gh-pages
+          publish_branch: gh-pages
+          force_orphan: true
+
+  # Job 5: CI Summary
   ci-summary:
     runs-on: ubuntu-latest
     name: CI Summary
-    needs: [build-and-unit-tests, mocked-integration-tests, code-quality]
+    needs: [build-and-unit-tests, mocked-integration-tests, code-quality, deploy-allure-report]
     if: always()
     
     steps:
@@ -285,8 +359,11 @@ jobs:
           echo "Unit Tests: PASSED"
           echo "Mocked Integration Tests: PASSED"
           echo "Code Quality: ${{ needs.code-quality.result }}"
+          echo "Allure Report: ${{ needs.deploy-allure-report.result }}"
           echo ""
-          if [ "${{ github.event_name }}" == "push" ] && [ "${{ github.ref }}" == "refs/heads/main" -o "${{ github.ref }}" == "refs/heads/develop" ]; then
+          if [ "${{ github.ref }}" == "refs/heads/main" ] || [ "${{ github.ref }}" == "refs/heads/develop" ]; then
+            echo "Allure Reports: https://fszymaniak.github.io/TheOfficeAPI/"
+            echo ""
             echo "Ready for deployment - CD pipeline will start automatically"
             echo "E2E tests will run after deployment completes"
           fi
