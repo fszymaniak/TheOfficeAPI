@@ -224,7 +224,7 @@ dotnet test
 
 The project uses **Allure** for rich, interactive test reports with history tracking.
 
-**View Live Reports:** [https://fszymaniak.github.io/TheOfficeAPI/](https://fszymaniak.github.io/TheOfficeAPI/)
+**View Live Reports:** [https://fszymaniak.github.io/TheOfficeAPI/allure/](https://fszymaniak.github.io/TheOfficeAPI/allure/)
 
 Reports are automatically generated and published to GitHub Pages on every push to `main` or `develop` branches.
 

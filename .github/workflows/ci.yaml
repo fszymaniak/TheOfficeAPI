@@ -281,27 +281,27 @@ jobs:
 
     steps:
       - name: Create deploy directory
-        run: mkdir -p deploy
+        run: mkdir -p deploy/allure
 
       - name: Download Unit Test Allure Report
         uses: actions/download-artifact@v4
         with:
           name: allure-report
-          path: deploy/allure-report
+          path: deploy/allure/unit
 
       - name: Download Integration Test Allure Report
         uses: actions/download-artifact@v4
         with:
           name: allure-report-integration
-          path: deploy/allure-report-integration
+          path: deploy/allure/integration
 
       - name: Create index page
         run: |
-          cat > deploy/index.html << 'EOF'
+          cat > deploy/allure/index.html << 'EOF'
           <!DOCTYPE html>
           <html>
           <head>
-            <title>TheOfficeAPI - Test Reports</title>
+            <title>TheOfficeAPI - Allure Test Reports</title>
             <style>
               body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 800px; margin: 50px auto; padding: 20px; }
               h1 { color: #333; }
@@ -313,12 +313,12 @@ jobs:
             </style>
           </head>
           <body>
-            <h1>TheOfficeAPI - Test Reports</h1>
-            <a class="report-link" href="allure-report/index.html">
+            <h1>TheOfficeAPI - Allure Test Reports</h1>
+            <a class="report-link" href="unit/index.html">
               <h2>Unit Test Report</h2>
               <p>Allure report for unit tests across all API levels</p>
             </a>
-            <a class="report-link" href="allure-report-integration/index.html">
+            <a class="report-link" href="integration/index.html">
               <h2>Integration Test Report</h2>
               <p>Allure report for mocked integration tests</p>
             </a>
@@ -361,7 +361,7 @@ jobs:
           echo "Allure Report: ${{ needs.deploy-allure-report.result }}"
           echo ""
           if [ "${{ github.ref }}" == "refs/heads/main" ] || [ "${{ github.ref }}" == "refs/heads/develop" ]; then
-            echo "Allure Reports: https://fszymaniak.github.io/TheOfficeAPI/"
+            echo "Allure Reports: https://fszymaniak.github.io/TheOfficeAPI/allure/"
             echo ""
             echo "Ready for deployment - CD pipeline will start automatically"
             echo "E2E tests will run after deployment completes"
