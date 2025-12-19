@@ -220,6 +220,34 @@ dotnet build
 dotnet test
 ```
 
+### Test Reports
+
+The project uses **Allure** for rich, interactive test reports with history tracking.
+
+**View Live Reports:** [https://fszymaniak.github.io/TheOfficeAPI/](https://fszymaniak.github.io/TheOfficeAPI/)
+
+Reports are automatically generated and published to GitHub Pages on every push to `main` or `develop` branches.
+
+**Available Reports:**
+- **Unit Test Report** - Tests for all API levels (Common, Level0-3)
+- **Integration Test Report** - Mocked integration tests
+
+**Local Report Generation:**
+```bash
+# Run tests with Allure
+dotnet test -- xUnit.ReporterSwitch=allure
+
+# Install Allure CLI (one-time)
+brew install allure  # macOS
+# or download from https://github.com/allure-framework/allure2/releases
+
+# Generate report
+allure generate ./tests/**/bin/**/allure-results -o allure-report --clean
+
+# Open report in browser
+allure open allure-report
+```
+
 ### Run Specific Maturity Level
 
 ```bash
