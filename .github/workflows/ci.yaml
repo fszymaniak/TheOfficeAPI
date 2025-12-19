@@ -57,13 +57,21 @@ jobs:
           path: allure-history
         continue-on-error: true
 
-      - name: Generate Allure Report
-        uses: simple-elf/allure-report-action@v1.9
+      - name: Install Allure CLI
         if: always()
-        with:
-          allure_results: allure-results
-          allure_history: allure-history
-          keep_reports: 20
+        run: |
+          curl -o allure-2.32.0.tgz -Ls https://github.com/allure-framework/allure2/releases/download/2.32.0/allure-2.32.0.tgz
+          tar -zxvf allure-2.32.0.tgz
+          echo "$PWD/allure-2.32.0/bin" >> $GITHUB_PATH
+
+      - name: Generate Allure Report
+        if: always()
+        run: |
+          if [ -d "allure-history" ]; then
+            cp -r allure-history allure-results/history || true
+          fi
+          allure-2.32.0/bin/allure generate allure-results -o allure-report --clean
+          cp -r allure-report/history allure-history || true
 
       - name: Upload Allure Report
         uses: actions/upload-artifact@v4
@@ -137,13 +145,16 @@ jobs:
           mkdir -p allure-results
           find . -path "*/bin/*" -name "allure-results" -type d -exec cp -r {}/* allure-results/ \; 2>/dev/null || true
 
-      - name: Generate Allure Report for Integration Tests
-        uses: simple-elf/allure-report-action@v1.9
+      - name: Install Allure CLI
         if: always()
-        with:
-          allure_results: allure-results
-          allure_report: allure-report-integration
-          keep_reports: 20
+        run: |
+          curl -o allure-2.32.0.tgz -Ls https://github.com/allure-framework/allure2/releases/download/2.32.0/allure-2.32.0.tgz
+          tar -zxvf allure-2.32.0.tgz
+
+      - name: Generate Allure Report for Integration Tests
+        if: always()
+        run: |
+          allure-2.32.0/bin/allure generate allure-results -o allure-report-integration --clean
 
       - name: Upload Integration Tests Allure Report
         uses: actions/upload-artifact@v4
