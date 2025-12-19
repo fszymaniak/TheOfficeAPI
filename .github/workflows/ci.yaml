@@ -42,15 +42,35 @@ jobs:
           dotnet test tests/TheOfficeAPI.Level1.Tests.Unit/TheOfficeAPI.Level1.Tests.Unit.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --verbosity normal --logger trx --collect:"XPlat Code Coverage"
           dotnet test tests/TheOfficeAPI.Level2.Tests.Unit/TheOfficeAPI.Level2.Tests.Unit.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --verbosity normal --logger trx --collect:"XPlat Code Coverage"
           dotnet test tests/TheOfficeAPI.Level3.Tests.Unit/TheOfficeAPI.Level3.Tests.Unit.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --verbosity normal --logger trx --collect:"XPlat Code Coverage"
+        env:
+          ALLURE_RESULTS_DIRECTORY: ${{ github.workspace }}/allure-results-unit
 
       - name: Collect Allure results
         if: always()
         run: |
+          echo "=== Searching for Allure results ==="
+          echo "Looking for allure-results directories..."
+          find . -name "allure-results*" -type d 2>/dev/null || true
+          echo ""
+          echo "Looking for Allure JSON files in bin directories..."
+          find ./tests -path "*/bin/*" -name "*-result.json" 2>/dev/null | head -10 || true
+          echo ""
           mkdir -p allure-results
-          echo "Searching for allure-results directories..."
-          find . -name "allure-results" -type d 2>/dev/null | head -20
-          find . -name "allure-results" -type d -exec cp -r {}/* allure-results/ \; 2>/dev/null || true
-          echo "Collected $(ls -1 allure-results 2>/dev/null | wc -l) result files"
+          # Copy from environment variable location if exists
+          if [ -d "${{ github.workspace }}/allure-results-unit" ]; then
+            echo "Found results at workspace level (allure-results-unit)"
+            ls -la ${{ github.workspace }}/allure-results-unit/ 2>/dev/null || true
+            cp -r ${{ github.workspace }}/allure-results-unit/* allure-results/ 2>/dev/null || true
+          fi
+          # Also search in test project bin directories
+          find ./tests -path "*/bin/*" -name "allure-results" -type d -exec sh -c 'echo "Found: $1"; cp -r "$1"/* allure-results/ 2>/dev/null || true' _ {} \;
+          # Copy any Allure JSON files directly
+          find ./tests -path "*/bin/*" -name "*-result.json" -exec cp {} allure-results/ \; 2>/dev/null || true
+          find ./tests -path "*/bin/*" -name "*-container.json" -exec cp {} allure-results/ \; 2>/dev/null || true
+          echo ""
+          echo "Collected files in allure-results:"
+          ls -la allure-results 2>/dev/null || echo "Directory is empty"
+          echo "Total: $(ls -1 allure-results 2>/dev/null | wc -l) files"
 
       - name: Download previous Allure history
         uses: actions/download-artifact@v4
@@ -141,14 +161,22 @@ jobs:
           dotnet test tests/TheOfficeAPI.Level3.Tests.Integration/TheOfficeAPI.Level3.Tests.Integration.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --verbosity normal --logger trx --filter "Category=Mocked"
         env:
           ASPNETCORE_ENVIRONMENT: Testing
+          ALLURE_RESULTS_DIRECTORY: ${{ github.workspace }}/allure-results-integration
 
       - name: Collect Allure results
         if: always()
         run: |
+          echo "=== Searching for Allure results ==="
+          find . -name "allure-results*" -type d 2>/dev/null || true
           mkdir -p allure-results
-          echo "Searching for allure-results directories..."
-          find . -name "allure-results" -type d 2>/dev/null | head -20
-          find . -name "allure-results" -type d -exec cp -r {}/* allure-results/ \; 2>/dev/null || true
+          if [ -d "${{ github.workspace }}/allure-results-integration" ]; then
+            echo "Found results at workspace level (allure-results-integration)"
+            ls -la ${{ github.workspace }}/allure-results-integration/ 2>/dev/null || true
+            cp -r ${{ github.workspace }}/allure-results-integration/* allure-results/ 2>/dev/null || true
+          fi
+          find ./tests -path "*/bin/*" -name "allure-results" -type d -exec sh -c 'echo "Found: $1"; cp -r "$1"/* allure-results/ 2>/dev/null || true' _ {} \;
+          find ./tests -path "*/bin/*" -name "*-result.json" -exec cp {} allure-results/ \; 2>/dev/null || true
+          find ./tests -path "*/bin/*" -name "*-container.json" -exec cp {} allure-results/ \; 2>/dev/null || true
           echo "Collected $(ls -1 allure-results 2>/dev/null | wc -l) result files"
 
       - name: Install Allure CLI
@@ -318,7 +346,8 @@ jobs:
 
       - name: Create index page
         run: |
-          cat > deploy/allure/index.html << 'EOF'
+          CURRENT_DATE=$(date -u '+%Y-%m-%d %H:%M:%S UTC')
+          cat > deploy/allure/index.html << EOF
           <!DOCTYPE html>
           <html>
           <head>
@@ -343,7 +372,7 @@ jobs:
               <h2>Integration Test Report</h2>
               <p>Allure report for mocked integration tests</p>
             </a>
-            <p class="updated">Last updated: $(date -u '+%Y-%m-%d %H:%M:%S UTC')</p>
+            <p class="updated">Last updated: ${CURRENT_DATE}</p>
           </body>
           </html>
           EOF

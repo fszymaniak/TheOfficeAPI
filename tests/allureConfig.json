@@ -2,11 +2,14 @@
   "allure": {
     "directory": "allure-results",
     "links": [
-      "https://github.com/fszymaniak/TheOfficeAPI/issues/{issue}",
-      "https://github.com/fszymaniak/TheOfficeAPI/pull/{tms}"
-    ],
-    "brokenTestData": [],
-    "flakyTestData": [],
-    "knownIssues": []
+      {
+        "type": "issue",
+        "pattern": "https://github.com/fszymaniak/TheOfficeAPI/issues/{}"
+      },
+      {
+        "type": "tms",
+        "pattern": "https://github.com/fszymaniak/TheOfficeAPI/pull/{}"
+      }
+    ]
   }
 }
