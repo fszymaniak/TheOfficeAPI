@@ -224,7 +224,11 @@ dotnet test
 
 The project uses **Stryker.NET** for mutation testing to assess the quality and effectiveness of unit tests.
 
-**Run Mutation Tests:**
+**View Live Mutation Report:** [https://fszymaniak.github.io/TheOfficeAPI/stryker/](https://fszymaniak.github.io/TheOfficeAPI/stryker/)
+
+Mutation reports are automatically generated and published to GitHub Pages on every push to `main` or `develop` branches.
+
+**Run Mutation Tests Locally:**
 ```bash
 # Install Stryker tool (one-time setup)
 dotnet tool restore
@@ -236,7 +240,7 @@ dotnet stryker --config-file stryker-config.json
 ./scripts/run-mutation-tests.sh
 ```
 
-**View Mutation Report:**
+**View Local Mutation Report:**
 After running mutation tests, open `StrykerOutput/reports/mutation-report.html` in your browser to see:
 - Mutation score (percentage of mutants killed)
 - Survived mutants (potential test gaps)
@@ -255,15 +259,17 @@ After running mutation tests, open `StrykerOutput/reports/mutation-report.html` 
 
 ### Test Reports
 
-The project uses **Allure** for rich, interactive test reports with history tracking.
+The project provides comprehensive test reporting with both **Allure** test execution reports and **Stryker** mutation testing.
 
-**View Live Reports:** [https://fszymaniak.github.io/TheOfficeAPI/allure/](https://fszymaniak.github.io/TheOfficeAPI/allure/)
+**📊 View Live Reports Dashboard:** [https://fszymaniak.github.io/TheOfficeAPI/](https://fszymaniak.github.io/TheOfficeAPI/)
 
-Reports are automatically generated and published to GitHub Pages on every push to `main` or `develop` branches.
+All reports are automatically generated and published to GitHub Pages on every push to `main` or `develop` branches.
 
 **Available Reports:**
-- **Unit Test Report** - Tests for all API levels (Common, Level0-3)
-- **Integration Test Report** - Mocked integration tests
+- **[Allure Test Reports](https://fszymaniak.github.io/TheOfficeAPI/allure/)** - Rich, interactive test execution reports with history tracking
+  - Unit Test Report - Tests for all API levels (Common, Level0-3)
+  - Integration Test Report - Mocked integration tests
+- **[Stryker Mutation Report](https://fszymaniak.github.io/TheOfficeAPI/stryker/)** - Mutation testing to assess test quality
 
 **Local Report Generation:**
 ```bash

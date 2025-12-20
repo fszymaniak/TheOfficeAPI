@@ -178,7 +178,47 @@ jobs:
           path: '**/*.trx'
           reporter: dotnet-trx
 
-  # Job 3: Code Quality Checks (optional)
+  # Job 3: Mutation Testing
+  mutation-testing:
+    runs-on: ubuntu-latest
+    name: Mutation Testing
+    needs: build-and-unit-tests
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Restore dotnet tools
+        run: dotnet tool restore
+
+      - name: Restore dependencies
+        run: dotnet restore TheOfficeAPI.sln
+
+      - name: Build solution
+        run: dotnet build TheOfficeAPI.sln --configuration ${{ env.BUILD_CONFIGURATION }} --no-restore
+
+      - name: Run Stryker mutation tests
+        run: |
+          echo "Running mutation tests with Stryker.NET..."
+          dotnet stryker --config-file stryker-config.json --output StrykerOutput
+        continue-on-error: true
+
+      - name: Upload Stryker Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: stryker-report
+          path: StrykerOutput/reports
+          retention-days: 30
+
+  # Job 4: Code Quality Checks (optional)
   code-quality:
     runs-on: ubuntu-latest
     name: Code Quality Checks
@@ -272,22 +312,22 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         continue-on-error: true
 
-  # Job 4: Deploy Allure Report to GitHub Pages
-  deploy-allure-report:
+  # Job 5: Deploy Test Reports to GitHub Pages
+  deploy-test-reports:
     runs-on: ubuntu-latest
-    name: Deploy Allure Report
-    needs: [build-and-unit-tests, mocked-integration-tests]
+    name: Deploy Test Reports
+    needs: [build-and-unit-tests, mocked-integration-tests, mutation-testing]
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
     permissions:
       pages: write
       id-token: write
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}allure/
+      url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
       - name: Create deploy directory
-        run: mkdir -p deploy/allure
+        run: mkdir -p deploy/allure deploy/stryker
 
       - name: Download Unit Test Allure Report
         uses: actions/download-artifact@v4
@@ -301,22 +341,63 @@ jobs:
           name: allure-report-integration
           path: deploy/allure/integration
 
-      - name: Create root redirect
+      - name: Download Stryker Mutation Report
+        uses: actions/download-artifact@v4
+        with:
+          name: stryker-report
+          path: deploy/stryker
+        continue-on-error: true
+
+      - name: Create main index page
         run: |
           cat > deploy/index.html << 'EOF'
           <!DOCTYPE html>
           <html>
           <head>
-            <meta http-equiv="refresh" content="0; url=allure/" />
-            <title>Redirecting to Test Reports</title>
+            <title>TheOfficeAPI - Test Reports</title>
+            <style>
+              body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 900px; margin: 50px auto; padding: 20px; }
+              h1 { color: #333; margin-bottom: 10px; }
+              .subtitle { color: #666; margin-bottom: 40px; }
+              .report-section { margin-bottom: 40px; }
+              .report-section h2 { color: #444; border-bottom: 2px solid #0066cc; padding-bottom: 10px; }
+              .report-link { display: block; padding: 20px; margin: 10px 0; background: #f5f5f5; border-radius: 8px; text-decoration: none; color: #333; transition: background 0.2s; }
+              .report-link:hover { background: #e0e0e0; }
+              .report-link h3 { margin: 0 0 10px 0; color: #0066cc; }
+              .report-link p { margin: 0; color: #666; }
+              .updated { color: #999; font-size: 0.9em; margin-top: 50px; text-align: center; }
+            </style>
           </head>
           <body>
-            <p>Redirecting to <a href="allure/">Allure Test Reports</a>...</p>
+            <h1>TheOfficeAPI - Test Reports Dashboard</h1>
+            <p class="subtitle">Comprehensive test coverage and quality metrics</p>
+
+            <div class="report-section">
+              <h2>📊 Test Execution Reports (Allure)</h2>
+              <a class="report-link" href="allure/unit/index.html">
+                <h3>Unit Test Report</h3>
+                <p>Detailed Allure report for unit tests across all API levels (Level 0-3)</p>
+              </a>
+              <a class="report-link" href="allure/integration/index.html">
+                <h3>Integration Test Report</h3>
+                <p>Allure report for mocked integration tests</p>
+              </a>
+            </div>
+
+            <div class="report-section">
+              <h2>🧬 Mutation Testing Report (Stryker)</h2>
+              <a class="report-link" href="stryker/mutation-report.html">
+                <h3>Mutation Test Report</h3>
+                <p>Stryker.NET mutation testing results - measures test suite effectiveness by introducing code mutations</p>
+              </a>
+            </div>
+
+            <p class="updated">Last updated: $(date -u '+%Y-%m-%d %H:%M:%S UTC')</p>
           </body>
           </html>
           EOF
 
-      - name: Create index page
+      - name: Create Allure index page
         run: |
           cat > deploy/allure/index.html << 'EOF'
           <!DOCTYPE html>
@@ -326,6 +407,8 @@ jobs:
             <style>
               body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 800px; margin: 50px auto; padding: 20px; }
               h1 { color: #333; }
+              .back-link { color: #0066cc; text-decoration: none; margin-bottom: 20px; display: inline-block; }
+              .back-link:hover { text-decoration: underline; }
               .report-link { display: block; padding: 20px; margin: 10px 0; background: #f5f5f5; border-radius: 8px; text-decoration: none; color: #333; }
               .report-link:hover { background: #e0e0e0; }
               .report-link h2 { margin: 0 0 10px 0; color: #0066cc; }
@@ -334,6 +417,7 @@ jobs:
             </style>
           </head>
           <body>
+            <a class="back-link" href="../index.html">← Back to All Reports</a>
             <h1>TheOfficeAPI - Allure Test Reports</h1>
             <a class="report-link" href="unit/index.html">
               <h2>Unit Test Report</h2>
@@ -360,11 +444,11 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v4
 
-  # Job 5: CI Summary
+  # Job 6: CI Summary
   ci-summary:
     runs-on: ubuntu-latest
     name: CI Summary
-    needs: [build-and-unit-tests, mocked-integration-tests, code-quality, deploy-allure-report]
+    needs: [build-and-unit-tests, mocked-integration-tests, mutation-testing, code-quality, deploy-test-reports]
     if: always()
     
     steps:
@@ -378,11 +462,14 @@ jobs:
           echo "Build: SUCCESS"
           echo "Unit Tests: PASSED"
           echo "Mocked Integration Tests: PASSED"
+          echo "Mutation Testing: ${{ needs.mutation-testing.result }}"
           echo "Code Quality: ${{ needs.code-quality.result }}"
-          echo "Allure Report: ${{ needs.deploy-allure-report.result }}"
+          echo "Test Reports: ${{ needs.deploy-test-reports.result }}"
           echo ""
           if [ "${{ github.ref }}" == "refs/heads/main" ] || [ "${{ github.ref }}" == "refs/heads/develop" ]; then
-            echo "Allure Reports: https://fszymaniak.github.io/TheOfficeAPI/allure/"
+            echo "📊 Test Reports Dashboard: https://fszymaniak.github.io/TheOfficeAPI/"
+            echo "   - Allure Reports: https://fszymaniak.github.io/TheOfficeAPI/allure/"
+            echo "   - Stryker Mutation Report: https://fszymaniak.github.io/TheOfficeAPI/stryker/"
             echo ""
             echo "Ready for deployment - CD pipeline will start automatically"
             echo "E2E tests will run after deployment completes"
