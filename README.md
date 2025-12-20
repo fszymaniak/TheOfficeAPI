@@ -220,6 +220,39 @@ dotnet build
 dotnet test
 ```
 
+### Mutation Testing
+
+The project uses **Stryker.NET** for mutation testing to assess the quality and effectiveness of unit tests.
+
+**Run Mutation Tests:**
+```bash
+# Install Stryker tool (one-time setup)
+dotnet tool restore
+
+# Run mutation tests
+dotnet stryker --config-file stryker-config.json
+
+# Or use the convenient script
+./scripts/run-mutation-tests.sh
+```
+
+**View Mutation Report:**
+After running mutation tests, open `StrykerOutput/reports/mutation-report.html` in your browser to see:
+- Mutation score (percentage of mutants killed)
+- Survived mutants (potential test gaps)
+- Detailed mutation coverage per file
+
+**Understanding Mutation Testing:**
+- **Mutants**: Small code changes that Stryker introduces
+- **Killed**: Mutant causes tests to fail (good - tests caught the change)
+- **Survived**: Mutant doesn't break tests (potential gap in test coverage)
+- **Mutation Score**: Percentage of killed mutants (higher is better)
+
+**Recommended Thresholds:**
+- High: 80%+ (excellent test quality)
+- Low: 60%+ (acceptable test quality)
+- Below 60%: Consider improving tests
+
 ### Test Reports
 
 The project uses **Allure** for rich, interactive test reports with history tracking.
