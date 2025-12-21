@@ -1,6 +1,7 @@
 using System.Net;
 using System.Text;
 using System.Text.Json;
+using Allure.Xunit.Attributes;
 using Xunit;
 
 namespace TheOfficeAPI.Tests.E2E;
