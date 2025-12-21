@@ -76,11 +76,14 @@ jobs:
           echo "Total: $(ls -1 allure-results 2>/dev/null | wc -l) files"
 
       - name: Download previous Allure history
-        uses: actions/download-artifact@v4
+        uses: dawidd6/action-download-artifact@v6
         if: always()
         with:
+          workflow: ci.yaml
           name: allure-history
           path: allure-history
+          if_no_artifact_found: warn
+          search_artifacts: true
         continue-on-error: true
 
       - name: Install Allure CLI
