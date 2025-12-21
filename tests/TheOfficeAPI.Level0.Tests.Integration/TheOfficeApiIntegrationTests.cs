@@ -77,7 +77,7 @@ public class TheOfficeApiIntegrationTests : IClassFixture<WebApplicationFactory<
                (content.StartsWith("[") && content.EndsWith("]"));
     }
 
-    [AllureXunit]
+    [Fact]
     public async Task GetAllSeasons_ReturnsSuccessResponse()
     {
         // Arrange
@@ -109,7 +109,7 @@ public class TheOfficeApiIntegrationTests : IClassFixture<WebApplicationFactory<
         });
     }
 
-    [AllureXunit]
+    [Fact]
     public async Task GetSeasonEpisodes_WithValidSeason_ReturnsSuccessResponse()
     {
         // Arrange
@@ -135,7 +135,7 @@ public class TheOfficeApiIntegrationTests : IClassFixture<WebApplicationFactory<
         });
     }
 
-    [AllureXunit]
+    [Fact]
     public async Task GetSeasonEpisodes_WithNullSeason_ReturnsErrorResponse()
     {
         // Arrange
@@ -154,7 +154,7 @@ public class TheOfficeApiIntegrationTests : IClassFixture<WebApplicationFactory<
         Assert.Equal("Invalid request", apiResponse.Message);
     }
 
-    [AllureXunit]
+    [Fact]
     public async Task GetSeasonEpisodes_WithInvalidSeason_ReturnsErrorResponse()
     {
         // Arrange
@@ -173,7 +173,7 @@ public class TheOfficeApiIntegrationTests : IClassFixture<WebApplicationFactory<
         Assert.Equal("Invalid request", apiResponse.Message);
     }
 
-    [AllureXunit]
+    [Fact]
     public async Task GetEpisode_WithValidParameters_ReturnsSuccessResponse()
     {
         // Arrange
@@ -216,7 +216,7 @@ public class TheOfficeApiIntegrationTests : IClassFixture<WebApplicationFactory<
         Assert.Equal("Invalid request", apiResponse.Message);
     }
 
-    [AllureXunit]
+    [Fact]
     public async Task GetEpisode_WithInvalidSeason_ReturnsErrorResponse()
     {
         // Arrange
@@ -235,7 +235,7 @@ public class TheOfficeApiIntegrationTests : IClassFixture<WebApplicationFactory<
         Assert.Equal("Invalid request", apiResponse.Message);
     }
 
-    [AllureXunit]
+    [Fact]
     public async Task GetEpisode_WithInvalidEpisode_ReturnsErrorResponse()
     {
         // Arrange
@@ -254,7 +254,7 @@ public class TheOfficeApiIntegrationTests : IClassFixture<WebApplicationFactory<
         Assert.Equal("Invalid request", apiResponse.Message);
     }
 
-    [AllureXunit]
+    [Fact]
     public async Task UnknownAction_ReturnsErrorResponse()
     {
         // Arrange

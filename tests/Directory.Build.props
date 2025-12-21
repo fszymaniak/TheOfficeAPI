@@ -1,9 +1,4 @@
 <Project>
-    <!-- Global using for Allure attributes -->
-    <ItemGroup>
-        <Using Include="Allure.Xunit.Attributes"/>
-    </ItemGroup>
-
     <!-- Allure configuration - copy to output directory for all test projects -->
     <ItemGroup>
         <None Include="$(MSBuildThisFileDirectory)allureConfig.json" CopyToOutputDirectory="PreserveNewest" Link="allureConfig.json" />

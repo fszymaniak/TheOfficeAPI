@@ -16,7 +16,7 @@ public class EpisodesControllerTests
         _controller = new EpisodesController(_service);
     }
 
-    [AllureXunit]
+    [Fact]
     public void GetSeasonEpisodes_WithValidSeason_ReturnsSuccessResponse()
     {
         // Act
@@ -32,7 +32,7 @@ public class EpisodesControllerTests
         Assert.Equal("Episodes for season 1 retrieved successfully", response.Message);
     }
 
-    [AllureXunit]
+    [Fact]
     public void GetSeasonEpisodes_WithInvalidSeason_ReturnsErrorResponse()
     {
         // Act
@@ -48,7 +48,7 @@ public class EpisodesControllerTests
         Assert.Equal("Invalid request", response.Message);
     }
 
-    [AllureXunit]
+    [Fact]
     public void GetSeasonEpisodes_WithSeasonZero_ReturnsErrorResponse()
     {
         // Act
@@ -63,7 +63,7 @@ public class EpisodesControllerTests
         Assert.Contains("Season parameter is outside of the scope", response.Error);
     }
 
-    [AllureXunit]
+    [Fact]
     public void GetEpisode_WithValidParameters_ReturnsSuccessResponse()
     {
         // Act
@@ -79,7 +79,7 @@ public class EpisodesControllerTests
         Assert.Equal("Episode retrieved successfully", response.Message);
     }
 
-    [AllureXunit]
+    [Fact]
     public void GetEpisode_WithInvalidSeason_ReturnsErrorResponse()
     {
         // Act
@@ -95,7 +95,7 @@ public class EpisodesControllerTests
         Assert.Equal("Invalid request", response.Message);
     }
 
-    [AllureXunit]
+    [Fact]
     public void GetEpisode_WithInvalidEpisode_ReturnsErrorResponse()
     {
         // Act
@@ -111,7 +111,7 @@ public class EpisodesControllerTests
         Assert.Equal("Invalid request", response.Message);
     }
 
-    [AllureXunit]
+    [Fact]
     public void GetEpisode_WithValidSeasonAndEpisode_ReturnsCorrectEpisode()
     {
         // Act
@@ -124,7 +124,7 @@ public class EpisodesControllerTests
         Assert.Equal(1, response.Data.EpisodeNumber);
     }
 
-    [AllureXunit]
+    [Fact]
     public void GetSeasonEpisodes_ReturnsCorrectNumberOfEpisodes()
     {
         // Act

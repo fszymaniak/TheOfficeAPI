@@ -4,7 +4,7 @@ namespace TheOfficeAPI.Common.Tests.Unit;
 
 public class HealthCheckModelsTests
 {
-    [AllureXunit]
+    [Fact]
     public void HealthStatus_HasExpectedValues()
     {
         // Assert
@@ -13,7 +13,7 @@ public class HealthCheckModelsTests
         Assert.Equal(2, (int)HealthStatus.Unhealthy);
     }
 
-    [AllureXunit]
+    [Fact]
     public void HealthCheckResponse_DefaultConstructor_SetsDefaultValues()
     {
         // Act
@@ -25,7 +25,7 @@ public class HealthCheckModelsTests
         Assert.Null(response.Message);
     }
 
-    [AllureXunit]
+    [Fact]
     public void HealthCheckResponse_TimestampIsSetToUtcNow()
     {
         // Arrange
@@ -40,7 +40,7 @@ public class HealthCheckModelsTests
         Assert.True(response.Timestamp <= afterCreation);
     }
 
-    [AllureXunit]
+    [Fact]
     public void HealthCheckResponse_CanSetStatus()
     {
         // Arrange
@@ -53,7 +53,7 @@ public class HealthCheckModelsTests
         Assert.Equal("Unhealthy", response.Status);
     }
 
-    [AllureXunit]
+    [Fact]
     public void HealthCheckResponse_CanSetMessage()
     {
         // Arrange
@@ -66,7 +66,7 @@ public class HealthCheckModelsTests
         Assert.Equal("Test message", response.Message);
     }
 
-    [AllureXunit]
+    [Fact]
     public void DetailedHealthCheckResponse_DefaultConstructor_SetsDefaultValues()
     {
         // Act
@@ -82,7 +82,7 @@ public class HealthCheckModelsTests
         Assert.Equal("1.0.0", response.Version);
     }
 
-    [AllureXunit]
+    [Fact]
     public void DetailedHealthCheckResponse_CanSetComponents()
     {
         // Arrange
@@ -100,7 +100,7 @@ public class HealthCheckModelsTests
         Assert.True(response.Components.ContainsKey("database"));
     }
 
-    [AllureXunit]
+    [Fact]
     public void DetailedHealthCheckResponse_CanSetUptime()
     {
         // Arrange
@@ -114,7 +114,7 @@ public class HealthCheckModelsTests
         Assert.Equal(uptime, response.Uptime);
     }
 
-    [AllureXunit]
+    [Fact]
     public void DetailedHealthCheckResponse_CanSetVersion()
     {
         // Arrange
@@ -127,7 +127,7 @@ public class HealthCheckModelsTests
         Assert.Equal("2.0.0", response.Version);
     }
 
-    [AllureXunit]
+    [Fact]
     public void ComponentHealth_DefaultConstructor_SetsDefaultValues()
     {
         // Act
@@ -139,7 +139,7 @@ public class HealthCheckModelsTests
         Assert.Null(component.Data);
     }
 
-    [AllureXunit]
+    [Fact]
     public void ComponentHealth_CanSetStatus()
     {
         // Arrange
@@ -152,7 +152,7 @@ public class HealthCheckModelsTests
         Assert.Equal("Degraded", component.Status);
     }
 
-    [AllureXunit]
+    [Fact]
     public void ComponentHealth_CanSetDescription()
     {
         // Arrange
@@ -165,7 +165,7 @@ public class HealthCheckModelsTests
         Assert.Equal("Database connection pool is at 90%", component.Description);
     }
 
-    [AllureXunit]
+    [Fact]
     public void ComponentHealth_CanSetData()
     {
         // Arrange
@@ -185,7 +185,7 @@ public class HealthCheckModelsTests
         Assert.Equal(90, component.Data["connections"]);
     }
 
-    [AllureXunit]
+    [Fact]
     public void DetailedHealthCheckResponse_InheritsFromHealthCheckResponse()
     {
         // Arrange & Act
@@ -202,7 +202,7 @@ public class HealthCheckModelsTests
         Assert.Equal("All systems operational", baseResponse.Message);
     }
 
-    [AllureXunit]
+    [Fact]
     public void ComponentHealth_AllPropertiesCanBeSet()
     {
         // Arrange & Act

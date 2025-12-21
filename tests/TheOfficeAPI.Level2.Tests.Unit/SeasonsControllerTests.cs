@@ -16,7 +16,7 @@ public class SeasonsControllerTests
         _controller = new SeasonsController(_service);
     }
 
-    [AllureXunit]
+    [Fact]
     public void GetAllSeasons_ReturnsSuccessResponse()
     {
         // Act
@@ -33,7 +33,7 @@ public class SeasonsControllerTests
         Assert.Equal("Seasons retrieved successfully", response.Message);
     }
 
-    [AllureXunit]
+    [Fact]
     public void GetAllSeasons_ReturnsAllSeasons()
     {
         // Act
@@ -45,7 +45,7 @@ public class SeasonsControllerTests
         Assert.Equal(9, response.Data.Count); // The Office has 9 seasons
     }
 
-    [AllureXunit]
+    [Fact]
     public void GetSeason_WithValidSeasonNumber_ReturnsSuccessResponse()
     {
         // Act
@@ -62,7 +62,7 @@ public class SeasonsControllerTests
         Assert.Equal("Season 1 retrieved successfully", response.Message);
     }
 
-    [AllureXunit]
+    [Fact]
     public void GetSeason_WithInvalidSeasonNumber_Returns404NotFound()
     {
         // Act
@@ -78,7 +78,7 @@ public class SeasonsControllerTests
         Assert.Equal("Invalid request", response.Message);
     }
 
-    [AllureXunit]
+    [Fact]
     public void GetSeason_WithSeasonZero_Returns404NotFound()
     {
         // Act
@@ -93,7 +93,7 @@ public class SeasonsControllerTests
         Assert.Contains("Season parameter is outside of the scope", response.Error);
     }
 
-    [AllureXunit]
+    [Fact]
     public void GetSeason_WithSeasonTwo_ReturnsCorrectSeason()
     {
         // Act
@@ -106,7 +106,7 @@ public class SeasonsControllerTests
         Assert.Equal(22, response.Data.EpisodeCount); // Season 2 has 22 episodes
     }
 
-    [AllureXunit]
+    [Fact]
     public void GetAllSeasons_ReturnsOkStatus()
     {
         // Act

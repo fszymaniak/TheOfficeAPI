@@ -8,7 +8,7 @@ namespace TheOfficeAPI.Common.Tests.Unit;
 
 public class LevelServiceExtensionsTests
 {
-    [AllureXunit]
+    [Fact]
     public void AddLevel0Services_RegistersTheOfficeService()
     {
         // Arrange
@@ -23,7 +23,7 @@ public class LevelServiceExtensionsTests
         Assert.NotNull(service);
     }
 
-    [AllureXunit]
+    [Fact]
     public void AddLevel0Services_ReturnsServiceCollection()
     {
         // Arrange
@@ -36,7 +36,7 @@ public class LevelServiceExtensionsTests
         Assert.Same(services, result);
     }
 
-    [AllureXunit]
+    [Fact]
     public void AddLevel1Services_RegistersTheOfficeService()
     {
         // Arrange
@@ -51,7 +51,7 @@ public class LevelServiceExtensionsTests
         Assert.NotNull(service);
     }
 
-    [AllureXunit]
+    [Fact]
     public void AddLevel1Services_ReturnsServiceCollection()
     {
         // Arrange
@@ -64,7 +64,7 @@ public class LevelServiceExtensionsTests
         Assert.Same(services, result);
     }
 
-    [AllureXunit]
+    [Fact]
     public void AddLevel2Services_RegistersTheOfficeService()
     {
         // Arrange
@@ -79,7 +79,7 @@ public class LevelServiceExtensionsTests
         Assert.NotNull(service);
     }
 
-    [AllureXunit]
+    [Fact]
     public void AddLevel2Services_ReturnsServiceCollection()
     {
         // Arrange
@@ -92,7 +92,7 @@ public class LevelServiceExtensionsTests
         Assert.Same(services, result);
     }
 
-    [AllureXunit]
+    [Fact]
     public void AddLevel3Services_RegistersTheOfficeService()
     {
         // Arrange
@@ -107,7 +107,7 @@ public class LevelServiceExtensionsTests
         Assert.NotNull(service);
     }
 
-    [AllureXunit]
+    [Fact]
     public void AddLevel3Services_ReturnsServiceCollection()
     {
         // Arrange
@@ -120,7 +120,7 @@ public class LevelServiceExtensionsTests
         Assert.Same(services, result);
     }
 
-    [AllureXunit]
+    [Fact]
     public void AllLevelServices_CanBeRegisteredTogether()
     {
         // Arrange
@@ -146,7 +146,7 @@ public class LevelServiceExtensionsTests
         Assert.NotNull(service3);
     }
 
-    [AllureXunit]
+    [Fact]
     public void Level0Service_IsSingleton()
     {
         // Arrange
@@ -162,7 +162,7 @@ public class LevelServiceExtensionsTests
         Assert.Same(service1, service2);
     }
 
-    [AllureXunit]
+    [Fact]
     public void Level1Service_IsSingleton()
     {
         // Arrange
@@ -178,7 +178,7 @@ public class LevelServiceExtensionsTests
         Assert.Same(service1, service2);
     }
 
-    [AllureXunit]
+    [Fact]
     public void Level2Service_IsSingleton()
     {
         // Arrange
@@ -194,7 +194,7 @@ public class LevelServiceExtensionsTests
         Assert.Same(service1, service2);
     }
 
-    [AllureXunit]
+    [Fact]
     public void Level3Service_IsSingleton()
     {
         // Arrange

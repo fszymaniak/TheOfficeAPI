@@ -8,7 +8,7 @@ namespace TheOfficeAPI.Common.Tests.Unit;
 
 public class ServiceConfigurationExtensionsTests
 {
-    [AllureXunit]
+    [Fact]
     public void ConfigureServices_WithLevel0_RegistersHealthCheckService()
     {
         // Arrange
@@ -23,7 +23,7 @@ public class ServiceConfigurationExtensionsTests
         Assert.NotNull(healthCheckService);
     }
 
-    [AllureXunit]
+    [Fact]
     public void ConfigureServices_WithLevel1_RegistersHealthCheckService()
     {
         // Arrange
@@ -38,7 +38,7 @@ public class ServiceConfigurationExtensionsTests
         Assert.NotNull(healthCheckService);
     }
 
-    [AllureXunit]
+    [Fact]
     public void ConfigureServices_WithLevel2_RegistersHealthCheckService()
     {
         // Arrange
@@ -53,7 +53,7 @@ public class ServiceConfigurationExtensionsTests
         Assert.NotNull(healthCheckService);
     }
 
-    [AllureXunit]
+    [Fact]
     public void ConfigureServices_WithLevel3_RegistersHealthCheckService()
     {
         // Arrange
@@ -68,7 +68,7 @@ public class ServiceConfigurationExtensionsTests
         Assert.NotNull(healthCheckService);
     }
 
-    [AllureXunit]
+    [Fact]
     public void ConfigureServices_WithLevel0_AddsControllers()
     {
         // Arrange
@@ -81,7 +81,7 @@ public class ServiceConfigurationExtensionsTests
         Assert.Contains(services, s => s.ServiceType.Name == "ApplicationPartManager");
     }
 
-    [AllureXunit]
+    [Fact]
     public void ConfigureServices_WithNull_RegistersHealthCheckService()
     {
         // Arrange
@@ -96,7 +96,7 @@ public class ServiceConfigurationExtensionsTests
         Assert.NotNull(healthCheckService);
     }
 
-    [AllureXunit]
+    [Fact]
     public void ConfigureServices_RegistersAllLevelServices()
     {
         // Arrange
@@ -120,7 +120,7 @@ public class ServiceConfigurationExtensionsTests
         Assert.NotNull(level3Service);
     }
 
-    [AllureXunit]
+    [Fact]
     public void ConfigurePipeline_WithLevel0_ConfiguresPipelineWithoutException()
     {
         // Arrange
@@ -134,7 +134,7 @@ public class ServiceConfigurationExtensionsTests
         Assert.NotNull(app);
     }
 
-    [AllureXunit]
+    [Fact]
     public void ConfigurePipeline_WithLevel1_ConfiguresPipelineWithoutException()
     {
         // Arrange
@@ -148,7 +148,7 @@ public class ServiceConfigurationExtensionsTests
         Assert.NotNull(app);
     }
 
-    [AllureXunit]
+    [Fact]
     public void ConfigurePipeline_WithLevel2_ConfiguresPipelineWithoutException()
     {
         // Arrange
@@ -162,7 +162,7 @@ public class ServiceConfigurationExtensionsTests
         Assert.NotNull(app);
     }
 
-    [AllureXunit]
+    [Fact]
     public void ConfigurePipeline_WithLevel3_ConfiguresPipelineWithoutException()
     {
         // Arrange
@@ -176,7 +176,7 @@ public class ServiceConfigurationExtensionsTests
         Assert.NotNull(app);
     }
 
-    [AllureXunit]
+    [Fact]
     public void ConfigurePipeline_WithNull_ConfiguresPipelineWithoutException()
     {
         // Arrange

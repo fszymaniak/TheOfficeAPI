@@ -16,7 +16,7 @@ public class SeasonsControllerTests
         _controller = new SeasonsController(_service);
     }
 
-    [AllureXunit]
+    [Fact]
     public void GetAllSeasons_ReturnsSuccessResponse()
     {
         // Act
@@ -33,7 +33,7 @@ public class SeasonsControllerTests
         Assert.Equal("Seasons retrieved successfully", response.Message);
     }
 
-    [AllureXunit]
+    [Fact]
     public void GetAllSeasons_ReturnsAllSeasons()
     {
         // Act
@@ -45,7 +45,7 @@ public class SeasonsControllerTests
         Assert.Equal(9, response.Data.Count); // The Office has 9 seasons
     }
 
-    [AllureXunit]
+    [Fact]
     public void GetAllSeasons_AlwaysReturnsOkStatus()
     {
         // Act

@@ -4,7 +4,7 @@ namespace TheOfficeAPI.Common.Tests.Unit;
 
 public class HealthCheckServiceTests
 {
-    [AllureXunit]
+    [Fact]
     public void GetLivenessStatus_ReturnsHealthyStatus()
     {
         // Arrange
@@ -20,7 +20,7 @@ public class HealthCheckServiceTests
         Assert.True(result.Timestamp <= DateTime.UtcNow);
     }
 
-    [AllureXunit]
+    [Fact]
     public void GetLivenessStatus_ReturnsCurrentTimestamp()
     {
         // Arrange
@@ -36,7 +36,7 @@ public class HealthCheckServiceTests
         Assert.True(result.Timestamp <= afterCall);
     }
 
-    [AllureXunit]
+    [Fact]
     public void GetHealthStatus_ReturnsHealthyStatus()
     {
         // Arrange
@@ -52,7 +52,7 @@ public class HealthCheckServiceTests
         Assert.True(result.Timestamp <= DateTime.UtcNow);
     }
 
-    [AllureXunit]
+    [Fact]
     public void GetReadinessStatus_ReturnsDetailedHealthStatus()
     {
         // Arrange
@@ -68,7 +68,7 @@ public class HealthCheckServiceTests
         Assert.True(result.Timestamp <= DateTime.UtcNow);
     }
 
-    [AllureXunit]
+    [Fact]
     public void GetReadinessStatus_IncludesVersion()
     {
         // Arrange
@@ -82,7 +82,7 @@ public class HealthCheckServiceTests
         Assert.NotEmpty(result.Version);
     }
 
-    [AllureXunit]
+    [Fact]
     public void GetReadinessStatus_IncludesUptime()
     {
         // Arrange
@@ -97,7 +97,7 @@ public class HealthCheckServiceTests
         Assert.True(result.Uptime < TimeSpan.FromMinutes(1)); // Should be recent
     }
 
-    [AllureXunit]
+    [Fact]
     public void GetReadinessStatus_IncludesApplicationComponent()
     {
         // Arrange
@@ -118,7 +118,7 @@ public class HealthCheckServiceTests
         Assert.True(appComponent.Data.ContainsKey("uptime"));
     }
 
-    [AllureXunit]
+    [Fact]
     public void GetReadinessStatus_IncludesDataServiceComponent()
     {
         // Arrange
@@ -141,7 +141,7 @@ public class HealthCheckServiceTests
         Assert.Equal(true, dataComponent.Data["initialized"]);
     }
 
-    [AllureXunit]
+    [Fact]
     public void GetReadinessStatus_UptimeIncreasesOverTime()
     {
         // Arrange
@@ -156,7 +156,7 @@ public class HealthCheckServiceTests
         Assert.True(result2.Uptime > result1.Uptime);
     }
 
-    [AllureXunit]
+    [Fact]
     public void MultipleInstances_HaveIndependentStartTimes()
     {
         // Arrange & Act
@@ -171,7 +171,7 @@ public class HealthCheckServiceTests
         Assert.True(result1.Uptime > result2.Uptime);
     }
 
-    [AllureXunit]
+    [Fact]
     public void GetHealthStatus_ReturnsCurrentTimestamp()
     {
         // Arrange
@@ -187,7 +187,7 @@ public class HealthCheckServiceTests
         Assert.True(result.Timestamp <= afterCall);
     }
 
-    [AllureXunit]
+    [Fact]
     public void GetReadinessStatus_ReturnsCurrentTimestamp()
     {
         // Arrange

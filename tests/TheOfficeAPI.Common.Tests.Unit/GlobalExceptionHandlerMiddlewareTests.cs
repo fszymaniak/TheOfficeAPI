@@ -23,7 +23,7 @@ public class GlobalExceptionHandlerMiddlewareTests
         _httpContext.Response.Body = new MemoryStream();
     }
 
-    [AllureXunit]
+    [Fact]
     public async Task InvokeAsync_NoException_CallsNext()
     {
         // Arrange
@@ -43,7 +43,7 @@ public class GlobalExceptionHandlerMiddlewareTests
         Assert.True(nextCalled);
     }
 
-    [AllureXunit]
+    [Fact]
     public async Task InvokeAsync_ArgumentNullException_ReturnsBadRequest()
     {
         // Arrange
@@ -70,7 +70,7 @@ public class GlobalExceptionHandlerMiddlewareTests
         Assert.Equal("Invalid request parameters", errorResponse.Message);
     }
 
-    [AllureXunit]
+    [Fact]
     public async Task InvokeAsync_ArgumentException_ReturnsBadRequest()
     {
         // Arrange
@@ -97,7 +97,7 @@ public class GlobalExceptionHandlerMiddlewareTests
         Assert.Equal("Invalid argument", errorResponse.Details);
     }
 
-    [AllureXunit]
+    [Fact]
     public async Task InvokeAsync_KeyNotFoundException_ReturnsNotFound()
     {
         // Arrange
@@ -124,7 +124,7 @@ public class GlobalExceptionHandlerMiddlewareTests
         Assert.Equal("Resource not found", errorResponse.Details);
     }
 
-    [AllureXunit]
+    [Fact]
     public async Task InvokeAsync_UnauthorizedAccessException_ReturnsUnauthorized()
     {
         // Arrange
@@ -150,7 +150,7 @@ public class GlobalExceptionHandlerMiddlewareTests
         Assert.Equal("Unauthorized access", errorResponse.Message);
     }
 
-    [AllureXunit]
+    [Fact]
     public async Task InvokeAsync_InvalidOperationException_ReturnsConflict()
     {
         // Arrange
@@ -177,7 +177,7 @@ public class GlobalExceptionHandlerMiddlewareTests
         Assert.Equal("Invalid state", errorResponse.Details);
     }
 
-    [AllureXunit]
+    [Fact]
     public async Task InvokeAsync_NotImplementedException_ReturnsNotImplemented()
     {
         // Arrange
@@ -203,7 +203,7 @@ public class GlobalExceptionHandlerMiddlewareTests
         Assert.Equal("This functionality is not yet implemented", errorResponse.Message);
     }
 
-    [AllureXunit]
+    [Fact]
     public async Task InvokeAsync_TimeoutException_ReturnsRequestTimeout()
     {
         // Arrange
@@ -229,7 +229,7 @@ public class GlobalExceptionHandlerMiddlewareTests
         Assert.Equal("The request timed out", errorResponse.Message);
     }
 
-    [AllureXunit]
+    [Fact]
     public async Task InvokeAsync_GenericException_ReturnsInternalServerError()
     {
         // Arrange
@@ -256,7 +256,7 @@ public class GlobalExceptionHandlerMiddlewareTests
         Assert.Null(errorResponse.Details); // No details in production
     }
 
-    [AllureXunit]
+    [Fact]
     public async Task InvokeAsync_DevelopmentEnvironment_IncludesDetailedErrors()
     {
         // Arrange
@@ -280,7 +280,7 @@ public class GlobalExceptionHandlerMiddlewareTests
         Assert.Contains("Detailed error", errorResponse.Details);
     }
 
-    [AllureXunit]
+    [Fact]
     public async Task InvokeAsync_SetsTraceIdAndPath()
     {
         // Arrange
@@ -307,7 +307,7 @@ public class GlobalExceptionHandlerMiddlewareTests
         Assert.Equal("test-trace-id", errorResponse.TraceId);
     }
 
-    [AllureXunit]
+    [Fact]
     public async Task InvokeAsync_LogsException()
     {
         // Arrange

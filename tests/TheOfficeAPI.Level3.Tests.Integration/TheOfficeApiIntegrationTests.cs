@@ -70,7 +70,7 @@ public class TheOfficeApiIntegrationTests : IClassFixture<WebApplicationFactory<
                (content.StartsWith("[") && content.EndsWith("]"));
     }
 
-    [AllureXunit]
+    [Fact]
     public async Task GetAllSeasons_ReturnsSuccessResponse()
     {
         // Act
@@ -93,7 +93,7 @@ public class TheOfficeApiIntegrationTests : IClassFixture<WebApplicationFactory<
         });
     }
 
-    [AllureXunit]
+    [Fact]
     public async Task GetAllSeasons_IncludesHypermediaLinks()
     {
         // Act
@@ -128,7 +128,7 @@ public class TheOfficeApiIntegrationTests : IClassFixture<WebApplicationFactory<
         });
     }
 
-    [AllureXunit]
+    [Fact]
     public async Task GetSeason_WithValidSeasonNumber_ReturnsSuccessResponse()
     {
         // Act
@@ -147,7 +147,7 @@ public class TheOfficeApiIntegrationTests : IClassFixture<WebApplicationFactory<
         Assert.Equal("Season 1 retrieved successfully", apiResponse.Message);
     }
 
-    [AllureXunit]
+    [Fact]
     public async Task GetSeason_IncludesNavigationLinks()
     {
         // Act
@@ -178,7 +178,7 @@ public class TheOfficeApiIntegrationTests : IClassFixture<WebApplicationFactory<
         Assert.Equal("/api/v3/seasons", collectionLink.Href);
     }
 
-    [AllureXunit]
+    [Fact]
     public async Task GetSeason_WithInvalidSeasonNumber_Returns404NotFound()
     {
         // Act
@@ -201,7 +201,7 @@ public class TheOfficeApiIntegrationTests : IClassFixture<WebApplicationFactory<
         Assert.NotNull(collectionLink);
     }
 
-    [AllureXunit]
+    [Fact]
     public async Task GetSeasonEpisodes_WithValidSeason_ReturnsSuccessResponse()
     {
         // Act
@@ -226,7 +226,7 @@ public class TheOfficeApiIntegrationTests : IClassFixture<WebApplicationFactory<
         });
     }
 
-    [AllureXunit]
+    [Fact]
     public async Task GetSeasonEpisodes_IncludesHypermediaLinks()
     {
         // Act
@@ -261,7 +261,7 @@ public class TheOfficeApiIntegrationTests : IClassFixture<WebApplicationFactory<
         });
     }
 
-    [AllureXunit]
+    [Fact]
     public async Task GetSeasonEpisodes_WithInvalidSeason_Returns404NotFound()
     {
         // Act
@@ -279,7 +279,7 @@ public class TheOfficeApiIntegrationTests : IClassFixture<WebApplicationFactory<
         Assert.Equal("Invalid request", apiResponse.Message);
     }
 
-    [AllureXunit]
+    [Fact]
     public async Task GetEpisode_WithValidParameters_ReturnsSuccessResponse()
     {
         // Act
@@ -299,7 +299,7 @@ public class TheOfficeApiIntegrationTests : IClassFixture<WebApplicationFactory<
         Assert.Equal("Episode retrieved successfully", apiResponse.Message);
     }
 
-    [AllureXunit]
+    [Fact]
     public async Task GetEpisode_IncludesNextAndPreviousLinks()
     {
         // Act - Get middle episode
@@ -334,7 +334,7 @@ public class TheOfficeApiIntegrationTests : IClassFixture<WebApplicationFactory<
         Assert.NotNull(collectionLink);
     }
 
-    [AllureXunit]
+    [Fact]
     public async Task GetFirstEpisode_HasNoPreviousLink()
     {
         // Act - Get first episode
@@ -357,7 +357,7 @@ public class TheOfficeApiIntegrationTests : IClassFixture<WebApplicationFactory<
         Assert.NotNull(nextLink);
     }
 
-    [AllureXunit]
+    [Fact]
     public async Task GetEpisode_WithInvalidSeason_Returns404NotFound()
     {
         // Act
@@ -375,7 +375,7 @@ public class TheOfficeApiIntegrationTests : IClassFixture<WebApplicationFactory<
         Assert.Equal("Invalid request", apiResponse.Message);
     }
 
-    [AllureXunit]
+    [Fact]
     public async Task GetEpisode_WithInvalidEpisode_Returns404NotFound()
     {
         // Act
@@ -397,7 +397,7 @@ public class TheOfficeApiIntegrationTests : IClassFixture<WebApplicationFactory<
         Assert.NotEmpty(apiResponse.Links);
     }
 
-    [AllureXunit]
+    [Fact]
     public async Task Level3_UsesProperHttpVerbs()
     {
         // This test demonstrates that Level 3 maintains proper HTTP verbs from Level 2
@@ -412,7 +412,7 @@ public class TheOfficeApiIntegrationTests : IClassFixture<WebApplicationFactory<
         Assert.Equal(HttpStatusCode.OK, episodesResponse.StatusCode);
     }
 
-    [AllureXunit]
+    [Fact]
     public async Task Level3_UsesProperHttpStatusCodes()
     {
         // This test demonstrates Level 3 maintains proper HTTP status codes from Level 2
@@ -429,7 +429,7 @@ public class TheOfficeApiIntegrationTests : IClassFixture<WebApplicationFactory<
         Assert.Equal(HttpStatusCode.NotFound, invalidResponse.StatusCode);
     }
 
-    [AllureXunit]
+    [Fact]
     public async Task Level3_HATEOAS_LinksEnableDiscoverability()
     {
         // This test demonstrates the key feature of Level 3: hypermedia links enable API discoverability
@@ -461,7 +461,7 @@ public class TheOfficeApiIntegrationTests : IClassFixture<WebApplicationFactory<
         Assert.Equal(HttpStatusCode.OK, episodeResponse.StatusCode);
     }
 
-    [AllureXunit]
+    [Fact]
     public async Task ResourceBasedEndpoints_UsesDifferentUris()
     {
         // This test demonstrates that Level 3 maintains resource-based URIs from Levels 1 and 2
