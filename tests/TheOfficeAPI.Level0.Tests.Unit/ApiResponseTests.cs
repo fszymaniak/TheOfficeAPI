@@ -4,7 +4,7 @@ namespace TheOfficeAPI.Level0.Tests.Unit;
 
 public class ApiResponseTests
 {
-    [Fact]
+    [AllureXunit]
     public void ApiResponse_DefaultValues_AreCorrect()
     {
         // Act
@@ -17,7 +17,7 @@ public class ApiResponseTests
         Assert.Null(response.Error);
     }
 
-    [Fact]
+    [AllureXunit]
     public void ApiResponse_SuccessResponse_PropertiesSetCorrectly()
     {
         // Arrange
@@ -39,7 +39,7 @@ public class ApiResponseTests
         Assert.Null(response.Error);
     }
 
-    [Fact]
+    [AllureXunit]
     public void ApiResponse_ErrorResponse_PropertiesSetCorrectly()
     {
         // Arrange
@@ -61,7 +61,7 @@ public class ApiResponseTests
         Assert.Equal(error, response.Error);
     }
 
-    [Fact]
+    [AllureXunit]
     public void ApiResponse_GenericType_WorksWithDifferentTypes()
     {
         // Arrange & Act
@@ -101,7 +101,7 @@ public class ApiResponseTests
         Assert.Equal(message, response.Message);
     }
 
-    [Fact]
+    [AllureXunit]
     public void ApiResponse_MessageProperty_AcceptsNullValue()
     {
         // Act
@@ -124,7 +124,7 @@ public class ApiResponseTests
         Assert.Equal(error, response.Error);
     }
 
-    [Fact]
+    [AllureXunit]
     public void ApiResponse_ErrorProperty_AcceptsNullValue()
     {
         // Act

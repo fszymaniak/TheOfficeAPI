@@ -31,7 +31,7 @@ public class Level2E2ETests : E2ETestBase
         return JsonSerializer.Deserialize<T>(responseContent, _jsonOptions);
     }
 
-    [Fact]
+    [AllureXunit]
     public async Task GetAllSeasons_ReturnsSuccessResponse()
     {
         // Act
@@ -49,7 +49,7 @@ public class Level2E2ETests : E2ETestBase
         Assert.Equal("Seasons retrieved successfully", apiResponse.Message);
     }
 
-    [Fact]
+    [AllureXunit]
     public async Task GetSeason_WithValidSeasonNumber_ReturnsSuccessResponse()
     {
         // Act
@@ -67,7 +67,7 @@ public class Level2E2ETests : E2ETestBase
         Assert.Equal("1", apiResponse.Data.SeasonNumber);
     }
 
-    [Fact]
+    [AllureXunit]
     public async Task GetSeason_WithInvalidSeasonNumber_Returns404NotFound()
     {
         // Act
@@ -84,7 +84,7 @@ public class Level2E2ETests : E2ETestBase
         Assert.Contains("Season parameter is outside of the scope", apiResponse.Error);
     }
 
-    [Fact]
+    [AllureXunit]
     public async Task GetSeasonEpisodes_WithValidSeason_ReturnsSuccessResponse()
     {
         // Act
@@ -103,7 +103,7 @@ public class Level2E2ETests : E2ETestBase
         Assert.Equal("Episodes for season 1 retrieved successfully", apiResponse.Message);
     }
 
-    [Fact]
+    [AllureXunit]
     public async Task GetSeasonEpisodes_WithInvalidSeason_Returns404NotFound()
     {
         // Act
@@ -120,7 +120,7 @@ public class Level2E2ETests : E2ETestBase
         Assert.Contains("Season parameter is outside of the scope", apiResponse.Error);
     }
 
-    [Fact]
+    [AllureXunit]
     public async Task GetEpisode_WithValidParameters_ReturnsSuccessResponse()
     {
         // Act
@@ -139,7 +139,7 @@ public class Level2E2ETests : E2ETestBase
         Assert.Equal(1, apiResponse.Data.EpisodeNumber);
     }
 
-    [Fact]
+    [AllureXunit]
     public async Task GetEpisode_WithInvalidSeason_Returns404NotFound()
     {
         // Act
@@ -156,7 +156,7 @@ public class Level2E2ETests : E2ETestBase
         Assert.Contains("Season parameter is outside of the scope", apiResponse.Error);
     }
 
-    [Fact]
+    [AllureXunit]
     public async Task GetEpisode_WithInvalidEpisode_Returns404NotFound()
     {
         // Act
@@ -173,7 +173,7 @@ public class Level2E2ETests : E2ETestBase
         Assert.Contains("Episode parameter is outside of the scope", apiResponse.Error);
     }
 
-    [Fact]
+    [AllureXunit]
     public async Task Level2_UsesProperHttpVerbs()
     {
         // This test demonstrates Level 2 characteristic: proper HTTP verbs
@@ -189,7 +189,7 @@ public class Level2E2ETests : E2ETestBase
         Assert.Equal(HttpStatusCode.OK, episodesResponse.StatusCode);
     }
 
-    [Fact]
+    [AllureXunit]
     public async Task Level2_UsesProperHttpStatusCodes()
     {
         // This test demonstrates Level 2's use of proper HTTP status codes

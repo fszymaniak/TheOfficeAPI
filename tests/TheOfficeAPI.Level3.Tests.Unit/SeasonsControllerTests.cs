@@ -16,7 +16,7 @@ public class SeasonsControllerTests
         _controller = new SeasonsController(_service);
     }
 
-    [Fact]
+    [AllureXunit]
     public void GetAllSeasons_ReturnsSuccessResponse()
     {
         // Act
@@ -33,7 +33,7 @@ public class SeasonsControllerTests
         Assert.Equal("Seasons retrieved successfully", response.Message);
     }
 
-    [Fact]
+    [AllureXunit]
     public void GetAllSeasons_ReturnsAllSeasons()
     {
         // Act
@@ -45,7 +45,7 @@ public class SeasonsControllerTests
         Assert.Equal(9, response.Data.Count); // The Office has 9 seasons
     }
 
-    [Fact]
+    [AllureXunit]
     public void GetAllSeasons_IncludesHypermediaLinks()
     {
         // Act
@@ -77,7 +77,7 @@ public class SeasonsControllerTests
         });
     }
 
-    [Fact]
+    [AllureXunit]
     public void GetSeason_WithValidSeasonNumber_ReturnsSuccessResponse()
     {
         // Act
@@ -94,7 +94,7 @@ public class SeasonsControllerTests
         Assert.Equal("Season 1 retrieved successfully", response.Message);
     }
 
-    [Fact]
+    [AllureXunit]
     public void GetSeason_IncludesNavigationLinks()
     {
         // Act
@@ -123,7 +123,7 @@ public class SeasonsControllerTests
         Assert.Equal("/api/v3/seasons", collectionLink.Href);
     }
 
-    [Fact]
+    [AllureXunit]
     public void GetSeason_WithInvalidSeasonNumber_Returns404NotFound()
     {
         // Act
@@ -144,7 +144,7 @@ public class SeasonsControllerTests
         Assert.NotNull(collectionLink);
     }
 
-    [Fact]
+    [AllureXunit]
     public void GetSeason_WithSeasonZero_Returns404NotFound()
     {
         // Act
@@ -159,7 +159,7 @@ public class SeasonsControllerTests
         Assert.Contains("Season parameter is outside of the scope", response.Error);
     }
 
-    [Fact]
+    [AllureXunit]
     public void GetSeason_WithSeasonTwo_ReturnsCorrectSeason()
     {
         // Act

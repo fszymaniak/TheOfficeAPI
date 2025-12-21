@@ -16,7 +16,7 @@ public class EpisodesControllerTests
         _controller = new EpisodesController(_service);
     }
 
-    [Fact]
+    [AllureXunit]
     public void GetSeasonEpisodes_WithValidSeason_ReturnsSuccessResponse()
     {
         // Act
@@ -33,7 +33,7 @@ public class EpisodesControllerTests
         Assert.Equal("Episodes for season 1 retrieved successfully", response.Message);
     }
 
-    [Fact]
+    [AllureXunit]
     public void GetSeasonEpisodes_IncludesHypermediaLinks()
     {
         // Act
@@ -63,7 +63,7 @@ public class EpisodesControllerTests
         });
     }
 
-    [Fact]
+    [AllureXunit]
     public void GetSeasonEpisodes_WithInvalidSeason_Returns404NotFound()
     {
         // Act
@@ -79,7 +79,7 @@ public class EpisodesControllerTests
         Assert.Equal("Invalid request", response.Message);
     }
 
-    [Fact]
+    [AllureXunit]
     public void GetEpisode_WithValidParameters_ReturnsSuccessResponse()
     {
         // Act
@@ -97,7 +97,7 @@ public class EpisodesControllerTests
         Assert.Equal("Episode retrieved successfully", response.Message);
     }
 
-    [Fact]
+    [AllureXunit]
     public void GetEpisode_IncludesNextAndPreviousLinks()
     {
         // Act - Get middle episode
@@ -130,7 +130,7 @@ public class EpisodesControllerTests
         Assert.NotNull(collectionLink);
     }
 
-    [Fact]
+    [AllureXunit]
     public void GetFirstEpisode_HasNoPreviousLink()
     {
         // Act - Get first episode
@@ -151,7 +151,7 @@ public class EpisodesControllerTests
         Assert.NotNull(nextLink);
     }
 
-    [Fact]
+    [AllureXunit]
     public void GetEpisode_WithInvalidSeason_Returns404NotFound()
     {
         // Act
@@ -167,7 +167,7 @@ public class EpisodesControllerTests
         Assert.Equal("Invalid request", response.Message);
     }
 
-    [Fact]
+    [AllureXunit]
     public void GetEpisode_WithInvalidEpisode_Returns404NotFound()
     {
         // Act
@@ -183,7 +183,7 @@ public class EpisodesControllerTests
         Assert.Equal("Invalid request", response.Message);
     }
 
-    [Fact]
+    [AllureXunit]
     public void GetSeasonEpisodes_ReturnsAllEpisodesForSeason()
     {
         // Act
@@ -199,7 +199,7 @@ public class EpisodesControllerTests
         });
     }
 
-    [Fact]
+    [AllureXunit]
     public void GetEpisode_ReturnsCorrectEpisodeDetails()
     {
         // Act

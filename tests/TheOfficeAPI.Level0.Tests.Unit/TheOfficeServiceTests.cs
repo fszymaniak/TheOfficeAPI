@@ -11,7 +11,7 @@ public class TheOfficeServiceTests
         _service = new TheOfficeService();
     }
 
-    [Fact]
+    [AllureXunit]
     public void GetAllSeasons_ReturnsNonEmptyList()
     {
         // Act
@@ -22,7 +22,7 @@ public class TheOfficeServiceTests
         Assert.NotEmpty(seasons);
     }
 
-    [Fact]
+    [AllureXunit]
     public void GetAllSeasons_ReturnsOrderedSeasons()
     {
         // Act
@@ -37,7 +37,7 @@ public class TheOfficeServiceTests
         }
     }
 
-    [Fact]
+    [AllureXunit]
     public void GetSeasonEpisodes_WithValidSeason_ReturnsEpisodes()
     {
         // Arrange
@@ -51,7 +51,7 @@ public class TheOfficeServiceTests
         Assert.All(episodes, episode => Assert.Equal(season, episode.Season));
     }
 
-    [Fact]
+    [AllureXunit]
     public void GetSeasonEpisodes_WithNullSeason_ReturnsEmptyList()
     {
         // Act
@@ -62,7 +62,7 @@ public class TheOfficeServiceTests
         Assert.Empty(episodes);
     }
 
-    [Fact]
+    [AllureXunit]
     public void GetSeasonEpisodes_WithInvalidSeason_ReturnsEmptyList()
     {
         // Arrange
@@ -76,7 +76,7 @@ public class TheOfficeServiceTests
         Assert.Empty(episodes);
     }
 
-    [Fact]
+    [AllureXunit]
     public void GetEpisode_WithValidSeasonAndEpisode_ReturnsEpisode()
     {
         // Arrange
@@ -105,7 +105,7 @@ public class TheOfficeServiceTests
         Assert.Null(result);
     }
 
-    [Fact]
+    [AllureXunit]
     public void GetEpisode_WithInvalidSeasonAndEpisode_ReturnsNull()
     {
         // Arrange

@@ -4,14 +4,14 @@ namespace TheOfficeAPI.Common.Tests.Unit;
 
 public class ConfigurationOptionsTests
 {
-    [Fact]
+    [AllureXunit]
     public void EnvironmentOptions_SectionName_ReturnsEnvironment()
     {
         // Assert
         Assert.Equal("Environment", EnvironmentOptions.SectionName);
     }
 
-    [Fact]
+    [AllureXunit]
     public void EnvironmentOptions_MaturityLevelVariable_DefaultsToEmptyString()
     {
         // Arrange
@@ -21,7 +21,7 @@ public class ConfigurationOptionsTests
         Assert.Equal(string.Empty, options.MaturityLevelVariable);
     }
 
-    [Fact]
+    [AllureXunit]
     public void EnvironmentOptions_MaturityLevelVariable_CanBeSet()
     {
         // Arrange
@@ -34,14 +34,14 @@ public class ConfigurationOptionsTests
         Assert.Equal("CUSTOM_MATURITY_LEVEL", options.MaturityLevelVariable);
     }
 
-    [Fact]
+    [AllureXunit]
     public void ServerOptions_SectionName_ReturnsServer()
     {
         // Assert
         Assert.Equal("Server", ServerOptions.SectionName);
     }
 
-    [Fact]
+    [AllureXunit]
     public void ServerOptions_DefaultUrl_DefaultsToEmptyString()
     {
         // Arrange
@@ -51,7 +51,7 @@ public class ConfigurationOptionsTests
         Assert.Equal(string.Empty, options.DefaultUrl);
     }
 
-    [Fact]
+    [AllureXunit]
     public void ServerOptions_DefaultUrl_CanBeSet()
     {
         // Arrange
@@ -64,7 +64,7 @@ public class ConfigurationOptionsTests
         Assert.Equal("http://localhost:5000", options.DefaultUrl);
     }
 
-    [Fact]
+    [AllureXunit]
     public void EnvironmentOptions_IsInstantiable()
     {
         // Act
@@ -74,7 +74,7 @@ public class ConfigurationOptionsTests
         Assert.NotNull(options);
     }
 
-    [Fact]
+    [AllureXunit]
     public void ServerOptions_IsInstantiable()
     {
         // Act

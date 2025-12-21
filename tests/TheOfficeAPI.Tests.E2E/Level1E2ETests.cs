@@ -30,7 +30,7 @@ public class Level1E2ETests : E2ETestBase
         return JsonSerializer.Deserialize<T>(responseContent, _jsonOptions);
     }
 
-    [Fact]
+    [AllureXunit]
     public async Task GetAllSeasons_ReturnsSuccessResponse()
     {
         // Act
@@ -48,7 +48,7 @@ public class Level1E2ETests : E2ETestBase
         Assert.Equal("Seasons retrieved successfully", apiResponse.Message);
     }
 
-    [Fact]
+    [AllureXunit]
     public async Task GetSeasonEpisodes_WithValidSeason_ReturnsSuccessResponse()
     {
         // Act
@@ -67,7 +67,7 @@ public class Level1E2ETests : E2ETestBase
         Assert.Equal("Episodes for season 1 retrieved successfully", apiResponse.Message);
     }
 
-    [Fact]
+    [AllureXunit]
     public async Task GetSeasonEpisodes_WithInvalidSeason_ReturnsErrorResponse()
     {
         // Act
@@ -84,7 +84,7 @@ public class Level1E2ETests : E2ETestBase
         Assert.Contains("Season parameter is outside of the scope", apiResponse.Error);
     }
 
-    [Fact]
+    [AllureXunit]
     public async Task GetEpisode_WithValidParameters_ReturnsSuccessResponse()
     {
         // Act
@@ -103,7 +103,7 @@ public class Level1E2ETests : E2ETestBase
         Assert.Equal(1, apiResponse.Data.EpisodeNumber);
     }
 
-    [Fact]
+    [AllureXunit]
     public async Task GetEpisode_WithInvalidSeason_ReturnsErrorResponse()
     {
         // Act
@@ -120,7 +120,7 @@ public class Level1E2ETests : E2ETestBase
         Assert.Contains("Season parameter is outside of the scope", apiResponse.Error);
     }
 
-    [Fact]
+    [AllureXunit]
     public async Task Level1_UsesResourceBasedUris()
     {
         // This test verifies Level 1 characteristic: resource-based URIs

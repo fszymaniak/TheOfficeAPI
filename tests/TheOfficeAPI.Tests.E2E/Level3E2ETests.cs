@@ -31,7 +31,7 @@ public class Level3E2ETests : E2ETestBase
         return JsonSerializer.Deserialize<T>(responseContent, _jsonOptions);
     }
 
-    [Fact]
+    [AllureXunit]
     public async Task GetAllSeasons_ReturnsSuccessResponse()
     {
         // Act
@@ -49,7 +49,7 @@ public class Level3E2ETests : E2ETestBase
         Assert.Equal("Seasons retrieved successfully", apiResponse.Message);
     }
 
-    [Fact]
+    [AllureXunit]
     public async Task GetAllSeasons_IncludesHypermediaLinks()
     {
         // Act
@@ -68,7 +68,7 @@ public class Level3E2ETests : E2ETestBase
         Assert.Contains("/api/v3/seasons", selfLink.Href);
     }
 
-    [Fact]
+    [AllureXunit]
     public async Task GetAllSeasons_EachSeasonIncludesHypermediaLinks()
     {
         // Act
@@ -90,7 +90,7 @@ public class Level3E2ETests : E2ETestBase
         });
     }
 
-    [Fact]
+    [AllureXunit]
     public async Task GetSeason_WithValidSeasonNumber_ReturnsSuccessResponse()
     {
         // Act
@@ -108,7 +108,7 @@ public class Level3E2ETests : E2ETestBase
         Assert.Equal("1", apiResponse.Data.SeasonNumber);
     }
 
-    [Fact]
+    [AllureXunit]
     public async Task GetSeason_IncludesHypermediaLinks()
     {
         // Act
@@ -133,7 +133,7 @@ public class Level3E2ETests : E2ETestBase
         Assert.Contains("/api/v3/seasons/1/episodes", episodesLink.Href);
     }
 
-    [Fact]
+    [AllureXunit]
     public async Task GetSeason_WithInvalidSeasonNumber_Returns404NotFound()
     {
         // Act
@@ -150,7 +150,7 @@ public class Level3E2ETests : E2ETestBase
         Assert.Contains("Season parameter is outside of the scope", apiResponse.Error);
     }
 
-    [Fact]
+    [AllureXunit]
     public async Task GetSeasonEpisodes_WithValidSeason_ReturnsSuccessResponse()
     {
         // Act
@@ -169,7 +169,7 @@ public class Level3E2ETests : E2ETestBase
         Assert.Equal("Episodes for season 1 retrieved successfully", apiResponse.Message);
     }
 
-    [Fact]
+    [AllureXunit]
     public async Task GetSeasonEpisodes_EachEpisodeIncludesHypermediaLinks()
     {
         // Act
@@ -192,7 +192,7 @@ public class Level3E2ETests : E2ETestBase
         });
     }
 
-    [Fact]
+    [AllureXunit]
     public async Task GetEpisode_WithValidParameters_ReturnsSuccessResponse()
     {
         // Act
@@ -211,7 +211,7 @@ public class Level3E2ETests : E2ETestBase
         Assert.Equal(1, apiResponse.Data.EpisodeNumber);
     }
 
-    [Fact]
+    [AllureXunit]
     public async Task GetEpisode_IncludesHypermediaLinks()
     {
         // Act
@@ -236,7 +236,7 @@ public class Level3E2ETests : E2ETestBase
         Assert.Contains("/api/v3/seasons/1", seasonLink.Href);
     }
 
-    [Fact]
+    [AllureXunit]
     public async Task GetEpisode_WithInvalidSeason_Returns404NotFound()
     {
         // Act
@@ -253,7 +253,7 @@ public class Level3E2ETests : E2ETestBase
         Assert.Contains("Season parameter is outside of the scope", apiResponse.Error);
     }
 
-    [Fact]
+    [AllureXunit]
     public async Task Level3_LinksAreNavigable()
     {
         // This test demonstrates HATEOAS: following hypermedia links to navigate the API

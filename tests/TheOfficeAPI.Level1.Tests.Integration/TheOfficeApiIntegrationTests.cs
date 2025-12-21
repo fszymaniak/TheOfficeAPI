@@ -69,7 +69,7 @@ public class TheOfficeApiIntegrationTests : IClassFixture<WebApplicationFactory<
                (content.StartsWith("[") && content.EndsWith("]"));
     }
 
-    [Fact]
+    [AllureXunit]
     public async Task GetAllSeasons_ReturnsSuccessResponse()
     {
         // Act
@@ -92,7 +92,7 @@ public class TheOfficeApiIntegrationTests : IClassFixture<WebApplicationFactory<
         });
     }
 
-    [Fact]
+    [AllureXunit]
     public async Task GetSeasonEpisodes_WithValidSeason_ReturnsSuccessResponse()
     {
         // Act
@@ -117,7 +117,7 @@ public class TheOfficeApiIntegrationTests : IClassFixture<WebApplicationFactory<
         });
     }
 
-    [Fact]
+    [AllureXunit]
     public async Task GetSeasonEpisodes_WithInvalidSeason_ReturnsErrorResponse()
     {
         // Act
@@ -135,7 +135,7 @@ public class TheOfficeApiIntegrationTests : IClassFixture<WebApplicationFactory<
         Assert.Equal("Invalid request", apiResponse.Message);
     }
 
-    [Fact]
+    [AllureXunit]
     public async Task GetEpisode_WithValidParameters_ReturnsSuccessResponse()
     {
         // Act
@@ -155,7 +155,7 @@ public class TheOfficeApiIntegrationTests : IClassFixture<WebApplicationFactory<
         Assert.Equal("Episode retrieved successfully", apiResponse.Message);
     }
 
-    [Fact]
+    [AllureXunit]
     public async Task GetEpisode_WithInvalidSeason_ReturnsErrorResponse()
     {
         // Act
@@ -173,7 +173,7 @@ public class TheOfficeApiIntegrationTests : IClassFixture<WebApplicationFactory<
         Assert.Equal("Invalid request", apiResponse.Message);
     }
 
-    [Fact]
+    [AllureXunit]
     public async Task GetEpisode_WithInvalidEpisode_ReturnsErrorResponse()
     {
         // Act
@@ -191,7 +191,7 @@ public class TheOfficeApiIntegrationTests : IClassFixture<WebApplicationFactory<
         Assert.Equal("Invalid request", apiResponse.Message);
     }
 
-    [Fact]
+    [AllureXunit]
     public async Task GetAllSeasons_AlwaysReturnsHttpOk()
     {
         // Act
@@ -201,7 +201,7 @@ public class TheOfficeApiIntegrationTests : IClassFixture<WebApplicationFactory<
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
 
-    [Fact]
+    [AllureXunit]
     public async Task ResourceBasedEndpoints_UsesDifferentUris()
     {
         // This test demonstrates the key difference of Level 1: resource-based URIs

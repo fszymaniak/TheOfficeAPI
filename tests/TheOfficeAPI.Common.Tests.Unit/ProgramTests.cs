@@ -21,7 +21,7 @@ public class ProgramTests : IDisposable
         Environment.SetEnvironmentVariable(name, value);
     }
 
-    [Fact]
+    [AllureXunit]
     public void CreateWebApplication_WithNoMaturityLevel_ReturnsWebApplication()
     {
         // Arrange
@@ -35,7 +35,7 @@ public class ProgramTests : IDisposable
         Assert.NotNull(app);
     }
 
-    [Fact]
+    [AllureXunit]
     public void CreateWebApplication_WithLevel0_ReturnsWebApplication()
     {
         // Arrange
@@ -49,7 +49,7 @@ public class ProgramTests : IDisposable
         Assert.NotNull(app);
     }
 
-    [Fact]
+    [AllureXunit]
     public void CreateWebApplication_WithLevel1_ReturnsWebApplication()
     {
         // Arrange
@@ -63,7 +63,7 @@ public class ProgramTests : IDisposable
         Assert.NotNull(app);
     }
 
-    [Fact]
+    [AllureXunit]
     public void CreateWebApplication_WithLevel2_ReturnsWebApplication()
     {
         // Arrange
@@ -77,7 +77,7 @@ public class ProgramTests : IDisposable
         Assert.NotNull(app);
     }
 
-    [Fact]
+    [AllureXunit]
     public void CreateWebApplication_WithLevel3_ReturnsWebApplication()
     {
         // Arrange
@@ -91,7 +91,7 @@ public class ProgramTests : IDisposable
         Assert.NotNull(app);
     }
 
-    [Fact]
+    [AllureXunit]
     public void CreateWebApplication_WithPortEnvironmentVariable_UsesRailwayMode()
     {
         // Arrange
@@ -105,7 +105,7 @@ public class ProgramTests : IDisposable
         Assert.NotNull(app);
     }
 
-    [Fact]
+    [AllureXunit]
     public void CreateWebApplication_WithPortAndMaturityLevel_ConfiguresBothCorrectly()
     {
         // Arrange
@@ -119,7 +119,7 @@ public class ProgramTests : IDisposable
         Assert.NotNull(app);
     }
 
-    [Fact]
+    [AllureXunit]
     public void CreateWebApplication_WithInvalidMaturityLevel_FallsBackToBasicConfig()
     {
         // Arrange
@@ -133,7 +133,7 @@ public class ProgramTests : IDisposable
         Assert.NotNull(app);
     }
 
-    [Fact]
+    [AllureXunit]
     public void CreateWebApplication_WithNoMaturityLevel_RegistersAllLevelServices()
     {
         // Arrange
@@ -151,7 +151,7 @@ public class ProgramTests : IDisposable
         Assert.NotNull(app.Services.GetService<TheOfficeAPI.Level3.Services.TheOfficeService>());
     }
 
-    [Fact]
+    [AllureXunit]
     public void CreateWebApplication_WithLevel0_RegistersHealthCheckService()
     {
         // Arrange
@@ -167,7 +167,7 @@ public class ProgramTests : IDisposable
         Assert.NotNull(healthCheckService);
     }
 
-    [Fact]
+    [AllureXunit]
     public void CreateWebApplication_WithNoMaturityLevel_RegistersHealthCheckService()
     {
         // Arrange
@@ -183,7 +183,7 @@ public class ProgramTests : IDisposable
         Assert.NotNull(healthCheckService);
     }
 
-    [Fact]
+    [AllureXunit]
     public void CreateWebApplication_WithEmptyArgs_ReturnsWebApplication()
     {
         // Arrange
@@ -197,7 +197,7 @@ public class ProgramTests : IDisposable
         Assert.NotNull(app);
     }
 
-    [Fact]
+    [AllureXunit]
     public void CreateWebApplication_WithLevel1_RegistersLevel1Service()
     {
         // Arrange
@@ -213,7 +213,7 @@ public class ProgramTests : IDisposable
         Assert.NotNull(level1Service);
     }
 
-    [Fact]
+    [AllureXunit]
     public void CreateWebApplication_WithLevel2_RegistersLevel2Service()
     {
         // Arrange
@@ -229,7 +229,7 @@ public class ProgramTests : IDisposable
         Assert.NotNull(level2Service);
     }
 
-    [Fact]
+    [AllureXunit]
     public void CreateWebApplication_WithLevel3_RegistersLevel3Service()
     {
         // Arrange

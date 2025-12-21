@@ -4,7 +4,7 @@ namespace TheOfficeAPI.Common.Tests.Unit;
 
 public class ErrorResponseTests
 {
-    [Fact]
+    [AllureXunit]
     public void ErrorResponse_DefaultConstructor_SetsDefaultValues()
     {
         // Act
@@ -19,7 +19,7 @@ public class ErrorResponseTests
         Assert.Null(errorResponse.TraceId);
     }
 
-    [Fact]
+    [AllureXunit]
     public void ErrorResponse_TimestampIsSetToUtcNow()
     {
         // Arrange
@@ -34,7 +34,7 @@ public class ErrorResponseTests
         Assert.True(errorResponse.Timestamp <= afterCreation);
     }
 
-    [Fact]
+    [AllureXunit]
     public void ErrorResponse_CanSetStatusCode()
     {
         // Arrange
@@ -47,7 +47,7 @@ public class ErrorResponseTests
         Assert.Equal(404, errorResponse.StatusCode);
     }
 
-    [Fact]
+    [AllureXunit]
     public void ErrorResponse_CanSetMessage()
     {
         // Arrange
@@ -60,7 +60,7 @@ public class ErrorResponseTests
         Assert.Equal("Not Found", errorResponse.Message);
     }
 
-    [Fact]
+    [AllureXunit]
     public void ErrorResponse_CanSetDetails()
     {
         // Arrange
@@ -73,7 +73,7 @@ public class ErrorResponseTests
         Assert.Equal("Resource with ID 123 was not found", errorResponse.Details);
     }
 
-    [Fact]
+    [AllureXunit]
     public void ErrorResponse_CanSetPath()
     {
         // Arrange
@@ -86,7 +86,7 @@ public class ErrorResponseTests
         Assert.Equal("/api/v1/test", errorResponse.Path);
     }
 
-    [Fact]
+    [AllureXunit]
     public void ErrorResponse_CanSetTraceId()
     {
         // Arrange
@@ -99,7 +99,7 @@ public class ErrorResponseTests
         Assert.Equal("trace-123", errorResponse.TraceId);
     }
 
-    [Fact]
+    [AllureXunit]
     public void ErrorResponse_CanSetTimestamp()
     {
         // Arrange
@@ -113,7 +113,7 @@ public class ErrorResponseTests
         Assert.Equal(customTimestamp, errorResponse.Timestamp);
     }
 
-    [Fact]
+    [AllureXunit]
     public void ErrorResponse_AllPropertiesCanBeSet()
     {
         // Arrange & Act

@@ -10,7 +10,7 @@ namespace TheOfficeAPI.Common.Tests.Unit;
 
 public class SwaggerConfigurationExtensionsTests
 {
-    [Fact]
+    [AllureXunit]
     public void AddSwaggerServices_Level0_AddsSwaggerGen()
     {
         // Arrange
@@ -25,7 +25,7 @@ public class SwaggerConfigurationExtensionsTests
         Assert.NotNull(swaggerGenOptions);
     }
 
-    [Fact]
+    [AllureXunit]
     public void AddSwaggerServices_Level1_AddsSwaggerGen()
     {
         // Arrange
@@ -40,7 +40,7 @@ public class SwaggerConfigurationExtensionsTests
         Assert.NotNull(swaggerGenOptions);
     }
 
-    [Fact]
+    [AllureXunit]
     public void AddSwaggerServices_Level2_AddsSwaggerGen()
     {
         // Arrange
@@ -55,7 +55,7 @@ public class SwaggerConfigurationExtensionsTests
         Assert.NotNull(swaggerGenOptions);
     }
 
-    [Fact]
+    [AllureXunit]
     public void AddSwaggerServices_Level3_AddsSwaggerGen()
     {
         // Arrange
@@ -70,7 +70,7 @@ public class SwaggerConfigurationExtensionsTests
         Assert.NotNull(swaggerGenOptions);
     }
 
-    [Fact]
+    [AllureXunit]
     public void AddSwaggerServices_Level0_ConfiguresAllApiVersions()
     {
         // Arrange
@@ -93,7 +93,7 @@ public class SwaggerConfigurationExtensionsTests
         Assert.Contains(options.SwaggerGeneratorOptions.SwaggerDocs, d => d.Key == "v3");
     }
 
-    [Fact]
+    [AllureXunit]
     public void AddSwaggerServices_Level1_ConfiguresAllApiVersions()
     {
         // Arrange
@@ -116,7 +116,7 @@ public class SwaggerConfigurationExtensionsTests
         Assert.Contains(options.SwaggerGeneratorOptions.SwaggerDocs, d => d.Key == "v3");
     }
 
-    [Fact]
+    [AllureXunit]
     public void AddSwaggerServices_Level2_ConfiguresAllApiVersions()
     {
         // Arrange
@@ -139,7 +139,7 @@ public class SwaggerConfigurationExtensionsTests
         Assert.Contains(options.SwaggerGeneratorOptions.SwaggerDocs, d => d.Key == "v3");
     }
 
-    [Fact]
+    [AllureXunit]
     public void AddSwaggerServices_Level3_ConfiguresAllApiVersions()
     {
         // Arrange
@@ -162,7 +162,7 @@ public class SwaggerConfigurationExtensionsTests
         Assert.Contains(options.SwaggerGeneratorOptions.SwaggerDocs, d => d.Key == "v3");
     }
 
-    [Fact]
+    [AllureXunit]
     public void AddSwaggerServices_Level0_ConfiguresV0DocInfo()
     {
         // Arrange
@@ -185,7 +185,7 @@ public class SwaggerConfigurationExtensionsTests
         Assert.Equal("Richardson Maturity Model Level 0 implementation", v0Doc.Description);
     }
 
-    [Fact]
+    [AllureXunit]
     public void AddSwaggerServices_Level1_ConfiguresV1DocInfo()
     {
         // Arrange
@@ -208,7 +208,7 @@ public class SwaggerConfigurationExtensionsTests
         Assert.Contains("Level 1", v1Doc.Description);
     }
 
-    [Fact]
+    [AllureXunit]
     public void AddSwaggerServices_Level2_ConfiguresV2DocInfo()
     {
         // Arrange
@@ -231,7 +231,7 @@ public class SwaggerConfigurationExtensionsTests
         Assert.Contains("Level 2", v2Doc.Description);
     }
 
-    [Fact]
+    [AllureXunit]
     public void AddSwaggerServices_Level3_ConfiguresV3DocInfo()
     {
         // Arrange
@@ -254,7 +254,7 @@ public class SwaggerConfigurationExtensionsTests
         Assert.Contains("HATEOAS", v3Doc.Description);
     }
 
-    [Fact]
+    [AllureXunit]
     public void AddSwaggerServices_Level0_ConfiguresDocInclusionPredicate()
     {
         // Arrange
@@ -275,7 +275,7 @@ public class SwaggerConfigurationExtensionsTests
         Assert.NotNull(options.SwaggerGeneratorOptions.DocInclusionPredicate);
     }
 
-    [Fact]
+    [AllureXunit]
     public void AddSwaggerServices_Level1_ConfiguresDocInclusionPredicate()
     {
         // Arrange
@@ -295,7 +295,7 @@ public class SwaggerConfigurationExtensionsTests
         Assert.NotNull(options.SwaggerGeneratorOptions.DocInclusionPredicate);
     }
 
-    [Fact]
+    [AllureXunit]
     public void AddSwaggerServices_Level2_ConfiguresDocInclusionPredicate()
     {
         // Arrange
@@ -315,7 +315,7 @@ public class SwaggerConfigurationExtensionsTests
         Assert.NotNull(options.SwaggerGeneratorOptions.DocInclusionPredicate);
     }
 
-    [Fact]
+    [AllureXunit]
     public void AddSwaggerServices_Level3_ConfiguresDocInclusionPredicate()
     {
         // Arrange
@@ -335,7 +335,7 @@ public class SwaggerConfigurationExtensionsTests
         Assert.NotNull(options.SwaggerGeneratorOptions.DocInclusionPredicate);
     }
 
-    [Fact]
+    [AllureXunit]
     public void UseSwaggerMiddleware_Level0_ConfiguresSwagger()
     {
         // Arrange
@@ -355,7 +355,7 @@ public class SwaggerConfigurationExtensionsTests
         Assert.NotNull(app);
     }
 
-    [Fact]
+    [AllureXunit]
     public void UseSwaggerMiddleware_Level1_ConfiguresSwagger()
     {
         // Arrange
@@ -371,7 +371,7 @@ public class SwaggerConfigurationExtensionsTests
         Assert.NotNull(app);
     }
 
-    [Fact]
+    [AllureXunit]
     public void UseSwaggerMiddleware_Level2_ConfiguresSwagger()
     {
         // Arrange
@@ -387,7 +387,7 @@ public class SwaggerConfigurationExtensionsTests
         Assert.NotNull(app);
     }
 
-    [Fact]
+    [AllureXunit]
     public void UseSwaggerMiddleware_Level3_ConfiguresSwagger()
     {
         // Arrange
@@ -403,7 +403,7 @@ public class SwaggerConfigurationExtensionsTests
         Assert.NotNull(app);
     }
 
-    [Fact]
+    [AllureXunit]
     public void AddSwaggerServices_Level0_RegistersMultipleSwaggerGenOptionsConfigurators()
     {
         // Arrange
@@ -418,7 +418,7 @@ public class SwaggerConfigurationExtensionsTests
         Assert.NotEmpty(swaggerGenServices);
     }
 
-    [Fact]
+    [AllureXunit]
     public void AddSwaggerServices_Level1_RegistersMultipleSwaggerGenOptionsConfigurators()
     {
         // Arrange
@@ -433,7 +433,7 @@ public class SwaggerConfigurationExtensionsTests
         Assert.NotEmpty(swaggerGenServices);
     }
 
-    [Fact]
+    [AllureXunit]
     public void AddSwaggerServices_Level2_RegistersMultipleSwaggerGenOptionsConfigurators()
     {
         // Arrange
@@ -448,7 +448,7 @@ public class SwaggerConfigurationExtensionsTests
         Assert.NotEmpty(swaggerGenServices);
     }
 
-    [Fact]
+    [AllureXunit]
     public void AddSwaggerServices_Level3_RegistersMultipleSwaggerGenOptionsConfigurators()
     {
         // Arrange

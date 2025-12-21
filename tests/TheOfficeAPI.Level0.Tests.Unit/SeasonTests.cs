@@ -4,7 +4,7 @@ namespace TheOfficeAPI.Level0.Tests.Unit;
 
 public class SeasonTests
 {
-    [Fact]
+    [AllureXunit]
     public void Season_DefaultValues_AreCorrect()
     {
         // Act
@@ -15,7 +15,7 @@ public class SeasonTests
         Assert.Equal(0, season.EpisodeCount);
     }
 
-    [Fact]
+    [AllureXunit]
     public void Season_PropertiesCanBeSet()
     {
         // Arrange
@@ -48,7 +48,7 @@ public class SeasonTests
         Assert.Equal(seasonNumber, season.SeasonNumber);
     }
 
-    [Fact]
+    [AllureXunit]
     public void Season_SeasonNumberProperty_AcceptsNullValue()
     {
         // Act
@@ -73,7 +73,7 @@ public class SeasonTests
         Assert.Equal(episodeCount, season.EpisodeCount);
     }
 
-    [Fact]
+    [AllureXunit]
     public void Season_WithValidData_RepresentsSeasonCorrectly()
     {
         // Arrange & Act

@@ -4,7 +4,7 @@ namespace TheOfficeAPI.Level0.Tests.Unit;
 
 public class ApiRequestTests
 {
-    [Fact]
+    [AllureXunit]
     public void ApiRequest_DefaultValues_AreCorrect()
     {
         // Act
@@ -16,7 +16,7 @@ public class ApiRequestTests
         Assert.Null(request.Episode);
     }
 
-    [Fact]
+    [AllureXunit]
     public void ApiRequest_PropertiesCanBeSet()
     {
         // Arrange
@@ -52,7 +52,7 @@ public class ApiRequestTests
         Assert.Equal(action, request.Action);
     }
 
-    [Fact]
+    [AllureXunit]
     public void ApiRequest_ActionProperty_AcceptsNullValue()
     {
         // Act
@@ -76,7 +76,7 @@ public class ApiRequestTests
         Assert.Equal(season, request.Season);
     }
 
-    [Fact]
+    [AllureXunit]
     public void ApiRequest_SeasonProperty_AcceptsNullValue()
     {
         // Act
@@ -100,7 +100,7 @@ public class ApiRequestTests
         Assert.Equal(episode, request.Episode);
     }
 
-    [Fact]
+    [AllureXunit]
     public void ApiRequest_EpisodeProperty_AcceptsNullValue()
     {
         // Act

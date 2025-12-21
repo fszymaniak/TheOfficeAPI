@@ -16,7 +16,7 @@ public class Level0ControllerTests
         _controller = new Level0Controller(_service);
     }
 
-    [Fact]
+    [AllureXunit]
     public void HandleRequest_GetAllSeasons_ReturnsSuccessResponse()
     {
         // Arrange
@@ -36,7 +36,7 @@ public class Level0ControllerTests
         Assert.Equal("Seasons retrieved successfully", response.Message);
     }
 
-    [Fact]
+    [AllureXunit]
     public void HandleRequest_GetSeasonEpisodes_WithValidSeason_ReturnsSuccessResponse()
     {
         // Arrange
@@ -55,7 +55,7 @@ public class Level0ControllerTests
         Assert.Equal("Episodes for season 1 retrieved successfully", response.Message);
     }
 
-    [Fact]
+    [AllureXunit]
     public void HandleRequest_GetSeasonEpisodes_WithNullSeason_ReturnsErrorResponse()
     {
         // Arrange
@@ -74,7 +74,7 @@ public class Level0ControllerTests
         Assert.Equal("Invalid request", response.Message);
     }
 
-    [Fact]
+    [AllureXunit]
     public void HandleRequest_GetSeasonEpisodes_WithInvalidSeason_ReturnsErrorResponse()
     {
         // Arrange
@@ -93,7 +93,7 @@ public class Level0ControllerTests
         Assert.Equal("Invalid request", response.Message);
     }
 
-    [Fact]
+    [AllureXunit]
     public void HandleRequest_GetEpisode_WithValidParameters_ReturnsSuccessResponse()
     {
         // Arrange
@@ -134,7 +134,7 @@ public class Level0ControllerTests
         Assert.Equal("Invalid request", response.Message);
     }
 
-    [Fact]
+    [AllureXunit]
     public void HandleRequest_GetEpisode_WithInvalidSeason_ReturnsErrorResponse()
     {
         // Arrange
@@ -153,7 +153,7 @@ public class Level0ControllerTests
         Assert.Equal("Invalid request", response.Message);
     }
 
-    [Fact]
+    [AllureXunit]
     public void HandleRequest_GetEpisode_WithInvalidEpisode_ReturnsErrorResponse()
     {
         // Arrange
@@ -172,7 +172,7 @@ public class Level0ControllerTests
         Assert.Equal("Invalid request", response.Message);
     }
 
-    [Fact]
+    [AllureXunit]
     public void HandleRequest_UnknownAction_ReturnsErrorResponse()
     {
         // Arrange
@@ -191,7 +191,7 @@ public class Level0ControllerTests
         Assert.Equal("Invalid action", response.Message);
     }
 
-    [Fact]
+    [AllureXunit]
     public void HandleRequest_CaseInsensitiveActions_WorksCorrectly()
     {
         // Arrange

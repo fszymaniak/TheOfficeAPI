@@ -4,7 +4,7 @@ namespace TheOfficeAPI.Level0.Tests.Unit;
 
 public class EpisodeTests
 {
-    [Fact]
+    [AllureXunit]
     public void Episode_DefaultValues_AreCorrect()
     {
         // Act
@@ -17,7 +17,7 @@ public class EpisodeTests
         Assert.Equal(string.Empty, episode.ReleasedDate);
     }
 
-    [Fact]
+    [AllureXunit]
     public void Episode_PropertiesCanBeSet()
     {
         // Arrange
@@ -55,7 +55,7 @@ public class EpisodeTests
         Assert.Equal(season, episode.Season);
     }
 
-    [Fact]
+    [AllureXunit]
     public void Episode_SeasonProperty_AcceptsNullValue()
     {
         // Act
@@ -78,7 +78,7 @@ public class EpisodeTests
         Assert.Equal(episodeNumber, episode.EpisodeNumber);
     }
 
-    [Fact]
+    [AllureXunit]
     public void Episode_EpisodeNumberProperty_AcceptsNullValue()
     {
         // Act
@@ -101,7 +101,7 @@ public class EpisodeTests
         Assert.Equal(title, episode.Title);
     }
 
-    [Fact]
+    [AllureXunit]
     public void Episode_TitleProperty_AcceptsNullValue()
     {
         // Act
@@ -124,7 +124,7 @@ public class EpisodeTests
         Assert.Equal(releasedDate, episode.ReleasedDate);
     }
 
-    [Fact]
+    [AllureXunit]
     public void Episode_ReleasedDateProperty_AcceptsNullValue()
     {
         // Act

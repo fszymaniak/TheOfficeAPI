@@ -16,7 +16,7 @@ public class HealthControllerTests
         _controller = new HealthController(_healthCheckService);
     }
 
-    [Fact]
+    [AllureXunit]
     public void Get_ReturnsOkResult()
     {
         // Act
@@ -27,7 +27,7 @@ public class HealthControllerTests
         Assert.NotNull(okResult.Value);
     }
 
-    [Fact]
+    [AllureXunit]
     public void Get_ReturnsHealthCheckResponse()
     {
         // Act
@@ -40,7 +40,7 @@ public class HealthControllerTests
         Assert.Equal("OK", healthResponse.Message);
     }
 
-    [Fact]
+    [AllureXunit]
     public void GetLiveness_ReturnsOkResult()
     {
         // Act
@@ -51,7 +51,7 @@ public class HealthControllerTests
         Assert.NotNull(okResult.Value);
     }
 
-    [Fact]
+    [AllureXunit]
     public void GetLiveness_ReturnsLivenessStatus()
     {
         // Act
@@ -64,7 +64,7 @@ public class HealthControllerTests
         Assert.Equal("Application is alive", healthResponse.Message);
     }
 
-    [Fact]
+    [AllureXunit]
     public void GetReadiness_ReturnsOkResult()
     {
         // Act
@@ -75,7 +75,7 @@ public class HealthControllerTests
         Assert.NotNull(okResult.Value);
     }
 
-    [Fact]
+    [AllureXunit]
     public void GetReadiness_ReturnsDetailedHealthCheckResponse()
     {
         // Act
@@ -91,7 +91,7 @@ public class HealthControllerTests
         Assert.True(healthResponse.Components.Count > 0);
     }
 
-    [Fact]
+    [AllureXunit]
     public void GetReadiness_IncludesComponentDetails()
     {
         // Act
@@ -112,7 +112,7 @@ public class HealthControllerTests
         Assert.NotNull(dataComponent.Description);
     }
 
-    [Fact]
+    [AllureXunit]
     public void GetReadiness_IncludesUptime()
     {
         // Arrange

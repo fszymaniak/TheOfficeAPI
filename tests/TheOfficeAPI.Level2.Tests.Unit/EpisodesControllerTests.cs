@@ -16,7 +16,7 @@ public class EpisodesControllerTests
         _controller = new EpisodesController(_service);
     }
 
-    [Fact]
+    [AllureXunit]
     public void GetSeasonEpisodes_WithValidSeason_ReturnsSuccessResponse()
     {
         // Act
@@ -32,7 +32,7 @@ public class EpisodesControllerTests
         Assert.Equal("Episodes for season 1 retrieved successfully", response.Message);
     }
 
-    [Fact]
+    [AllureXunit]
     public void GetSeasonEpisodes_WithInvalidSeason_Returns404NotFound()
     {
         // Act
@@ -48,7 +48,7 @@ public class EpisodesControllerTests
         Assert.Equal("Invalid request", response.Message);
     }
 
-    [Fact]
+    [AllureXunit]
     public void GetSeasonEpisodes_WithSeasonZero_Returns404NotFound()
     {
         // Act
@@ -63,7 +63,7 @@ public class EpisodesControllerTests
         Assert.Contains("Season parameter is outside of the scope", response.Error);
     }
 
-    [Fact]
+    [AllureXunit]
     public void GetEpisode_WithValidParameters_ReturnsSuccessResponse()
     {
         // Act
@@ -79,7 +79,7 @@ public class EpisodesControllerTests
         Assert.Equal("Episode retrieved successfully", response.Message);
     }
 
-    [Fact]
+    [AllureXunit]
     public void GetEpisode_WithInvalidSeason_Returns404NotFound()
     {
         // Act
@@ -95,7 +95,7 @@ public class EpisodesControllerTests
         Assert.Equal("Invalid request", response.Message);
     }
 
-    [Fact]
+    [AllureXunit]
     public void GetEpisode_WithInvalidEpisode_Returns404NotFound()
     {
         // Act
@@ -111,7 +111,7 @@ public class EpisodesControllerTests
         Assert.Equal("Invalid request", response.Message);
     }
 
-    [Fact]
+    [AllureXunit]
     public void GetEpisode_WithValidSeasonAndEpisode_ReturnsCorrectEpisode()
     {
         // Act
@@ -124,7 +124,7 @@ public class EpisodesControllerTests
         Assert.Equal(1, response.Data.EpisodeNumber);
     }
 
-    [Fact]
+    [AllureXunit]
     public void GetSeasonEpisodes_ReturnsCorrectNumberOfEpisodes()
     {
         // Act
@@ -136,7 +136,7 @@ public class EpisodesControllerTests
         Assert.Equal(6, response.Data.Count); // Season 1 has 6 episodes
     }
 
-    [Fact]
+    [AllureXunit]
     public void GetSeasonEpisodes_ForSeasonTwo_ReturnsCorrectNumberOfEpisodes()
     {
         // Act
@@ -148,7 +148,7 @@ public class EpisodesControllerTests
         Assert.Equal(22, response.Data.Count); // Season 2 has 22 episodes
     }
 
-    [Fact]
+    [AllureXunit]
     public void GetEpisode_ReturnsProperHttpStatusCodes()
     {
         // Act - Valid request
