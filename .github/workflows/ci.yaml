@@ -35,6 +35,13 @@ jobs:
       - name: Build solution
         run: dotnet build TheOfficeAPI.sln --configuration ${{ env.BUILD_CONFIGURATION }} --no-restore
 
+      - name: Setup Allure config for unit tests
+        run: |
+          mkdir -p ${{ github.workspace }}/allure-results
+          echo '{"allure":{"directory":"${{ github.workspace }}/allure-results"}}' > ${{ github.workspace }}/allureConfig.json
+          echo "Created allureConfig.json:"
+          cat ${{ github.workspace }}/allureConfig.json
+
       - name: Run unit tests
         run: |
           dotnet test tests/TheOfficeAPI.Common.Tests.Unit/TheOfficeAPI.Common.Tests.Unit.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --verbosity normal --logger trx --collect:"XPlat Code Coverage"
@@ -42,15 +49,31 @@ jobs:
           dotnet test tests/TheOfficeAPI.Level1.Tests.Unit/TheOfficeAPI.Level1.Tests.Unit.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --verbosity normal --logger trx --collect:"XPlat Code Coverage"
           dotnet test tests/TheOfficeAPI.Level2.Tests.Unit/TheOfficeAPI.Level2.Tests.Unit.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --verbosity normal --logger trx --collect:"XPlat Code Coverage"
           dotnet test tests/TheOfficeAPI.Level3.Tests.Unit/TheOfficeAPI.Level3.Tests.Unit.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --verbosity normal --logger trx --collect:"XPlat Code Coverage"
+        env:
+          ALLURE_CONFIG: ${{ github.workspace }}/allureConfig.json
 
       - name: Collect Allure results
         if: always()
         run: |
+          echo "=== Allure results collection ==="
+          echo "Checking workspace allure-results:"
+          ls -la ${{ github.workspace }}/allure-results 2>/dev/null || echo "No results at workspace level"
+          echo ""
+          echo "Searching for allure-results directories in tests:"
+          find ./tests -name "allure-results" -type d 2>/dev/null || true
+          echo ""
           mkdir -p allure-results
-          echo "Searching for allure-results directories..."
-          find . -name "allure-results" -type d 2>/dev/null | head -20
-          find . -name "allure-results" -type d -exec cp -r {}/* allure-results/ \; 2>/dev/null || true
-          echo "Collected $(ls -1 allure-results 2>/dev/null | wc -l) result files"
+          # Copy from workspace level
+          if [ -d "${{ github.workspace }}/allure-results" ] && [ "$(ls -A ${{ github.workspace }}/allure-results 2>/dev/null)" ]; then
+            echo "Copying from workspace allure-results"
+            cp -r ${{ github.workspace }}/allure-results/* allure-results/ 2>/dev/null || true
+          fi
+          # Also search in test project output directories
+          find ./tests -path "*/bin/*" -name "allure-results" -type d -exec sh -c 'echo "Found: $1"; cp -r "$1"/* allure-results/ 2>/dev/null || true' _ {} \;
+          echo ""
+          echo "Final allure-results contents:"
+          ls -la allure-results 2>/dev/null || echo "Directory is empty"
+          echo "Total: $(ls -1 allure-results 2>/dev/null | wc -l) files"
 
       - name: Download previous Allure history
         uses: actions/download-artifact@v4
@@ -133,6 +156,13 @@ jobs:
       - name: Build solution
         run: dotnet build TheOfficeAPI.sln --configuration ${{ env.BUILD_CONFIGURATION }} --no-restore
 
+      - name: Setup Allure config for integration tests
+        run: |
+          mkdir -p ${{ github.workspace }}/allure-results
+          echo '{"allure":{"directory":"${{ github.workspace }}/allure-results"}}' > ${{ github.workspace }}/allureConfig.json
+          echo "Created allureConfig.json:"
+          cat ${{ github.workspace }}/allureConfig.json
+
       - name: Run mocked integration tests
         run: |
           dotnet test tests/TheOfficeAPI.Level0.Tests.Integration/TheOfficeAPI.Level0.Tests.Integration.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --verbosity normal --logger trx --filter "Category=Mocked"
@@ -141,15 +171,21 @@ jobs:
           dotnet test tests/TheOfficeAPI.Level3.Tests.Integration/TheOfficeAPI.Level3.Tests.Integration.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --verbosity normal --logger trx --filter "Category=Mocked"
         env:
           ASPNETCORE_ENVIRONMENT: Testing
+          ALLURE_CONFIG: ${{ github.workspace }}/allureConfig.json
 
       - name: Collect Allure results
         if: always()
         run: |
+          echo "=== Allure results collection ==="
+          echo "Checking workspace allure-results:"
+          ls -la ${{ github.workspace }}/allure-results 2>/dev/null || echo "No results at workspace level"
           mkdir -p allure-results
-          echo "Searching for allure-results directories..."
-          find . -name "allure-results" -type d 2>/dev/null | head -20
-          find . -name "allure-results" -type d -exec cp -r {}/* allure-results/ \; 2>/dev/null || true
-          echo "Collected $(ls -1 allure-results 2>/dev/null | wc -l) result files"
+          if [ -d "${{ github.workspace }}/allure-results" ] && [ "$(ls -A ${{ github.workspace }}/allure-results 2>/dev/null)" ]; then
+            echo "Copying from workspace allure-results"
+            cp -r ${{ github.workspace }}/allure-results/* allure-results/ 2>/dev/null || true
+          fi
+          find ./tests -path "*/bin/*" -name "allure-results" -type d -exec sh -c 'echo "Found: $1"; cp -r "$1"/* allure-results/ 2>/dev/null || true' _ {} \;
+          echo "Total: $(ls -1 allure-results 2>/dev/null | wc -l) files"
 
       - name: Install Allure CLI
         if: always()
@@ -318,7 +354,8 @@ jobs:
 
       - name: Create index page
         run: |
-          cat > deploy/allure/index.html << 'EOF'
+          CURRENT_DATE=$(date -u '+%Y-%m-%d %H:%M:%S UTC')
+          cat > deploy/allure/index.html << EOF
           <!DOCTYPE html>
           <html>
           <head>
@@ -343,7 +380,7 @@ jobs:
               <h2>Integration Test Report</h2>
               <p>Allure report for mocked integration tests</p>
             </a>
-            <p class="updated">Last updated: $(date -u '+%Y-%m-%d %H:%M:%S UTC')</p>
+            <p class="updated">Last updated: ${CURRENT_DATE}</p>
           </body>
           </html>
           EOF
