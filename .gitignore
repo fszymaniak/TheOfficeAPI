@@ -471,3 +471,8 @@ secrets.json
 
 # Docker
 docker-compose.override.yml
+
+# Stryker.NET - Mutation Testing
+StrykerOutput/
+**/stryker-output/
+**/.stryker-tmp/

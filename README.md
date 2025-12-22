@@ -220,17 +220,56 @@ dotnet build
 dotnet test
 ```
 
+### Mutation Testing
+
+The project uses **Stryker.NET** for mutation testing to assess the quality and effectiveness of unit tests.
+
+**View Live Mutation Report:** [https://fszymaniak.github.io/TheOfficeAPI/stryker/](https://fszymaniak.github.io/TheOfficeAPI/stryker/)
+
+Mutation reports are automatically generated and published to GitHub Pages on every push to `main` or `develop` branches.
+
+**Run Mutation Tests Locally:**
+```bash
+# Install Stryker tool (one-time setup)
+dotnet tool restore
+
+# Run mutation tests
+dotnet stryker --config-file stryker-config.json
+
+# Or use the convenient script
+./scripts/run-mutation-tests.sh
+```
+
+**View Local Mutation Report:**
+After running mutation tests, open `StrykerOutput/reports/mutation-report.html` in your browser to see:
+- Mutation score (percentage of mutants killed)
+- Survived mutants (potential test gaps)
+- Detailed mutation coverage per file
+
+**Understanding Mutation Testing:**
+- **Mutants**: Small code changes that Stryker introduces
+- **Killed**: Mutant causes tests to fail (good - tests caught the change)
+- **Survived**: Mutant doesn't break tests (potential gap in test coverage)
+- **Mutation Score**: Percentage of killed mutants (higher is better)
+
+**Recommended Thresholds:**
+- High: 80%+ (excellent test quality)
+- Low: 60%+ (acceptable test quality)
+- Below 60%: Consider improving tests
+
 ### Test Reports
 
-The project uses **Allure** for rich, interactive test reports with history tracking.
+The project provides comprehensive test reporting with both **Allure** test execution reports and **Stryker** mutation testing.
 
-**View Live Reports:** [https://fszymaniak.github.io/TheOfficeAPI/allure/](https://fszymaniak.github.io/TheOfficeAPI/allure/)
+**📊 View Live Reports Dashboard:** [https://fszymaniak.github.io/TheOfficeAPI/](https://fszymaniak.github.io/TheOfficeAPI/)
 
-Reports are automatically generated and published to GitHub Pages on every push to `main` or `develop` branches.
+All reports are automatically generated and published to GitHub Pages on every push to `main` or `develop` branches.
 
 **Available Reports:**
-- **Unit Test Report** - Tests for all API levels (Common, Level0-3)
-- **Integration Test Report** - Mocked integration tests
+- **[Allure Test Reports](https://fszymaniak.github.io/TheOfficeAPI/allure/)** - Rich, interactive test execution reports with history tracking
+  - Unit Test Report - Tests for all API levels (Common, Level0-3)
+  - Integration Test Report - Mocked integration tests
+- **[Stryker Mutation Report](https://fszymaniak.github.io/TheOfficeAPI/stryker/)** - Mutation testing to assess test quality
 
 **Local Report Generation:**
 ```bash
