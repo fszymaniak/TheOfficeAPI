@@ -75,13 +75,27 @@ jobs:
           ls -la allure-results 2>/dev/null || echo "Directory is empty"
           echo "Total: $(ls -1 allure-results 2>/dev/null | wc -l) files"
 
+      - name: Create allure-history directory
+        if: always()
+        run: mkdir -p allure-history
+
       - name: Download previous Allure history
         uses: actions/download-artifact@v4
+        id: download-history
         if: always()
         with:
           name: allure-history
           path: allure-history
         continue-on-error: true
+
+      - name: Check Allure history download
+        if: always()
+        run: |
+          if [ "${{ steps.download-history.outcome }}" == "success" ]; then
+            echo "Previous Allure history downloaded successfully"
+          else
+            echo "No previous Allure history found (first run or expired) - this is expected"
+          fi
 
       - name: Install Allure CLI
         if: always()
@@ -254,8 +268,32 @@ jobs:
           mkdir -p stryker-reports
           find StrykerOutput -name "mutation-report.html" -exec cp {} stryker-reports/ \; 2>/dev/null || true
           find StrykerOutput -name "mutation-report.json" -exec cp {} stryker-reports/ \; 2>/dev/null || true
+
+          # If no reports found, create a placeholder so artifact upload doesn't fail
+          if [ ! -f "stryker-reports/mutation-report.html" ]; then
+            echo "No mutation report found, creating placeholder..."
+            cat > stryker-reports/mutation-report.html << 'PLACEHOLDER'
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <title>Stryker Report - Not Generated</title>
+            <style>
+              body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 50px auto; padding: 20px; text-align: center; }
+              h1 { color: #666; }
+              p { color: #888; }
+            </style>
+          </head>
+          <body>
+            <h1>Stryker Mutation Report</h1>
+            <p>The mutation testing report was not generated for this build.</p>
+            <p>This can happen if mutation testing failed or was skipped.</p>
+          </body>
+          </html>
+          PLACEHOLDER
+          fi
+
           echo "Stryker reports prepared:"
-          ls -la stryker-reports/ 2>/dev/null || echo "No reports found"
+          ls -la stryker-reports/
 
       - name: Upload Stryker Report
         uses: actions/upload-artifact@v4
@@ -264,6 +302,7 @@ jobs:
           name: stryker-report
           path: stryker-reports
           retention-days: 30
+          if-no-files-found: warn
 
   # Job 4: Code Quality Checks (optional)
   code-quality:
@@ -390,10 +429,20 @@ jobs:
 
       - name: Download Stryker Mutation Report
         uses: actions/download-artifact@v4
+        id: download-stryker
         with:
           name: stryker-report
           path: deploy/stryker
         continue-on-error: true
+
+      - name: Check Stryker artifact download
+        run: |
+          mkdir -p deploy/stryker
+          if [ "${{ steps.download-stryker.outcome }}" == "success" ]; then
+            echo "Stryker report artifact downloaded successfully"
+          else
+            echo "Stryker report artifact not found - this is expected if mutation testing failed or was skipped"
+          fi
 
       - name: Verify and prepare Stryker reports
         run: |
