@@ -246,12 +246,23 @@ jobs:
           dotnet stryker --config-file stryker-config.json --output StrykerOutput
         continue-on-error: true
 
+      - name: Prepare Stryker Report for upload
+        if: always()
+        run: |
+          echo "Finding Stryker reports..."
+          # Stryker creates reports in timestamped subdirectories: StrykerOutput/<timestamp>/reports/
+          mkdir -p stryker-reports
+          find StrykerOutput -name "mutation-report.html" -exec cp {} stryker-reports/ \; 2>/dev/null || true
+          find StrykerOutput -name "mutation-report.json" -exec cp {} stryker-reports/ \; 2>/dev/null || true
+          echo "Stryker reports prepared:"
+          ls -la stryker-reports/ 2>/dev/null || echo "No reports found"
+
       - name: Upload Stryker Report
         uses: actions/upload-artifact@v4
         if: always()
         with:
           name: stryker-report
-          path: StrykerOutput/reports
+          path: stryker-reports
           retention-days: 30
 
   # Job 4: Code Quality Checks (optional)
