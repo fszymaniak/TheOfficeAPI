@@ -10,7 +10,7 @@ namespace TheOfficeAPI.Level0.Services
 
         public TheOfficeService()
         {
-            _episodes = OfficeEpisodesData.Episodes;
+            _episodes = OfficeEpisodesData.Episodes.ToList();
             _seasons = InitializeSeasons();
         }
 
