@@ -8,6 +8,9 @@ namespace TheOfficeAPI.Level3.Controllers;
 [Route("api/v3/seasons/{seasonNumber}/episodes")]
 public class EpisodesController : ControllerBase
 {
+    private const string RelCollection = "collection";
+    private const string RelSeason = "season";
+
     private readonly TheOfficeService _theOfficeService;
 
     public EpisodesController(TheOfficeService theOfficeService)
@@ -78,7 +81,7 @@ public class EpisodesController : ControllerBase
                 Links = new List<Link>
                 {
                     new Link { Rel = "self", Href = $"/api/v3/seasons/{seasonNumber}/episodes/{e.EpisodeNumber}", Method = "GET" },
-                    new Link { Rel = "season", Href = $"/api/v3/seasons/{seasonNumber}", Method = "GET" }
+                    new Link { Rel = RelSeason, Href = $"/api/v3/seasons/{seasonNumber}", Method = "GET" }
                 }
             }).ToList();
 
@@ -90,8 +93,8 @@ public class EpisodesController : ControllerBase
                 Links = new List<Link>
                 {
                     new Link { Rel = "self", Href = $"/api/v3/seasons/{seasonNumber}/episodes", Method = "GET" },
-                    new Link { Rel = "season", Href = $"/api/v3/seasons/{seasonNumber}", Method = "GET" },
-                    new Link { Rel = "collection", Href = "/api/v3/seasons", Method = "GET" }
+                    new Link { Rel = RelSeason, Href = $"/api/v3/seasons/{seasonNumber}", Method = "GET" },
+                    new Link { Rel = RelCollection, Href = "/api/v3/seasons", Method = "GET" }
                 }
             };
 
@@ -189,8 +192,8 @@ public class EpisodesController : ControllerBase
                     Links = new List<Link>
                     {
                         new Link { Rel = "episodes", Href = $"/api/v3/seasons/{seasonNumber}/episodes", Method = "GET" },
-                        new Link { Rel = "season", Href = $"/api/v3/seasons/{seasonNumber}", Method = "GET" },
-                        new Link { Rel = "collection", Href = "/api/v3/seasons", Method = "GET" }
+                        new Link { Rel = RelSeason, Href = $"/api/v3/seasons/{seasonNumber}", Method = "GET" },
+                        new Link { Rel = RelCollection, Href = "/api/v3/seasons", Method = "GET" }
                     }
                 });
             }
@@ -231,9 +234,9 @@ public class EpisodesController : ControllerBase
             }
 
             // Add parent and collection links
-            episodeResource.Links.Add(new Link { Rel = "season", Href = $"/api/v3/seasons/{seasonNumber}", Method = "GET" });
+            episodeResource.Links.Add(new Link { Rel = RelSeason, Href = $"/api/v3/seasons/{seasonNumber}", Method = "GET" });
             episodeResource.Links.Add(new Link { Rel = "episodes", Href = $"/api/v3/seasons/{seasonNumber}/episodes", Method = "GET" });
-            episodeResource.Links.Add(new Link { Rel = "collection", Href = "/api/v3/seasons", Method = "GET" });
+            episodeResource.Links.Add(new Link { Rel = RelCollection, Href = "/api/v3/seasons", Method = "GET" });
 
             var response = new HateoasResponse<EpisodeResource>
             {
@@ -243,7 +246,7 @@ public class EpisodesController : ControllerBase
                 Links = new List<Link>
                 {
                     new Link { Rel = "self", Href = $"/api/v3/seasons/{seasonNumber}/episodes/{episodeNumber}", Method = "GET" },
-                    new Link { Rel = "collection", Href = "/api/v3/seasons", Method = "GET" }
+                    new Link { Rel = RelCollection, Href = "/api/v3/seasons", Method = "GET" }
                 }
             };
 
@@ -272,7 +275,7 @@ public class EpisodesController : ControllerBase
                 Message = "Invalid request",
                 Links = new List<Link>
                 {
-                    new Link { Rel = "collection", Href = "/api/v3/seasons", Method = "GET" }
+                    new Link { Rel = RelCollection, Href = "/api/v3/seasons", Method = "GET" }
                 }
             });
         }
@@ -292,8 +295,8 @@ public class EpisodesController : ControllerBase
                 Links = new List<Link>
                 {
                     new Link { Rel = "episodes", Href = $"/api/v3/seasons/{season}/episodes", Method = "GET" },
-                    new Link { Rel = "season", Href = $"/api/v3/seasons/{season}", Method = "GET" },
-                    new Link { Rel = "collection", Href = "/api/v3/seasons", Method = "GET" }
+                    new Link { Rel = RelSeason, Href = $"/api/v3/seasons/{season}", Method = "GET" },
+                    new Link { Rel = RelCollection, Href = "/api/v3/seasons", Method = "GET" }
                 }
             });
         }

@@ -8,6 +8,9 @@ namespace TheOfficeAPI.Level3.Controllers;
 [Route("api/v3/seasons")]
 public class SeasonsController : ControllerBase
 {
+    private const string SeasonsApiPath = "/api/v3/seasons";
+    private const string RelCollection = "collection";
+
     private readonly TheOfficeService _theOfficeService;
 
     public SeasonsController(TheOfficeService theOfficeService)
@@ -65,8 +68,8 @@ public class SeasonsController : ControllerBase
                 EpisodeCount = s.EpisodeCount,
                 Links = new List<Link>
                 {
-                    new Link { Rel = "self", Href = $"/api/v3/seasons/{s.SeasonNumber}", Method = "GET" },
-                    new Link { Rel = "episodes", Href = $"/api/v3/seasons/{s.SeasonNumber}/episodes", Method = "GET" }
+                    new Link { Rel = "self", Href = $"{SeasonsApiPath}/{s.SeasonNumber}", Method = "GET" },
+                    new Link { Rel = "episodes", Href = $"{SeasonsApiPath}/{s.SeasonNumber}/episodes", Method = "GET" }
                 }
             }).ToList();
 
@@ -77,7 +80,7 @@ public class SeasonsController : ControllerBase
                 Message = "Seasons retrieved successfully",
                 Links = new List<Link>
                 {
-                    new Link { Rel = "self", Href = "/api/v3/seasons", Method = "GET" }
+                    new Link { Rel = "self", Href = SeasonsApiPath, Method = "GET" }
                 }
             };
 
@@ -155,7 +158,7 @@ public class SeasonsController : ControllerBase
                     Message = "Season not found",
                     Links = new List<Link>
                     {
-                        new Link { Rel = "collection", Href = "/api/v3/seasons", Method = "GET" }
+                        new Link { Rel = RelCollection, Href = SeasonsApiPath, Method = "GET" }
                     }
                 });
             }
@@ -166,9 +169,9 @@ public class SeasonsController : ControllerBase
                 EpisodeCount = season.EpisodeCount,
                 Links = new List<Link>
                 {
-                    new Link { Rel = "self", Href = $"/api/v3/seasons/{seasonNumber}", Method = "GET" },
-                    new Link { Rel = "episodes", Href = $"/api/v3/seasons/{seasonNumber}/episodes", Method = "GET" },
-                    new Link { Rel = "collection", Href = "/api/v3/seasons", Method = "GET" }
+                    new Link { Rel = "self", Href = $"{SeasonsApiPath}/{seasonNumber}", Method = "GET" },
+                    new Link { Rel = "episodes", Href = $"{SeasonsApiPath}/{seasonNumber}/episodes", Method = "GET" },
+                    new Link { Rel = RelCollection, Href = SeasonsApiPath, Method = "GET" }
                 }
             };
 
@@ -179,8 +182,8 @@ public class SeasonsController : ControllerBase
                 Message = $"Season {seasonNumber} retrieved successfully",
                 Links = new List<Link>
                 {
-                    new Link { Rel = "self", Href = $"/api/v3/seasons/{seasonNumber}", Method = "GET" },
-                    new Link { Rel = "collection", Href = "/api/v3/seasons", Method = "GET" }
+                    new Link { Rel = "self", Href = $"{SeasonsApiPath}/{seasonNumber}", Method = "GET" },
+                    new Link { Rel = RelCollection, Href = SeasonsApiPath, Method = "GET" }
                 }
             };
 
@@ -209,7 +212,7 @@ public class SeasonsController : ControllerBase
                 Message = "Invalid request",
                 Links = new List<Link>
                 {
-                    new Link { Rel = "collection", Href = "/api/v3/seasons", Method = "GET" }
+                    new Link { Rel = RelCollection, Href = SeasonsApiPath, Method = "GET" }
                 }
             });
         }
