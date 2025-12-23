@@ -255,44 +255,116 @@ jobs:
         run: dotnet build TheOfficeAPI.sln --configuration ${{ env.BUILD_CONFIGURATION }} --no-restore
 
       - name: Run Stryker mutation tests
+        id: stryker-run
         run: |
           echo "Running mutation tests with Stryker.NET..."
-          dotnet stryker --config-file stryker-config.json --output StrykerOutput
+          echo "Stryker version:"
+          dotnet stryker --version || echo "Could not get version"
+          echo ""
+          echo "Starting mutation testing..."
+          set +e
+          dotnet stryker --config-file stryker-config.ci.json --output StrykerOutput --verbosity info 2>&1 | tee stryker-output.log
+          STRYKER_EXIT_CODE=$?
+          set -e
+          echo ""
+          echo "Stryker exit code: $STRYKER_EXIT_CODE"
+          if [ $STRYKER_EXIT_CODE -ne 0 ]; then
+            echo "::warning::Stryker mutation testing failed with exit code $STRYKER_EXIT_CODE"
+            echo "Last 100 lines of Stryker output:"
+            tail -100 stryker-output.log || true
+          fi
+          echo "stryker_exit_code=$STRYKER_EXIT_CODE" >> $GITHUB_OUTPUT
+        timeout-minutes: 30
         continue-on-error: true
 
       - name: Prepare Stryker Report for upload
         if: always()
         run: |
-          echo "Finding Stryker reports..."
+          echo "=== Stryker Report Preparation ==="
+          echo ""
+          echo "Step 1: Checking StrykerOutput directory structure..."
+          if [ -d "StrykerOutput" ]; then
+            echo "StrykerOutput directory exists:"
+            find StrykerOutput -type f -name "*.html" -o -name "*.json" 2>/dev/null | head -20 || echo "No HTML/JSON files found"
+            echo ""
+            echo "Full directory listing:"
+            ls -laR StrykerOutput 2>/dev/null | head -50 || echo "Could not list directory"
+          else
+            echo "StrykerOutput directory does NOT exist"
+          fi
+          echo ""
+
+          echo "Step 2: Finding Stryker reports..."
           # Stryker creates reports in timestamped subdirectories: StrykerOutput/<timestamp>/reports/
           mkdir -p stryker-reports
-          find StrykerOutput -name "mutation-report.html" -exec cp {} stryker-reports/ \; 2>/dev/null || true
+
+          # Find and copy reports
+          REPORT_FOUND=false
+          if find StrykerOutput -name "mutation-report.html" -exec cp {} stryker-reports/ \; 2>/dev/null; then
+            if [ -f "stryker-reports/mutation-report.html" ]; then
+              echo "Found and copied mutation-report.html"
+              REPORT_FOUND=true
+            fi
+          fi
           find StrykerOutput -name "mutation-report.json" -exec cp {} stryker-reports/ \; 2>/dev/null || true
 
-          # If no reports found, create a placeholder so artifact upload doesn't fail
+          # Also copy the Stryker log for debugging
+          if [ -f "stryker-output.log" ]; then
+            cp stryker-output.log stryker-reports/ 2>/dev/null || true
+            echo "Copied Stryker output log"
+          fi
+
+          echo ""
+          echo "Step 3: Verifying report status..."
+          # If no reports found, create a placeholder with debugging info
           if [ ! -f "stryker-reports/mutation-report.html" ]; then
-            echo "No mutation report found, creating placeholder..."
-            cat > stryker-reports/mutation-report.html << 'PLACEHOLDER'
+            STRYKER_EXIT="${{ steps.stryker-run.outputs.stryker_exit_code }}"
+            echo "No mutation report found (Stryker exit code: $STRYKER_EXIT), creating placeholder..."
+            cat > stryker-reports/mutation-report.html << PLACEHOLDER
           <!DOCTYPE html>
           <html>
           <head>
             <title>Stryker Report - Not Generated</title>
             <style>
-              body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 50px auto; padding: 20px; text-align: center; }
+              body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 700px; margin: 50px auto; padding: 20px; text-align: center; }
               h1 { color: #666; }
               p { color: #888; }
+              .info { background: #f5f5f5; padding: 15px; border-radius: 8px; margin: 20px 0; text-align: left; }
+              .info code { background: #e0e0e0; padding: 2px 6px; border-radius: 4px; }
+              a { color: #0066cc; }
             </style>
           </head>
           <body>
             <h1>Stryker Mutation Report</h1>
             <p>The mutation testing report was not generated for this build.</p>
-            <p>This can happen if mutation testing failed or was skipped.</p>
+            <div class="info">
+              <p><strong>Build Information:</strong></p>
+              <p>Stryker Exit Code: <code>$STRYKER_EXIT</code></p>
+              <p>Workflow Run: <code>${GITHUB_RUN_ID:-unknown}</code></p>
+              <p>Commit: <code>${GITHUB_SHA:-unknown}</code></p>
+            </div>
+            <p>This can happen if:</p>
+            <ul style="text-align: left; display: inline-block;">
+              <li>Mutation testing timed out (30 min limit)</li>
+              <li>Build or test failures prevented Stryker from running</li>
+              <li>Insufficient memory or resources</li>
+            </ul>
+            <p><a href="../index.html">← Back to All Reports</a></p>
           </body>
           </html>
           PLACEHOLDER
+          else
+            echo "Mutation report found successfully!"
+            # Verify it's a real report, not a placeholder from a previous run
+            if grep -q "Stryker HTML Reporter" stryker-reports/mutation-report.html 2>/dev/null; then
+              echo "✓ Verified: This is a genuine Stryker report"
+            else
+              echo "⚠ Warning: mutation-report.html exists but may not be a genuine Stryker report"
+            fi
           fi
 
-          echo "Stryker reports prepared:"
+          echo ""
+          echo "Step 4: Final report contents:"
           ls -la stryker-reports/
 
       - name: Upload Stryker Report
@@ -303,6 +375,15 @@ jobs:
           path: stryker-reports
           retention-days: 30
           if-no-files-found: warn
+
+      - name: Upload Stryker Log
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: stryker-log
+          path: stryker-output.log
+          retention-days: 7
+          if-no-files-found: ignore
 
   # Job 4: Code Quality Checks (optional)
   code-quality:
