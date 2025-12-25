@@ -310,28 +310,38 @@ jobs:
           REPORT_FOUND=false
 
           # First, try to find the most recent reports directory
-          REPORTS_DIR=$(find StrykerOutput -type d -name "reports" 2>/dev/null | head -1)
+          REPORTS_DIR=$(find StrykerOutput -type d -name "reports" 2>/dev/null | sort -r | head -1)
 
           if [ -n "$REPORTS_DIR" ] && [ -d "$REPORTS_DIR" ]; then
             echo "Found reports directory: $REPORTS_DIR"
             ls -la "$REPORTS_DIR"
 
-            # Copy all HTML files from reports directory
-            if [ -f "$REPORTS_DIR/mutation-report.html" ]; then
-              cp "$REPORTS_DIR/mutation-report.html" stryker-reports/
+            # Copy ALL files from the reports directory to preserve complete structure
+            echo "Copying all files from reports directory..."
+            cp -r "$REPORTS_DIR"/* stryker-reports/ 2>/dev/null || cp -r "$REPORTS_DIR"/. stryker-reports/ 2>/dev/null
+
+            # Check if mutation-report.html exists
+            if [ -f "stryker-reports/mutation-report.html" ]; then
               echo "✓ Found and copied mutation-report.html"
               REPORT_FOUND=true
-            elif [ -f "$REPORTS_DIR/index.html" ]; then
-              cp "$REPORTS_DIR/index.html" stryker-reports/mutation-report.html
-              echo "✓ Found index.html, copied as mutation-report.html"
+            elif [ -f "stryker-reports/index.html" ]; then
+              echo "✓ Found index.html"
+              # Create a copy as mutation-report.html for consistency
+              cp "stryker-reports/index.html" "stryker-reports/mutation-report.html"
+              echo "✓ Created mutation-report.html from index.html"
               REPORT_FOUND=true
             fi
 
-            # Copy JSON report if exists
-            if [ -f "$REPORTS_DIR/mutation-report.json" ]; then
-              cp "$REPORTS_DIR/mutation-report.json" stryker-reports/
-              echo "✓ Copied mutation-report.json"
+            # Verify JSON report exists
+            if [ -f "stryker-reports/mutation-report.json" ]; then
+              echo "✓ Found mutation-report.json"
+            else
+              echo "⚠ Warning: mutation-report.json not found"
             fi
+
+            # List all copied files for debugging
+            echo "Files copied to stryker-reports:"
+            ls -la stryker-reports/ 2>/dev/null || echo "No files"
           else
             echo "No reports directory found, searching for HTML files recursively..."
             # Fallback: search for any HTML report files
@@ -350,6 +360,11 @@ jobs:
                   REPORT_FOUND=true
                 fi
               fi
+            fi
+
+            # Also copy JSON file in fallback mode
+            if find StrykerOutput -name "mutation-report.json" -exec cp {} stryker-reports/ \; 2>/dev/null; then
+              echo "✓ Found and copied mutation-report.json"
             fi
           fi
 
@@ -587,6 +602,18 @@ jobs:
         run: |
           echo "Checking Stryker reports in deploy/stryker:"
           ls -la deploy/stryker/ 2>/dev/null || echo "Directory is empty or doesn't exist"
+
+          # List all files for debugging
+          echo "All files in deploy/stryker:"
+          find deploy/stryker -type f 2>/dev/null || echo "No files found"
+
+          # Check for HTML and JSON files specifically
+          if [ -f "deploy/stryker/mutation-report.html" ]; then
+            echo "✓ mutation-report.html exists"
+          fi
+          if [ -f "deploy/stryker/mutation-report.json" ]; then
+            echo "✓ mutation-report.json exists"
+          fi
 
           # Create index.html that redirects to mutation-report.html or shows error
           if [ -f "deploy/stryker/mutation-report.html" ]; then
