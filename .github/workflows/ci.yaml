@@ -288,17 +288,37 @@ jobs:
           echo "Stryker version:"
           dotnet stryker --version || echo "Could not get version"
           echo ""
-          echo "Starting mutation testing..."
+          echo "Current directory: $(pwd)"
+          echo "Checking for source and test projects:"
+          ls -la src/TheOfficeAPI/TheOfficeAPI.csproj || echo "Source project not found"
+          ls -la tests/TheOfficeAPI.*.Tests.Unit/*.csproj || echo "Test projects not found"
+          echo ""
+          echo "Starting mutation testing with detailed logging..."
           set +e
-          dotnet stryker --config-file stryker-config.ci.json --output StrykerOutput --verbosity info 2>&1 | tee stryker-output.log
+          dotnet stryker --config-file stryker-config.ci.json --verbosity debug --log-to-file 2>&1 | tee stryker-console.log
           STRYKER_EXIT_CODE=$?
           set -e
           echo ""
           echo "Stryker exit code: $STRYKER_EXIT_CODE"
+          echo ""
+          echo "Checking for Stryker log files:"
+          find . -name "*.log" -type f 2>/dev/null || echo "No log files found"
+          echo ""
           if [ $STRYKER_EXIT_CODE -ne 0 ]; then
             echo "::warning::Stryker mutation testing failed with exit code $STRYKER_EXIT_CODE"
-            echo "Last 100 lines of Stryker output:"
-            tail -100 stryker-output.log || true
+            echo "Last 100 lines of Stryker console output:"
+            tail -100 stryker-console.log || true
+          else
+            echo "Stryker completed successfully. Showing last 50 lines of output:"
+            tail -50 stryker-console.log || true
+          fi
+          echo ""
+          echo "Checking StrykerOutput directory:"
+          if [ -d "StrykerOutput" ]; then
+            echo "StrykerOutput exists. Contents:"
+            find StrykerOutput -type f 2>/dev/null | head -30 || echo "No files found"
+          else
+            echo "StrykerOutput directory not found!"
           fi
           echo "stryker_exit_code=$STRYKER_EXIT_CODE" >> $GITHUB_OUTPUT
         timeout-minutes: 30
@@ -395,11 +415,14 @@ jobs:
             fi
           fi
 
-          # Copy the Stryker log for debugging
-          if [ -f "stryker-output.log" ]; then
-            cp stryker-output.log stryker-reports/ 2>/dev/null || true
-            echo "✓ Copied Stryker output log"
+          # Copy all Stryker logs for debugging
+          if [ -f "stryker-console.log" ]; then
+            cp stryker-console.log stryker-reports/ 2>/dev/null || true
+            echo "✓ Copied Stryker console log"
           fi
+          # Copy any log files created by --log-to-file
+          find . -maxdepth 2 -name "*.log" -type f -exec cp {} stryker-reports/ \; 2>/dev/null || true
+          echo "✓ Copied all log files to reports directory"
 
           echo ""
           echo "Step 3: Verifying report status..."
@@ -409,8 +432,15 @@ jobs:
             echo "❌ No mutation report found (Stryker exit code: $STRYKER_EXIT)"
             echo "Creating placeholder with debugging information..."
 
-            # Include directory listing in placeholder for debugging
+            # Include directory listing and log excerpt in placeholder for debugging
             DIR_LISTING=$(find StrykerOutput -type f 2>/dev/null | head -20 || echo "No files found")
+
+            # Get last 30 lines of console log if available
+            if [ -f "stryker-console.log" ]; then
+              LOG_EXCERPT=$(tail -30 stryker-console.log 2>/dev/null | sed 's/</\&lt;/g; s/>/\&gt;/g' || echo "Could not read log")
+            else
+              LOG_EXCERPT="Log file not found"
+            fi
 
             cat > stryker-reports/mutation-report.html << PLACEHOLDER
           <!DOCTYPE html>
@@ -449,6 +479,10 @@ jobs:
               <strong>Debug Info - Files found in StrykerOutput:</strong><br>
               <pre>$DIR_LISTING</pre>
             </div>
+            <div class="debug">
+              <strong>Last 30 lines of Stryker console output:</strong><br>
+              <pre>$LOG_EXCERPT</pre>
+            </div>
             <p><a href="../index.html">← Back to All Reports</a></p>
           </body>
           </html>
@@ -476,12 +510,15 @@ jobs:
           retention-days: 30
           if-no-files-found: warn
 
-      - name: Upload Stryker Log
+      - name: Upload Stryker Logs
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: stryker-log
-          path: stryker-output.log
+          name: stryker-logs
+          path: |
+            stryker-console.log
+            *.log
+            StrykerOutput/**/*.log
           retention-days: 7
           if-no-files-found: ignore
 
