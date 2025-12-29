@@ -75,27 +75,32 @@ jobs:
           ls -la allure-results 2>/dev/null || echo "Directory is empty"
           echo "Total: $(ls -1 allure-results 2>/dev/null | wc -l) files"
 
-      - name: Create allure-history directory
-        if: always()
-        run: mkdir -p allure-history
-
-      - name: Download previous Allure history
-        uses: actions/download-artifact@v4
-        id: download-history
-        if: always()
-        with:
-          name: allure-history
-          path: allure-history
-        continue-on-error: true
-
-      - name: Check Allure history download
+      - name: Download previous Allure history from GitHub Pages
         if: always()
         run: |
-          if [ "${{ steps.download-history.outcome }}" == "success" ]; then
-            echo "Previous Allure history downloaded successfully"
+          echo "Downloading Allure history from GitHub Pages..."
+          mkdir -p allure-history
+
+          # Try to download history from GitHub Pages (unit tests)
+          HISTORY_URL="https://fszymaniak.github.io/TheOfficeAPI/allure/unit/history"
+
+          # Download history files if they exist
+          if curl -f -s "${HISTORY_URL}/history.json" -o allure-history/history.json 2>/dev/null; then
+            echo "✓ Downloaded history.json"
+
+            # Download other history files
+            curl -f -s "${HISTORY_URL}/history-trend.json" -o allure-history/history-trend.json 2>/dev/null || true
+            curl -f -s "${HISTORY_URL}/duration-trend.json" -o allure-history/duration-trend.json 2>/dev/null || true
+            curl -f -s "${HISTORY_URL}/retry-trend.json" -o allure-history/retry-trend.json 2>/dev/null || true
+            curl -f -s "${HISTORY_URL}/categories-trend.json" -o allure-history/categories-trend.json 2>/dev/null || true
+
+            echo "✓ Allure history downloaded successfully from GitHub Pages"
+            ls -la allure-history/
           else
-            echo "No previous Allure history found (first run or expired) - this is expected"
+            echo "ℹ No previous Allure history found (first run or GitHub Pages not yet deployed)"
+            echo "This is expected for the first run - history will be created after this build"
           fi
+        continue-on-error: true
 
       - name: Install Allure CLI
         if: always()
@@ -119,14 +124,6 @@ jobs:
         with:
           name: allure-report
           path: allure-report
-          retention-days: 30
-
-      - name: Upload Allure History
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: allure-history
-          path: allure-history
           retention-days: 30
 
       - name: Publish unit test results
@@ -201,6 +198,33 @@ jobs:
           find ./tests -path "*/bin/*" -name "allure-results" -type d -exec sh -c 'echo "Found: $1"; cp -r "$1"/* allure-results/ 2>/dev/null || true' _ {} \;
           echo "Total: $(ls -1 allure-results 2>/dev/null | wc -l) files"
 
+      - name: Download previous Allure history from GitHub Pages
+        if: always()
+        run: |
+          echo "Downloading Allure history from GitHub Pages..."
+          mkdir -p allure-history
+
+          # Try to download history from GitHub Pages (integration tests)
+          HISTORY_URL="https://fszymaniak.github.io/TheOfficeAPI/allure/integration/history"
+
+          # Download history files if they exist
+          if curl -f -s "${HISTORY_URL}/history.json" -o allure-history/history.json 2>/dev/null; then
+            echo "✓ Downloaded history.json"
+
+            # Download other history files
+            curl -f -s "${HISTORY_URL}/history-trend.json" -o allure-history/history-trend.json 2>/dev/null || true
+            curl -f -s "${HISTORY_URL}/duration-trend.json" -o allure-history/duration-trend.json 2>/dev/null || true
+            curl -f -s "${HISTORY_URL}/retry-trend.json" -o allure-history/retry-trend.json 2>/dev/null || true
+            curl -f -s "${HISTORY_URL}/categories-trend.json" -o allure-history/categories-trend.json 2>/dev/null || true
+
+            echo "✓ Allure history downloaded successfully from GitHub Pages"
+            ls -la allure-history/
+          else
+            echo "ℹ No previous Allure history found (first run or GitHub Pages not yet deployed)"
+            echo "This is expected for the first run - history will be created after this build"
+          fi
+        continue-on-error: true
+
       - name: Install Allure CLI
         if: always()
         run: |
@@ -210,6 +234,9 @@ jobs:
       - name: Generate Allure Report for Integration Tests
         if: always()
         run: |
+          if [ -d "allure-history" ]; then
+            cp -r allure-history allure-results/history || true
+          fi
           allure-2.32.0/bin/allure generate allure-results -o allure-report-integration --clean
 
       - name: Upload Integration Tests Allure Report
