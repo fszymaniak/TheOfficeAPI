@@ -4,6 +4,7 @@
     "solution": "TheOfficeAPI.sln",
     "project": "src/TheOfficeAPI/TheOfficeAPI.csproj",
     "target-framework": "net9.0",
+    "configuration": "Debug",
     "coverage-analysis": "off",
     "break-on-initial-test-failure": true,
     "verbosity": "debug",
