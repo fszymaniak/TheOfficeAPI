@@ -3,11 +3,9 @@
   "stryker-config": {
     "solution": "TheOfficeAPI.sln",
     "project": "src/TheOfficeAPI/TheOfficeAPI.csproj",
-    "test-projects": [
-      "tests/TheOfficeAPI.Common.Tests.Unit/TheOfficeAPI.Common.Tests.Unit.csproj"
-    ],
     "target-framework": "net9.0",
     "coverage-analysis": "off",
+    "break-on-initial-test-failure": true,
     "verbosity": "debug",
     "reporters": [
       "html",
