@@ -1,6 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/stryker-mutator/stryker-net/master/src/Stryker.CLI/Stryker.CLI/schema.json",
   "stryker-config": {
+    "solution": "TheOfficeAPI.sln",
     "project": "src/TheOfficeAPI/TheOfficeAPI.csproj",
     "test-projects": [
       "tests/TheOfficeAPI.Common.Tests.Unit/TheOfficeAPI.Common.Tests.Unit.csproj",
