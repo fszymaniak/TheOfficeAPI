@@ -22,15 +22,10 @@
     },
     "mutation-level": "Complete",
     "concurrency": 4,
-    "output-path": "StrykerOutput",
-    "exclude-mutations": [],
     "ignore-methods": [
       "*ToString*",
       "*GetHashCode*",
       "*Equals*"
-    ],
-    "dashboard": {
-      "enabled": false
-    }
+    ]
   }
 }
