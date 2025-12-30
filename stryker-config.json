@@ -11,6 +11,7 @@
       "tests/TheOfficeAPI.Level3.Tests.Unit/TheOfficeAPI.Level3.Tests.Unit.csproj"
     ],
     "target-framework": "net9.0",
+    "verbosity": "debug",
     "reporters": [
       "html",
       "progress",
