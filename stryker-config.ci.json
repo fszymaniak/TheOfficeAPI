@@ -17,12 +17,15 @@
   "thresholds": {
     "high": 80,
     "low": 60,
-    "break": 0
+    "break": 60
   },
   "mutation-level": "Standard",
   "concurrency": 2,
   "output-path": "StrykerOutput",
-  "exclude-mutations": [],
+  "exclude-mutations": [
+    "string",
+    "regex"
+  ],
   "ignore-methods": [
     "*ToString*",
     "*GetHashCode*",

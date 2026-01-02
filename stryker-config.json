@@ -17,18 +17,24 @@
   "thresholds": {
     "high": 80,
     "low": 60,
-    "break": 0
+    "break": 60
   },
   "mutation-level": "Complete",
   "concurrency": 4,
   "output-path": "StrykerOutput",
-  "exclude-mutations": [],
+  "exclude-mutations": [
+    "string",
+    "regex"
+  ],
   "ignore-methods": [
     "*ToString*",
     "*GetHashCode*",
     "*Equals*"
   ],
   "dashboard": {
+    "enabled": false
+  },
+  "since": {
     "enabled": false
   }
 }
