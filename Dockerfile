@@ -28,7 +28,7 @@ RUN dotnet publish src/TheOfficeAPI/TheOfficeAPI.csproj \
     --no-restore
 
 # Runtime stage
-FROM mcr.microsoft.com/dotnet/aspnet:9.0
+FROM mcr.microsoft.com/dotnet/aspnet:10.0
 WORKDIR /app
 
 # Copy compiled files
