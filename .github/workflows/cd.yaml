@@ -1,4 +1,4 @@
-﻿name: CD - Continuous Deployment
+name: CD - Continuous Deployment
 
 on:
   workflow_run:
@@ -154,7 +154,7 @@ jobs:
           API_BASE_URL: ${{ env.RAILWAY_URL }}
 
       - name: Publish E2E test results
-        uses: dorny/test-reporter@v1
+        uses: dorny/test-reporter@v2
         if: success() || failure()
         with:
           name: E2E Test Results
@@ -197,7 +197,7 @@ jobs:
         continue-on-error: true
 
       - name: Publish live integration test results
-        uses: dorny/test-reporter@v1
+        uses: dorny/test-reporter@v2
         if: success() || failure()
         with:
           name: Live Integration Test Results
