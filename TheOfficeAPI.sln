@@ -13,15 +13,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheOfficeAPI.Level1.Tests.I
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheOfficeAPI.Level2.Tests.Unit", "tests/TheOfficeAPI.Level2.Tests.Unit/TheOfficeAPI.Level2.Tests.Unit.csproj", "{E3FA0913-3456-7890-1234-D362FE48FE0D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheOfficeAPI.Level2.Tests.Integration", "tests/TheOfficeAPI.Level2.Tests.Integration/TheOfficeAPI.Level2.Tests.Integration.csproj", "{F4GB1A24-4567-8901-2345-E473GF59GF1E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheOfficeAPI.Level2.Tests.Integration", "tests/TheOfficeAPI.Level2.Tests.Integration/TheOfficeAPI.Level2.Tests.Integration.csproj", "{00000000-0000-0000-0000-000000000000}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheOfficeAPI.Level3.Tests.Unit", "tests/TheOfficeAPI.Level3.Tests.Unit/TheOfficeAPI.Level3.Tests.Unit.csproj", "{G5HC2B35-5678-9012-3456-F584H070H03G}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheOfficeAPI.Level3.Tests.Unit", "tests/TheOfficeAPI.Level3.Tests.Unit/TheOfficeAPI.Level3.Tests.Unit.csproj", "{00000000-0000-0000-0000-000000000000}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheOfficeAPI.Level3.Tests.Integration", "tests/TheOfficeAPI.Level3.Tests.Integration/TheOfficeAPI.Level3.Tests.Integration.csproj", "{H6ID3C46-6789-0123-4567-G695I081I04H}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheOfficeAPI.Level3.Tests.Integration", "tests/TheOfficeAPI.Level3.Tests.Integration/TheOfficeAPI.Level3.Tests.Integration.csproj", "{00000000-0000-0000-0000-000000000000}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheOfficeAPI.Tests.E2E", "tests/TheOfficeAPI.Tests.E2E/TheOfficeAPI.Tests.E2E.csproj", "{5A0B2C34-5678-9012-3456-F584H060H02F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheOfficeAPI.Tests.E2E", "tests/TheOfficeAPI.Tests.E2E/TheOfficeAPI.Tests.E2E.csproj", "{00000000-0000-0000-0000-000000000000}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheOfficeAPI.Common.Tests.Unit", "tests/TheOfficeAPI.Common.Tests.Unit/TheOfficeAPI.Common.Tests.Unit.csproj", "{I7JE4D57-7890-1234-5678-H806J192J15I}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheOfficeAPI.Common.Tests.Unit", "tests/TheOfficeAPI.Common.Tests.Unit/TheOfficeAPI.Common.Tests.Unit.csproj", "{00000000-0000-0000-0000-000000000000}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,25 +53,7 @@ Global
 		{E3FA0913-3456-7890-1234-D362FE48FE0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E3FA0913-3456-7890-1234-D362FE48FE0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E3FA0913-3456-7890-1234-D362FE48FE0D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F4GB1A24-4567-8901-2345-E473GF59GF1E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F4GB1A24-4567-8901-2345-E473GF59GF1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F4GB1A24-4567-8901-2345-E473GF59GF1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F4GB1A24-4567-8901-2345-E473GF59GF1E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{G5HC2B35-5678-9012-3456-F584H070H03G}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{G5HC2B35-5678-9012-3456-F584H070H03G}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{G5HC2B35-5678-9012-3456-F584H070H03G}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{G5HC2B35-5678-9012-3456-F584H070H03G}.Release|Any CPU.Build.0 = Release|Any CPU
-		{H6ID3C46-6789-0123-4567-G695I081I04H}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{H6ID3C46-6789-0123-4567-G695I081I04H}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{H6ID3C46-6789-0123-4567-G695I081I04H}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{H6ID3C46-6789-0123-4567-G695I081I04H}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5A0B2C34-5678-9012-3456-F584H060H02F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5A0B2C34-5678-9012-3456-F584H060H02F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5A0B2C34-5678-9012-3456-F584H060H02F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5A0B2C34-5678-9012-3456-F584H060H02F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{I7JE4D57-7890-1234-5678-H806J192J15I}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{I7JE4D57-7890-1234-5678-H806J192J15I}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{I7JE4D57-7890-1234-5678-H806J192J15I}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{I7JE4D57-7890-1234-5678-H806J192J15I}.Release|Any CPU.Build.0 = Release|Any CPU
+		{00000000-0000-0000-0000-000000000000}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{00000000-0000-0000-0000-000000000000}.Debug|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 EndGlobal
