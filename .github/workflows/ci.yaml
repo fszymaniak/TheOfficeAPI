@@ -1,4 +1,4 @@
-﻿name: CI - Continuous Integration
+name: CI - Continuous Integration
 
 on:
   push:
@@ -127,7 +127,7 @@ jobs:
           retention-days: 30
 
       - name: Publish unit test results
-        uses: dorny/test-reporter@v1
+        uses: dorny/test-reporter@v2
         if: success() || failure()
         with:
           name: Unit Test Results
@@ -248,7 +248,7 @@ jobs:
           retention-days: 30
 
       - name: Publish mocked integration test results
-        uses: dorny/test-reporter@v1
+        uses: dorny/test-reporter@v2
         if: success() || failure()
         with:
           name: Mocked Integration Test Results
