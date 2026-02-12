@@ -1,4 +1,4 @@
-﻿name: CI - Continuous Integration
+name: CI - Continuous Integration
 
 on:
   push:
@@ -135,7 +135,7 @@ jobs:
           reporter: dotnet-trx
 
       - name: Upload coverage reports
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         if: success()
         with:
           files: '**/coverage.cobertura.xml'
