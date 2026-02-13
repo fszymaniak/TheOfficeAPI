@@ -66,28 +66,28 @@ public class Program
             builder.Services.AddSwaggerGen(c =>
             {
                 // Register all API versions
-                c.SwaggerDoc("v0", new Microsoft.OpenApi.Models.OpenApiInfo
+                c.SwaggerDoc("v0", new Microsoft.OpenApi.OpenApiInfo
                 {
                     Title = "The Office API - Level 0",
                     Version = "v0",
                     Description = "Richardson Maturity Model Level 0 implementation"
                 });
 
-                c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+                c.SwaggerDoc("v1", new Microsoft.OpenApi.OpenApiInfo
                 {
                     Title = "The Office API - Level 1",
                     Version = "v1",
                     Description = "Richardson Maturity Model Level 1 implementation - Introduces resource-based URIs"
                 });
 
-                c.SwaggerDoc("v2", new Microsoft.OpenApi.Models.OpenApiInfo
+                c.SwaggerDoc("v2", new Microsoft.OpenApi.OpenApiInfo
                 {
                     Title = "The Office API - Level 2",
                     Version = "v2",
                     Description = "Richardson Maturity Model Level 2 implementation - Introduces HTTP verbs and proper status codes"
                 });
 
-                c.SwaggerDoc("v3", new Microsoft.OpenApi.Models.OpenApiInfo
+                c.SwaggerDoc("v3", new Microsoft.OpenApi.OpenApiInfo
                 {
                     Title = "The Office API - Level 3",
                     Version = "v3",
