@@ -83,11 +83,11 @@ public class HealthCheckServiceTests
     }
 
     [Fact]
-    public void GetReadinessStatus_IncludesUptime()
+    public async Task GetReadinessStatus_IncludesUptime()
     {
         // Arrange
         var service = new HealthCheckService();
-        Thread.Sleep(100); // Wait a bit to ensure uptime is > 0
+        await Task.Delay(100); // Wait a bit to ensure uptime is > 0
 
         // Act
         var result = service.GetReadinessStatus();
@@ -138,18 +138,18 @@ public class HealthCheckServiceTests
         Assert.True(dataComponent.Data.ContainsKey("type"));
         Assert.Equal("In-Memory", dataComponent.Data["type"]);
         Assert.True(dataComponent.Data.ContainsKey("initialized"));
-        Assert.Equal(true, dataComponent.Data["initialized"]);
+        Assert.True((bool)dataComponent.Data["initialized"]);
     }
 
     [Fact]
-    public void GetReadinessStatus_UptimeIncreasesOverTime()
+    public async Task GetReadinessStatus_UptimeIncreasesOverTime()
     {
         // Arrange
         var service = new HealthCheckService();
 
         // Act
         var result1 = service.GetReadinessStatus();
-        Thread.Sleep(50);
+        await Task.Delay(50);
         var result2 = service.GetReadinessStatus();
 
         // Assert
@@ -157,11 +157,11 @@ public class HealthCheckServiceTests
     }
 
     [Fact]
-    public void MultipleInstances_HaveIndependentStartTimes()
+    public async Task MultipleInstances_HaveIndependentStartTimes()
     {
         // Arrange & Act
         var service1 = new HealthCheckService();
-        Thread.Sleep(50);
+        await Task.Delay(50);
         var service2 = new HealthCheckService();
 
         var result1 = service1.GetReadinessStatus();

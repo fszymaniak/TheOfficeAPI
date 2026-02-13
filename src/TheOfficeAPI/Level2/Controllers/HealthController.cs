@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using TheOfficeAPI.Common.Models;
 using TheOfficeAPI.Common.Services;
 
 namespace TheOfficeAPI.Level2.Controllers;
@@ -23,7 +24,7 @@ public class HealthController : ControllerBase
     /// <returns>Health status</returns>
     /// <response code="200">Service is healthy</response>
     [HttpGet]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(HealthCheckResponse), StatusCodes.Status200OK)]
     public IActionResult Get()
     {
         var health = _healthCheckService.GetHealthStatus();
@@ -40,7 +41,7 @@ public class HealthController : ControllerBase
     /// is still running. If this fails, the container should be restarted.
     /// </remarks>
     [HttpGet("live")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(HealthCheckResponse), StatusCodes.Status200OK)]
     public IActionResult GetLiveness()
     {
         var health = _healthCheckService.GetLivenessStatus();
@@ -57,7 +58,7 @@ public class HealthController : ControllerBase
     /// is ready to receive traffic. If this fails, traffic should not be routed to this instance.
     /// </remarks>
     [HttpGet("ready")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(DetailedHealthCheckResponse), StatusCodes.Status200OK)]
     public IActionResult GetReadiness()
     {
         var health = _healthCheckService.GetReadinessStatus();

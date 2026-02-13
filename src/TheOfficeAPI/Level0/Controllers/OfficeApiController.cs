@@ -118,6 +118,7 @@ public class Level0Controller : ControllerBase
     /// </code>
     /// </example>
     [HttpPost("theOffice")]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
     public IActionResult HandleRequest([FromBody] ApiRequest request)
     {
         // Level 0: Always return 200 OK, put actual status in response body

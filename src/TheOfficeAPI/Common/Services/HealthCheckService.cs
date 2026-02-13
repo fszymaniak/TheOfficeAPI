@@ -8,6 +8,8 @@ namespace TheOfficeAPI.Common.Services;
 /// </summary>
 public class HealthCheckService
 {
+    private const string HealthyStatus = "Healthy";
+
     private readonly DateTime _startTime;
     private readonly string _version;
 
@@ -24,7 +26,7 @@ public class HealthCheckService
     {
         return new HealthCheckResponse
         {
-            Status = "Healthy",
+            Status = HealthyStatus,
             Timestamp = DateTime.UtcNow,
             Message = "Application is alive"
         };
@@ -37,7 +39,7 @@ public class HealthCheckService
     {
         var response = new DetailedHealthCheckResponse
         {
-            Status = "Healthy",
+            Status = HealthyStatus,
             Timestamp = DateTime.UtcNow,
             Message = "Application is ready to serve traffic",
             Uptime = DateTime.UtcNow - _startTime,
@@ -46,7 +48,7 @@ public class HealthCheckService
             {
                 ["application"] = new ComponentHealth
                 {
-                    Status = "Healthy",
+                    Status = HealthyStatus,
                     Description = "Application is running normally",
                     Data = new Dictionary<string, object>
                     {
@@ -56,7 +58,7 @@ public class HealthCheckService
                 },
                 ["dataService"] = new ComponentHealth
                 {
-                    Status = "Healthy",
+                    Status = HealthyStatus,
                     Description = "In-memory data service is available",
                     Data = new Dictionary<string, object>
                     {
@@ -77,7 +79,7 @@ public class HealthCheckService
     {
         return new HealthCheckResponse
         {
-            Status = "Healthy",
+            Status = HealthyStatus,
             Timestamp = DateTime.UtcNow,
             Message = "OK"
         };

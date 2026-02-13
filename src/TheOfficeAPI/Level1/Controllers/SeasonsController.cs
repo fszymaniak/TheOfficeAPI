@@ -50,6 +50,7 @@ public class SeasonsController : ControllerBase
     /// </code>
     /// </example>
     [HttpPost]
+    [ProducesResponseType(typeof(ApiResponse<List<Season>>), StatusCodes.Status200OK)]
     public IActionResult GetAllSeasons()
     {
         try
