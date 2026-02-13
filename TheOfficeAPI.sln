@@ -1,4 +1,4 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 #
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheOfficeAPI", "src/TheOfficeAPI/TheOfficeAPI.csproj", "{B1D1A596-0809-4313-8A9F-AFBC87A87458}"
@@ -13,15 +13,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheOfficeAPI.Level1.Tests.I
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheOfficeAPI.Level2.Tests.Unit", "tests/TheOfficeAPI.Level2.Tests.Unit/TheOfficeAPI.Level2.Tests.Unit.csproj", "{E3FA0913-3456-7890-1234-D362FE48FE0D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheOfficeAPI.Level2.Tests.Integration", "tests/TheOfficeAPI.Level2.Tests.Integration/TheOfficeAPI.Level2.Tests.Integration.csproj", "{00000000-0000-0000-0000-000000000000}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheOfficeAPI.Level2.Tests.Integration", "tests/TheOfficeAPI.Level2.Tests.Integration/TheOfficeAPI.Level2.Tests.Integration.csproj", "{9078F4DA-6AD0-4024-8764-679B805E0C28}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheOfficeAPI.Level3.Tests.Unit", "tests/TheOfficeAPI.Level3.Tests.Unit/TheOfficeAPI.Level3.Tests.Unit.csproj", "{00000000-0000-0000-0000-000000000000}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheOfficeAPI.Level3.Tests.Unit", "tests/TheOfficeAPI.Level3.Tests.Unit/TheOfficeAPI.Level3.Tests.Unit.csproj", "{DB0B4A87-CBA6-4B04-98FD-479E0E4A1E84}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheOfficeAPI.Level3.Tests.Integration", "tests/TheOfficeAPI.Level3.Tests.Integration/TheOfficeAPI.Level3.Tests.Integration.csproj", "{00000000-0000-0000-0000-000000000000}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheOfficeAPI.Level3.Tests.Integration", "tests/TheOfficeAPI.Level3.Tests.Integration/TheOfficeAPI.Level3.Tests.Integration.csproj", "{3586BC66-210E-47DD-ABCE-8DC3D0638291}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheOfficeAPI.Tests.E2E", "tests/TheOfficeAPI.Tests.E2E/TheOfficeAPI.Tests.E2E.csproj", "{00000000-0000-0000-0000-000000000000}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheOfficeAPI.Tests.E2E", "tests/TheOfficeAPI.Tests.E2E/TheOfficeAPI.Tests.E2E.csproj", "{EDE0ED8F-C286-4FFC-80BC-1972BE240130}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheOfficeAPI.Common.Tests.Unit", "tests/TheOfficeAPI.Common.Tests.Unit/TheOfficeAPI.Common.Tests.Unit.csproj", "{00000000-0000-0000-0000-000000000000}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheOfficeAPI.Common.Tests.Unit", "tests/TheOfficeAPI.Common.Tests.Unit/TheOfficeAPI.Common.Tests.Unit.csproj", "{91D7F9AC-B773-4409-90BB-C743351DB612}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,7 +53,25 @@ Global
 		{E3FA0913-3456-7890-1234-D362FE48FE0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E3FA0913-3456-7890-1234-D362FE48FE0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E3FA0913-3456-7890-1234-D362FE48FE0D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{00000000-0000-0000-0000-000000000000}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{00000000-0000-0000-0000-000000000000}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9078F4DA-6AD0-4024-8764-679B805E0C28}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9078F4DA-6AD0-4024-8764-679B805E0C28}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9078F4DA-6AD0-4024-8764-679B805E0C28}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9078F4DA-6AD0-4024-8764-679B805E0C28}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DB0B4A87-CBA6-4B04-98FD-479E0E4A1E84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB0B4A87-CBA6-4B04-98FD-479E0E4A1E84}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB0B4A87-CBA6-4B04-98FD-479E0E4A1E84}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB0B4A87-CBA6-4B04-98FD-479E0E4A1E84}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3586BC66-210E-47DD-ABCE-8DC3D0638291}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3586BC66-210E-47DD-ABCE-8DC3D0638291}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3586BC66-210E-47DD-ABCE-8DC3D0638291}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3586BC66-210E-47DD-ABCE-8DC3D0638291}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EDE0ED8F-C286-4FFC-80BC-1972BE240130}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EDE0ED8F-C286-4FFC-80BC-1972BE240130}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EDE0ED8F-C286-4FFC-80BC-1972BE240130}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EDE0ED8F-C286-4FFC-80BC-1972BE240130}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91D7F9AC-B773-4409-90BB-C743351DB612}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91D7F9AC-B773-4409-90BB-C743351DB612}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91D7F9AC-B773-4409-90BB-C743351DB612}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91D7F9AC-B773-4409-90BB-C743351DB612}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

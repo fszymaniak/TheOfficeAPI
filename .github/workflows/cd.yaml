@@ -10,7 +10,7 @@ on:
       - develop
 
 env:
-  DOTNET_VERSION: '10.0.x'
+  DOTNET_VERSION: '9.0.x'
   BUILD_CONFIGURATION: 'Release'
   RAILWAY_URL: 'https://theofficeapi-production-5d8f.up.railway.app'
 
