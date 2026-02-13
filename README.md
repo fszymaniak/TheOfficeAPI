@@ -305,6 +305,23 @@ MATURITY_LEVEL=Level3 dotnet run --project src/TheOfficeAPI
 
 ## Deployment
 
+### Mikrus VPS (mikrus.us)
+
+Deploy to your own Mikrus VPS server with full control. This option provides:
+- Complete server control and customization
+- Cost-effective hosting (starting from ~10 PLN/month)
+- Docker-based deployment with Nginx reverse proxy
+- SSL/TLS support with Let's Encrypt
+- Ideal for production deployments
+
+**Quick Deploy:**
+```bash
+# On your Mikrus VPS
+curl -fsSL https://raw.githubusercontent.com/fszymaniak/TheOfficeAPI/main/scripts/deploy-mikrus.sh | bash
+```
+
+For detailed instructions, see [Documentation/MikrusVPSDeployment.md](Documentation/MikrusVPSDeployment.md).
+
 ### Railway
 
 The application is configured for deployment on Railway. It automatically:
