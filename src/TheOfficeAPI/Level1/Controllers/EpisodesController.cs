@@ -49,6 +49,7 @@ public class EpisodesController : ControllerBase
     /// </code>
     /// </example>
     [HttpPost]
+    [ProducesResponseType(typeof(ApiResponse<List<Episode>>), StatusCodes.Status200OK)]
     public IActionResult GetSeasonEpisodes([FromRoute] int seasonNumber)
     {
         try
@@ -108,6 +109,7 @@ public class EpisodesController : ControllerBase
     /// </code>
     /// </example>
     [HttpPost("{episodeNumber}")]
+    [ProducesResponseType(typeof(ApiResponse<Episode>), StatusCodes.Status200OK)]
     public IActionResult GetEpisode([FromRoute] int seasonNumber, [FromRoute] int episodeNumber)
     {
         try
