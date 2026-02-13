@@ -1,5 +1,5 @@
 ﻿# Build stage
-FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /app
 
 # Copy solution and all .csproj files
@@ -14,6 +14,7 @@ COPY tests/TheOfficeAPI.Level2.Tests.Integration/*.csproj ./tests/TheOfficeAPI.L
 COPY tests/TheOfficeAPI.Level3.Tests.Unit/*.csproj ./tests/TheOfficeAPI.Level3.Tests.Unit/
 COPY tests/TheOfficeAPI.Level3.Tests.Integration/*.csproj ./tests/TheOfficeAPI.Level3.Tests.Integration/
 COPY tests/TheOfficeAPI.Tests.E2E/*.csproj ./tests/TheOfficeAPI.Tests.E2E/
+COPY tests/TheOfficeAPI.Common.Tests.Unit/*.csproj ./tests/TheOfficeAPI.Common.Tests.Unit/
 
 # Restore dependencies
 RUN dotnet restore TheOfficeAPI.sln
@@ -28,7 +29,7 @@ RUN dotnet publish src/TheOfficeAPI/TheOfficeAPI.csproj \
     --no-restore
 
 # Runtime stage
-FROM mcr.microsoft.com/dotnet/aspnet:9.0
+FROM mcr.microsoft.com/dotnet/aspnet:10.0
 WORKDIR /app
 
 # Copy compiled files
