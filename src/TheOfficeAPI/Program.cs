@@ -7,6 +7,8 @@ namespace TheOfficeAPI;
 
 public class Program
 {
+    protected Program() { }
+
     public static void Main(string[] args)
     {
         CreateWebApplication(args).Run();
