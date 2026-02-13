@@ -8,7 +8,7 @@ namespace TheOfficeAPI.Common.Services;
 /// </summary>
 public class HealthCheckService
 {
-    private const string HealthyStatus = HealthyStatus;
+    private const string HealthyStatus = "Healthy";
 
     private readonly DateTime _startTime;
     private readonly string _version;
