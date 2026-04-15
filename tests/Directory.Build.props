@@ -1,4 +1,16 @@
 <Project>
+    <PropertyGroup>
+        <!--
+            Force VSTest runner. Microsoft.NET.Test.Sdk 18.x + xunit.runner.visualstudio 3.x
+            on net10.0 default to Microsoft.Testing.Platform (MTP). The .NET 10 SDK removed
+            the legacy VSTest bridge used by `dotnet test --no-build`, producing
+            "The argument <dll> is invalid. Please use the /help option" + MSB4181.
+            Keeping VSTest mode lets our CI continue to use `--logger trx` and
+            `--collect:"XPlat Code Coverage"` unchanged.
+        -->
+        <UseVSTestRunner>true</UseVSTestRunner>
+    </PropertyGroup>
+
     <!-- Allure configuration - copy to output directory for all test projects -->
     <ItemGroup>
         <None Include="$(MSBuildThisFileDirectory)allureConfig.json" CopyToOutputDirectory="PreserveNewest" Link="allureConfig.json" />
