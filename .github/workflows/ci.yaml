@@ -584,7 +584,21 @@ jobs:
           fi
         continue-on-error: true
 
+      - name: Check SonarCloud token availability
+        id: sonar-token-check
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          if [ -z "${SONAR_TOKEN}" ]; then
+            echo "SONAR_TOKEN is not set - SonarCloud analysis will be skipped."
+            echo "has_token=false" >> $GITHUB_OUTPUT
+          else
+            echo "SONAR_TOKEN is available - SonarCloud analysis will run."
+            echo "has_token=true" >> $GITHUB_OUTPUT
+          fi
+
       - name: Cache SonarCloud packages
+        if: steps.sonar-token-check.outputs.has_token == 'true'
         uses: actions/cache@v4
         with:
           path: ~/.sonar/cache
@@ -592,9 +606,11 @@ jobs:
           restore-keys: ${{ runner.os }}-sonar
 
       - name: Install SonarCloud scanner
+        if: steps.sonar-token-check.outputs.has_token == 'true'
         run: dotnet tool install --global dotnet-sonarscanner
 
       - name: Build and analyze with SonarCloud
+        if: steps.sonar-token-check.outputs.has_token == 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -604,32 +620,36 @@ jobs:
           BRANCH_NAME: ${{ github.ref_name }}
           EVENT_NAME: ${{ github.event_name }}
         run: |
-          # Build SonarScanner command with PR-specific parameters
-          SONAR_PARAMS="/k:\"fszymaniak_TheOfficeAPI\" \
-            /o:\"fszymaniak\" \
-            /n:\"The Office API\" \
-            /v:\"1.0\" \
-            /d:sonar.token=\"${SONAR_TOKEN}\" \
-            /d:sonar.host.url=\"https://sonarcloud.io\""
+          # Build SonarScanner argument array (safer than eval + quoted string)
+          SONAR_ARGS=(
+            "/k:fszymaniak_TheOfficeAPI"
+            "/o:fszymaniak"
+            "/n:The Office API"
+            "/v:1.0"
+            "/d:sonar.token=${SONAR_TOKEN}"
+            "/d:sonar.host.url=https://sonarcloud.io"
+          )
 
           # Add PR-specific parameters for pull requests
           if [ "$EVENT_NAME" == "pull_request" ]; then
-            SONAR_PARAMS="$SONAR_PARAMS \
-              /d:sonar.pullrequest.key=\"${PR_NUMBER}\" \
-              /d:sonar.pullrequest.branch=\"${PR_HEAD_REF}\" \
-              /d:sonar.pullrequest.base=\"${PR_BASE_REF}\""
+            SONAR_ARGS+=(
+              "/d:sonar.pullrequest.key=${PR_NUMBER}"
+              "/d:sonar.pullrequest.branch=${PR_HEAD_REF}"
+              "/d:sonar.pullrequest.base=${PR_BASE_REF}"
+            )
             echo "Running SonarCloud analysis for PR #${PR_NUMBER}"
           else
-            SONAR_PARAMS="$SONAR_PARAMS /d:sonar.branch.name=\"${BRANCH_NAME}\""
+            SONAR_ARGS+=("/d:sonar.branch.name=${BRANCH_NAME}")
             echo "Running SonarCloud analysis for branch ${BRANCH_NAME}"
           fi
 
           # Run analysis
-          eval dotnet sonarscanner begin $SONAR_PARAMS
+          dotnet sonarscanner begin "${SONAR_ARGS[@]}"
           dotnet build TheOfficeAPI.sln --configuration ${{ env.BUILD_CONFIGURATION }} --no-restore
-          dotnet sonarscanner end /d:sonar.token="${SONAR_TOKEN}"
+          dotnet sonarscanner end "/d:sonar.token=${SONAR_TOKEN}"
 
       - name: SonarCloud Quality Gate check
+        if: steps.sonar-token-check.outputs.has_token == 'true'
         uses: sonarsource/sonarqube-quality-gate-action@master
         timeout-minutes: 5
         with:
