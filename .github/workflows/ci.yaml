@@ -42,28 +42,6 @@ jobs:
           echo "Created allureConfig.json:"
           cat ${{ github.workspace }}/allureConfig.json
 
-      - name: Diagnose dotnet test environment
-        run: |
-          echo "=== dotnet --info ==="
-          dotnet --info
-          echo ""
-          echo "=== dotnet --list-sdks ==="
-          dotnet --list-sdks
-          echo ""
-          echo "=== dotnet test --help (top 80 lines) ==="
-          dotnet test --help 2>&1 | head -80 || true
-          echo ""
-          echo "=== Test DLL inspection ==="
-          ls -la tests/TheOfficeAPI.Common.Tests.Unit/bin/Release/net10.0/ || true
-          echo ""
-          echo "=== Is test DLL an MTP entrypoint? (exe + runtimeconfig) ==="
-          file tests/TheOfficeAPI.Common.Tests.Unit/bin/Release/net10.0/TheOfficeAPI.Common.Tests.Unit.dll 2>&1 || true
-          test -f tests/TheOfficeAPI.Common.Tests.Unit/bin/Release/net10.0/TheOfficeAPI.Common.Tests.Unit && echo "APPHOST PRESENT" || echo "no apphost"
-          test -f tests/TheOfficeAPI.Common.Tests.Unit/bin/Release/net10.0/TheOfficeAPI.Common.Tests.Unit.runtimeconfig.json && echo "RUNTIMECONFIG PRESENT" || echo "no runtimeconfig"
-          echo ""
-          echo "=== Try running the DLL directly (MTP probe) ==="
-          dotnet tests/TheOfficeAPI.Common.Tests.Unit/bin/Release/net10.0/TheOfficeAPI.Common.Tests.Unit.dll --help 2>&1 | head -40 || true
-
       - name: Run unit tests
         run: |
           dotnet test tests/TheOfficeAPI.Common.Tests.Unit/TheOfficeAPI.Common.Tests.Unit.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --verbosity normal --logger trx --collect:"XPlat Code Coverage"
